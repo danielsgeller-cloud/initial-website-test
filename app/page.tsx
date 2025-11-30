@@ -1,37 +1,112 @@
-export default function Page() {
+"use client";
+
+import { useState } from "react";
+
+export default function Home() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
+    "idle"
+  );
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("sending");
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      message: formData.get("message"),
+    };
+
+    try {
+      const res = await fetch("/api/contact-submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        setStatus("error");
+      } else {
+        setStatus("sent");
+        form.reset();
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+    }
+  }
+
   return (
-    <div className="home">
-      <h1>Welcome to Pictures in Ceramic</h1>
-      <p className="lead">
-        Custom enamel portrait cameos for headstones, memorials, and keepsakes.
-      </p>
+    <main className="max-w-xl mx-auto p-6">
+      <h1 className="text-2xl font-semibold mb-4">
+        Contact Pictures in Ceramic
+      </h1>
 
-      <section className="home-section">
-        <h2>What we do</h2>
-        <p>
-          We transform your photographs into durable enamel portraits that
-          withstand weather, sunlight, and time. Each piece is color balanced,
-          kiln fired, and inspected by hand.
-        </p>
-      </section>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block mb-1 text-sm font-medium" htmlFor="name">
+            Name
+          </label>
+          <input
+            id="name"
+            name="name"
+            required
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
 
-      <section className="home-section">
-        <h2>Why families choose us</h2>
-        <ul>
-          <li>Over 30 years of experience with memorial ceramics</li>
-          <li>Careful color matching for natural skin tones and details</li>
-          <li>Multiple sizes and shapes to fit most headstone designs</li>
-          <li>Worldwide shipping to monument companies and families</li>
-        </ul>
-      </section>
+        <div>
+          <label className="block mb-1 text-sm font-medium" htmlFor="email">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
 
-      <section className="home-section">
-        <h2>Ready to order</h2>
-        <p>
-          When you are ready, visit the <a href="/contact">Order Form</a> page
-          to send us your photo and inscription details.
-        </p>
-      </section>
-    </div>
+        <div>
+          <label className="block mb-1 text-sm font-medium" htmlFor="message">
+            Message
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            required
+            rows={5}
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={status === "sending"}
+          className="px-4 py-2 rounded bg-black text-white"
+        >
+          {status === "sending" ? "Sending..." : "Send"}
+        </button>
+
+        {status === "sent" && (
+          <p className="text-green-600 text-sm mt-2">
+            Thank you. Your message has been sent.
+          </p>
+        )}
+        {status === "error" && (
+          <p className="text-red-600 text-sm mt-2">
+            Something went wrong. Please try again later.
+          </p>
+        )}
+      </form>
+    </main>
   );
 }

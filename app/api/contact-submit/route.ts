@@ -1,25 +1,25 @@
 import { NextResponse } from "next/server";
-import {
-  SESv2Client,
-  SendEmailCommand,
-} from "@aws-sdk/client-sesv2";
+import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
     const client = new SESv2Client({
-      region: process.env.AWS_REGION,
+      region: process.env.AWS_REGION || "us-east-1",
       credentials: {
-        accessKeyId: process.env.AKIAZAJTF2YG77ISFY36 || "",
-        secretAccessKey: process.env.JhpTUAW7UqhhXjzFJKtbhpdVyNAPQp6ykI2i4FI8 || "",
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
       },
     });
 
+    const fromAddress = process.env.SES_FROM_ADDRESS || "info@picturesinceramic.com";
+    const toAddress = process.env.SES_TO_ADDRESS || "info@picturesinceramic.com";
+
     const command = new SendEmailCommand({
-      FromEmailAddress: process.env.SES_FROM_ADDRESS,
+      FromEmailAddress: fromAddress,
       Destination: {
-        ToAddresses: [process.env.SES_TO_ADDRESS || ""],
+        ToAddresses: [toAddress],
       },
       Content: {
         Simple: {
