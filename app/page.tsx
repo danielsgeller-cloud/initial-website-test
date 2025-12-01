@@ -6,10 +6,12 @@ export default function Home() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
   );
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
+    setErrorMessage("");
 
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -31,14 +33,21 @@ export default function Home() {
 
       const data = await res.json();
 
+      console.log("Client received:", data);
+
       if (!res.ok || !data.ok) {
         setStatus("error");
-      } else {
-        setStatus("sent");
-        form.reset();
+        setErrorMessage(data.error || "Unknown error");
+        return;
       }
-    } catch (err) {
-      console.error(err);
+
+      console.log("SES accepted message with ID:", data.messageId);
+      setStatus("sent");
+      form.reset();
+
+    } catch (err: any) {
+      console.error("Client error:", err);
+      setErrorMessage(err?.message ?? "Unknown client error");
       setStatus("error");
     }
   }
@@ -98,12 +107,13 @@ export default function Home() {
 
         {status === "sent" && (
           <p className="text-green-600 text-sm mt-2">
-            Thank you. Your message has been sent.
+            Email accepted by SES. Check your inbox.
           </p>
         )}
+
         {status === "error" && (
           <p className="text-red-600 text-sm mt-2">
-            Something went wrong. Please try again later.
+            Failed to send: {errorMessage}
           </p>
         )}
       </form>

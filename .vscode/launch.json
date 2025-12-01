@@ -12,6 +12,7 @@
       ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
+      "sourceMaps": true,
       "skipFiles": [
         "<node_internals>/**",
         "**/node_modules/**"
