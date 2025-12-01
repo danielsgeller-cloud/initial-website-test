@@ -37,16 +37,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // Using SES_* variable names (not AWS_*)
+    // SES env values (Amplify does not allow AWS_ prefix)
     const region = process.env.NEXT_PUBLIC_SES_REGION || "us-east-1";
     const accessKeyId = process.env.SES_ACCESS_KEY_ID;
     const secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+
+    // Your preferred from/to addresses
     const fromAddress =
-      process.env.SES_FROM_ADDRESS || "info@picturesinceramic.com";
+      process.env.SES_FROM_ADDRESS || "danielsgeller@gmail.com";
     const toAddress =
       process.env.SES_TO_ADDRESS || "info@picturesinceramic.com";
 
-    // NEW DEBUG BLOCK
+    // Debug missing credentials
     if (!accessKeyId || !secretAccessKey) {
       console.error("Missing SES credentials in env", {
         region,
@@ -81,6 +83,7 @@ export async function POST(req: Request) {
       Destination: {
         ToAddresses: [toAddress],
       },
+      ReplyToAddresses: [body.email],
       Content: {
         Simple: {
           Subject: { Data: "New Order Form Submission" },
