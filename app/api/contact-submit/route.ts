@@ -8,7 +8,6 @@ type OrderBody = {
 };
 
 async function getBody(req: Request): Promise<OrderBody> {
-  // First try JSON
   try {
     const json = await req.json();
     return {
@@ -17,7 +16,6 @@ async function getBody(req: Request): Promise<OrderBody> {
       message: json.message ?? "",
     };
   } catch {
-    // Fallback for form-encoded submissions
     const form = await req.formData();
     return {
       name: String(form.get("name") ?? ""),
@@ -39,16 +37,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const region = process.env.AWS_REGION || "us-east-1";
-    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+    // Use names that do not start with AWS_
+    const region = process.env.NEXT_PUBLIC_SES_REGION || "us-east-1";
+    const accessKeyId = process.env.SES_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
     const fromAddress =
       process.env.SES_FROM_ADDRESS || "info@picturesinceramic.com";
     const toAddress =
       process.env.SES_TO_ADDRESS || "info@picturesinceramic.com";
 
     if (!accessKeyId || !secretAccessKey) {
-      console.error("Missing AWS credentials in env");
+      console.error("Missing SES credentials in env");
       return NextResponse.json(
         { ok: false, error: "Server email configuration error" },
         { status: 500 }
