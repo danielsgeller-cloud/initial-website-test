@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Use names that do not start with AWS_
+    // Using SES_* variable names (not AWS_*)
     const region = process.env.NEXT_PUBLIC_SES_REGION || "us-east-1";
     const accessKeyId = process.env.SES_ACCESS_KEY_ID;
     const secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
@@ -46,10 +46,24 @@ export async function POST(req: Request) {
     const toAddress =
       process.env.SES_TO_ADDRESS || "info@picturesinceramic.com";
 
+    // NEW DEBUG BLOCK
     if (!accessKeyId || !secretAccessKey) {
-      console.error("Missing SES credentials in env");
+      console.error("Missing SES credentials in env", {
+        region,
+        hasAccessKey: !!accessKeyId,
+        hasSecret: !!secretAccessKey,
+      });
+
       return NextResponse.json(
-        { ok: false, error: "Server email configuration error" },
+        {
+          ok: false,
+          error: "Server email configuration error",
+          details: {
+            region,
+            hasAccessKey: !!accessKeyId,
+            hasSecret: !!secretAccessKey,
+          },
+        },
         { status: 500 }
       );
     }
