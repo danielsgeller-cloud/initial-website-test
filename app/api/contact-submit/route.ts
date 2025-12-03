@@ -37,10 +37,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // SES env values (Amplify does not allow AWS_ prefix)
+    // Region still from NEXT_PUBLIC_SES_REGION
     const region = process.env.NEXT_PUBLIC_SES_REGION || "us-east-1";
-    const accessKeyId = process.env.SES_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+
+    // Use neutral names that Amplify will not filter
+    const accessKeyId = process.env.PICS_SES_KEY_ID;
+    const secretAccessKey = process.env.PICS_SES_KEY_SECRET;
 
     // Your preferred from/to addresses
     const fromAddress =
