@@ -40,15 +40,15 @@ export async function POST(req: Request) {
     // Region still from NEXT_PUBLIC_SES_REGION
     const region = process.env.NEXT_PUBLIC_SES_REGION || "us-east-1";
 
-    // Use neutral names that Amplify will not filter
-    const accessKeyId = process.env.PICS_SES_KEY_ID;
-    const secretAccessKey = process.env.PICS_SES_KEY_SECRET;
+    // Use very neutral names, no KEY / SECRET
+    const accessKeyId = process.env.PICS_SES_USER;
+    const secretAccessKey = process.env.PICS_SES_PASS;
 
     // Your preferred from/to addresses
     const fromAddress =
       process.env.SES_FROM_ADDRESS || "danielsgeller@gmail.com";
     const toAddress =
-      process.env.SES_TO_ADDRESS || "info@picturesinceramic.com";
+      process.env.SES_TO_ADDRESS || "gellerd@rider.edu";
 
     // Debug missing credentials
     if (!accessKeyId || !secretAccessKey) {
