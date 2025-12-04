@@ -50,6 +50,14 @@ export async function POST(req: Request) {
     const toAddress =
       process.env.SES_TO_ADDRESS || "gellerd@rider.edu";
 
+console.log("SES env check", {
+  region,
+  hasUser: !!process.env.PICS_SES_USER,
+  hasPass: !!process.env.PICS_SES_PASS,
+  fromDefined: !!fromAddress,
+  toDefined: !!toAddress,
+});
+
     // Debug missing credentials
     if (!accessKeyId || !secretAccessKey) {
       console.error("Missing SES credentials in env", {
