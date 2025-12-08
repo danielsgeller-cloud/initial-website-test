@@ -1,20 +1,16 @@
-import Link from "next/link";
-
 export default function Footer() {
   return (
-    <footer className="mt-12 border-t border-neutral-200 bg-white">
+    <footer className="mt-16 border-t border-neutral-200 bg-white">
       <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-12">
-        <div className="grid gap-8 md:grid-cols-3">
-          {/* Left - logo and contact */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-300 bg-neutral-100">
-                <span className="font-serif text-lg font-semibold text-amber-600">
-                  P
-                </span>
+        <div className="grid gap-10 md:grid-cols-3">
+          {/* Left column: brand and contact */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-sm font-semibold text-amber-800">
+                P
               </div>
               <div className="flex flex-col leading-tight">
-                <span className="font-serif text-sm font-semibold text-neutral-900">
+                <span className="font-serif text-base font-semibold text-neutral-900">
                   Pictures in Ceramic
                 </span>
                 <span className="text-[11px] text-neutral-500">
@@ -22,24 +18,23 @@ export default function Footer() {
                 </span>
               </div>
             </div>
-
-            <div className="space-y-1 text-sm text-neutral-600">
-              <p>123 Memorial Lane</p>
-              <p>Monument City, NJ 08888</p>
-              <p>
+            <div className="text-sm text-neutral-600">
+              <p>11 Doran Ct</p>
+              <p>South Brunswick, NJ 08852</p>
+              <p className="mt-2">
                 Phone:{" "}
                 <a
-                  href="tel:+17325551234"
-                  className="text-neutral-800 hover:text-amber-600"
+                  href="tel:17322976008"
+                  className="text-amber-700 hover:text-amber-500"
                 >
-                  (732) 555-1234
+                  (732) 297-6008
                 </a>
               </p>
               <p>
                 Email:{" "}
                 <a
                   href="mailto:info@picturesinceramic.com"
-                  className="text-neutral-800 hover:text-amber-600"
+                  className="text-amber-700 hover:text-amber-500"
                 >
                   info@picturesinceramic.com
                 </a>
@@ -47,78 +42,74 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Middle - links */}
-          <div className="space-y-3">
-            <h3 className="font-semibold text-neutral-900">Cameo information</h3>
-            <ul className="space-y-2 text-sm text-neutral-600">
+          {/* Middle column: links */}
+          <div className="text-sm text-neutral-600">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+              Cameo information
+            </h3>
+            <ul className="mt-3 space-y-1.5">
               <li>
-                <Link href="/about" className="hover:text-amber-600">
+                <a href="/about" className="hover:text-amber-600">
                   About
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/why-our-cameos" className="hover:text-amber-600">
+                <a href="/why-our-cameos" className="hover:text-amber-600">
                   Why our cameos
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/pricing" className="hover:text-amber-600">
+                <a href="/pricing" className="hover:text-amber-600">
                   Pricing
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/faq" className="hover:text-amber-600">
+                <a href="/faq" className="hover:text-amber-600">
                   Frequently asked questions
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-amber-600">
+                <a href="/contact" className="hover:text-amber-600">
                   Contact
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* Right - hours and socials */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-semibold text-neutral-900">Studio hours</h3>
-              <ul className="mt-2 space-y-1 text-sm text-neutral-600">
-                <li>Monday - Friday: 9:00 am - 5:00 pm EST</li>
-                <li>Saturday: By appointment</li>
-                <li>Sunday: Closed</li>
-              </ul>
-            </div>
+          {/* Right column: hours and social */}
+          <div className="text-sm text-neutral-600">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+              Studio hours
+            </h3>
+            <ul className="mt-3 space-y-1.5">
+              <li>Monday to Friday: 9:00 am to 5:00 pm EST</li>
+              <li>Saturday: By appointment</li>
+              <li>Sunday: By appointment</li>
+            </ul>
 
-            <div>
-              <h3 className="font-semibold text-neutral-900">Connect</h3>
-              <div className="mt-2 flex gap-3">
-                {[
-                  { label: "Facebook", href: "#" },
-                  { label: "Instagram", href: "#" },
-                  { label: "Pinterest", href: "#" },
-                ].map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    aria-label={item.label}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-300 text-neutral-700 hover:border-amber-500 hover:text-amber-600"
-                  >
-                    <span className="text-xs font-semibold">
-                      {item.label[0]}
-                    </span>
-                  </Link>
-                ))}
-              </div>
+            <h3 className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
+              Connect
+            </h3>
+            <div className="mt-3 flex gap-3 text-sm">
+              {/* Placeholder social links */}
+              <a
+                href="#"
+                className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-700 hover:border-amber-500 hover:text-amber-600"
+              >
+                Facebook
+              </a>
+              <a
+                href="#"
+                className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-700 hover:border-amber-500 hover:text-amber-600"
+              >
+                Instagram
+              </a>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 border-t border-neutral-200 pt-4 text-center text-xs text-neutral-500">
-          <p>
-            © {new Date().getFullYear()} Pictures in Ceramic. All rights
-            reserved.
-          </p>
+        <div className="mt-8 border-t border-neutral-200 pt-4 text-xs text-neutral-400">
+          © {new Date().getFullYear()} Pictures in Ceramic. All rights reserved.
         </div>
       </div>
     </footer>
