@@ -23,8 +23,7 @@ export default function HomePage() {
               Elegant enamel photo cameos that honor a life forever
             </h1>
             <p className="mt-4 max-w-2xl text-sm text-neutral-100 md:text-base">
-              Custom kiln fired portraits created for outdoor monuments. Each
-              cameo is crafted to stay bright on the stone in every season.
+              Custom kiln fired enamel photo medallions created for outdoor monuments and private homes. Each piece is built to stay clear and bright in every season.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link
@@ -57,11 +56,7 @@ export default function HomePage() {
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-neutral-600 md:text-base">
               We transform your favorite photograph into a kiln fired enamel
-              portrait that bonds glass and color to porcelain. The result is a
-              cameo that resists fading, moisture, and freezing temperatures
-              while preserving a clear, dignified likeness. Families choose our
-              studio for careful retouching, color work, and reliable
-              craftsmanship on every order.
+              portrait on a metal medallion that is finished to mount on bronze and stone. Our cameos are engineered for granite, marble, bronze markers, mausoleums, and even indoor displays at home. They resist fading, moisture, and freezing temperatures while preserving a clear, dignified likeness. We work with monument dealers and individual families, and every order receives careful retouching, color work, and inspection.
             </p>
             <div className="mt-8 flex justify-center">
               <div className="h-px w-24 bg-neutral-300" />
@@ -144,7 +139,7 @@ export default function HomePage() {
                 </span>
                 <br />
                 Share a digital file or a scan of a printed photo. We can work
-                with older or slightly damaged images.
+                with old or damaged images.
               </li>
               <li>
                 <span className="font-semibold text-amber-600">
