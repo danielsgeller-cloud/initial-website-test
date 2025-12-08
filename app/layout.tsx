@@ -1,8 +1,12 @@
-import "../styles/globals.css";
+import type { Metadata } from "next";
+import "./globals.css";
+import Nav from "../components/Nav";
+import Footer from "../components/Footer";
 
-export const metadata = {
-  title: "Pictures in Ceramic",
-  description: "Premium enamel memorial cameos since 1993",
+export const metadata: Metadata = {
+  title: "Pictures in Ceramic - Enamel Memorial Cameos",
+  description:
+    "Custom enamel photo memorial cameos for headstones and mausoleums.",
 };
 
 export default function RootLayout({
@@ -12,29 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <header className="site-header">
-          <div className="site-header-inner">
-            <div className="brand">
-              <span className="brand-title">Pictures in Ceramic</span>
-              <span className="brand-tagline">
-                Premium enamel memorial cameos since 1993
-              </span>
-            </div>
-            <nav className="main-nav">
-              <a href="/">Home</a>
-              <a href="/about">About</a>
-              <a href="/shop">Shop</a>
-              <a href="/contact">Order Form</a>
-            </nav>
-          </div>
-        </header>
-
-        <main className="page-container">{children}</main>
-
-        <footer className="site-footer">
-          <p>© {new Date().getFullYear()} Pictures in Ceramic. All rights reserved.</p>
-        </footer>
+      <body className="bg-neutral-50 text-neutral-900">
+        <Nav />
+        <main className="min-h-screen">{children}</main>
+        <Footer />
       </body>
     </html>
   );
