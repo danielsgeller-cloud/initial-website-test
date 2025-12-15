@@ -2,3 +2,34 @@ node_modules/
 .next/
 .env
 .env.local
+
+# Stripe dev store
+data/stripe-store.json
+
+/generated/prisma
+
+# local env
+.env
+.env.local
+.env.*.local
+
+# mac
+.DS_Store
+
+# sqlite
+*.db
+*.db-journal
+prisma/dev.db
+
+# macOS
+.DS_Store
+
+# env
+.env
+.env.local
+
+# prisma local
+prisma/dev.db
+
+# build
+.next

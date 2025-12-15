@@ -4,10 +4,18 @@ import Link from "next/link";
 import { useState } from "react";
 import LanguageSlider from "./i18n/LanguageSlider";
 import { useLanguage } from "./i18n/LanguageProvider";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { t } = useLanguage();
+  const { data: session, status } = useSession();
+
+  const isAuthed = status === "authenticated";
+  const displayName =
+    session?.user?.name?.trim() ||
+    session?.user?.email?.trim() ||
+    "Account";
 
   return (
     <header className="w-full border-b border-neutral-200 bg-white">
@@ -72,6 +80,16 @@ export default function Nav() {
             <Link href="/order-form" className="hover:text-amber-600">
               {t("nav_order")}
             </Link>
+
+            {isAuthed ? (
+              <Link href="/account" className="hover:text-amber-600">
+                {displayName}
+              </Link>
+            ) : (
+              <Link href="/login" className="hover:text-amber-600">
+                Login
+              </Link>
+            )}
           </nav>
 
           <button
@@ -87,12 +105,22 @@ export default function Nav() {
             </svg>
           </button>
 
-          <Link
-            href="/order-form"
-            className="rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-sm hover:bg-amber-400"
-          >
-            {t("cta_order")}
-          </Link>
+          {isAuthed ? (
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 shadow-sm hover:border-amber-500 hover:text-amber-600"
+            >
+              Sign out
+            </button>
+          ) : (
+            <Link
+              href="/order-form"
+              className="rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-sm hover:bg-amber-400"
+            >
+              {t("cta_order")}
+            </Link>
+          )}
         </div>
 
         <button
@@ -151,15 +179,40 @@ export default function Nav() {
                 <Link href="/order-form" onClick={() => setMenuOpen(false)}>
                   {t("nav_order")}
                 </Link>
+
+                {isAuthed ? (
+                  <Link href="/account" onClick={() => setMenuOpen(false)}>
+                    {displayName}
+                  </Link>
+                ) : (
+                  <Link href="/login" onClick={() => setMenuOpen(false)}>
+                    Login
+                  </Link>
+                )}
+
+                {isAuthed && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      signOut({ callbackUrl: "/" });
+                    }}
+                    className="text-left"
+                  >
+                    Sign out
+                  </button>
+                )}
               </nav>
 
-              <Link
-                href="/order-form"
-                className="mt-6 block rounded-full bg-amber-500 px-5 py-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-sm hover:bg-amber-400"
-                onClick={() => setMenuOpen(false)}
-              >
-                {t("cta_order")}
-              </Link>
+              {!isAuthed && (
+                <Link
+                  href="/order-form"
+                  className="mt-6 block rounded-full bg-amber-500 px-5 py-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-sm hover:bg-amber-400"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {t("cta_order")}
+                </Link>
+              )}
             </div>
           </div>
         )}
