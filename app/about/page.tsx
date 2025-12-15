@@ -1,128 +1,131 @@
+"use client";
+
+import { useLanguage } from "../../components/LanguageProvider";
+
 export default function AboutPage() {
+  const { t } = useLanguage();
+
   return (
-    <main className="min-h-screen bg-white text-neutral-900">
-      {/* Hero Section */}
-      <section className="relative h-[320px] w-full overflow-hidden bg-neutral-900 md:h-[420px]">
-        {/* Placeholder Hero Image */}
-        <div className="absolute inset-0 bg-neutral-800">
-          <img
-            src="/images/about-hero-placeholder.jpg"
-            alt="Studio placeholder"
-            className="h-full w-full object-cover opacity-40"
-          />
-        </div>
-
-        <div className="relative mx-auto flex h-full max-w-5xl flex-col justify-center px-4 text-white md:px-6">
-          <h1 className="font-serif text-3xl font-bold md:text-5xl">
-            About Our Studio
+    <main className="bg-neutral-50 pb-16 pt-10">
+      <div className="mx-auto max-w-6xl px-4 md:px-6">
+        <header className="mx-auto max-w-3xl text-center">
+          <h1 className="font-serif text-3xl font-semibold text-neutral-900 md:text-4xl">
+            {t({ en: "About", ru: "О нас", uk: "Про нас" })}
           </h1>
-          <p className="mt-4 max-w-2xl text-sm text-neutral-200 md:text-base">
-            A family tradition of craftsmanship, care, and kiln fired enamel
-            portraiture.
+          <p className="mt-4 text-sm text-neutral-600 md:text-base">
+            {t({
+              en: "Family-owned enamel memorial medallions made in the United States since the early 1990s.",
+              ru: "Семейное производство эмалевых мемориальных медальонов в США с начала 1990-х годов.",
+              uk: "Сімейне виробництво емальованих меморіальних медальйонів у США з початку 1990-х років.",
+            })}
           </p>
-        </div>
-      </section>
+        </header>
 
-      {/* Main Content Section */}
-      <section className="mx-auto max-w-5xl px-4 py-14 md:px-6 md:py-20">
-        <div className="grid gap-14 md:grid-cols-2 md:gap-20">
-          {/* Image Placeholder 1 */}
-          <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
-            <img
-              src="/images/about-placeholder-1.jpg"
-              alt="Family studio placeholder"
-              className="h-full w-full object-cover opacity-80"
-            />
+        <section className="mt-10 grid gap-8 md:grid-cols-2 md:items-center">
+          <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+            <div className="aspect-[4/3] w-full bg-neutral-200/70 flex items-center justify-center text-neutral-500 text-sm">
+              {t({
+                en: "Placeholder image: Studio / family photo",
+                ru: "Заглушка: Фото мастерской / семьи",
+                uk: "Заглушка: Фото майстерні / родини",
+              })}
+            </div>
           </div>
 
-          {/* Story Left Column */}
-          <div className="space-y-4">
-            <h2 className="font-serif text-2xl font-semibold md:text-3xl">
-              A craft learned over decades
+          <div className="rounded-2xl bg-white p-6 shadow-sm shadow-neutral-200 md:p-8">
+            <h2 className="font-serif text-2xl font-semibold text-neutral-900">
+              {t({
+                en: "A craft carried across generations",
+                ru: "Мастерство, переданное через поколения",
+                uk: "Майстерність, що передається поколіннями",
+              })}
             </h2>
-            <p className="text-sm leading-relaxed text-neutral-700 md:text-base">
-              Over forty years ago, <span className="font-semibold">[OWNER NAME]</span> began
-              learning the art of enamel memorial medallion creation in Ukraine.
-              What started as a deep respect for memorial traditions became a
-              lifelong dedication to a rare and highly technical craft.
+            <p className="mt-4 text-sm text-neutral-700 md:text-base">
+              {t({
+                en: "The owner began learning the medallion-making technique in Ukraine over 40 years ago. After coming to America, he restarted the work here and built a family business that has served monument dealers and families nationwide ever since.",
+                ru: "Владелец начал изучать технику изготовления медальонов в Украине более 40 лет назад. После переезда в США он возобновил работу здесь и создал семейное дело, которое с тех пор обслуживает как мастерские памятников, так и семьи по всей стране.",
+                uk: "Власник почав вивчати техніку виготовлення медальйонів в Україні понад 40 років тому. Після переїзду до США він відновив роботу тут і створив сімейний бізнес, який відтоді обслуговує як майстерні пам’ятників, так і родини по всій країні.",
+              })}
             </p>
 
-            <p className="text-sm leading-relaxed text-neutral-700 md:text-base">
-              After immigrating to the United States, <span className="font-semibold">[OWNER NAME]</span>{" "}
-              rebuilt the studio from the ground up. By the early 1990s, our
-              family opened the workshop that continues its work today, now
-              serving families and monument dealers across the country.
+            <p className="mt-4 text-sm text-neutral-700 md:text-base">
+              {t({
+                en: "Our medallions are built for outdoor permanence. The image is fired onto high-quality enamel applied in multiple coats, and the picture is produced using our proprietary polymer formulation and process to achieve clarity, depth, and long-term durability.",
+                ru: "Наши медальоны рассчитаны на долговечность на улице. Изображение обжигается на высококачественной эмали, нанесенной в несколько слоев, а картинка создается с использованием нашей фирменной полимерной формулы и процесса для четкости, глубины и стойкости на годы.",
+                uk: "Наші медальйони створені для довговічності на вулиці. Зображення випалюється на високоякісній емалі, нанесеній у кілька шарів, а картинка створюється за допомогою нашої фірмової полімерної формули та процесу для чіткості, глибини та стійкості на роки.",
+              })}
             </p>
+
+            <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4">
+              <p className="text-sm font-semibold text-amber-900">
+                {t({
+                  en: "Lifetime warranty",
+                  ru: "Пожизненная гарантия",
+                  uk: "Довічна гарантія",
+                })}
+              </p>
+              <p className="mt-1 text-sm text-amber-900/80">
+                {t({
+                  en: "We stand behind our craftsmanship. If there is an issue with manufacturing quality, we will make it right.",
+                  ru: "Мы отвечаем за качество. Если возникнет проблема с качеством изготовления, мы исправим ее.",
+                  uk: "Ми відповідаємо за якість. Якщо виникне проблема з якістю виготовлення, ми все виправимо.",
+                })}
+              </p>
+            </div>
           </div>
-        </div>
+        </section>
 
-        {/* Second Block: Process + Materials */}
-        <div className="mt-20 grid gap-14 md:grid-cols-2 md:gap-20">
-          <div className="space-y-4">
-            <h2 className="font-serif text-2xl font-semibold md:text-3xl">
-              High quality enamel on precisely finished metal
-            </h2>
-            <p className="text-sm leading-relaxed text-neutral-700 md:text-base">
-              Each portrait begins with a carefully prepared{" "}
-              <span className="font-semibold">[BRASS_OR_BRONZE]</span> medallion
-              blank that is cut and finished for mounting on granite, marble,
-              bronze markers, or indoor displays. The surface is coated multiple
-              times with high quality enamel to create a stable, durable base.
-            </p>
-
-            <h2 className="font-serif text-xl font-semibold md:text-2xl">
-              Proprietary chemistry that fixes the image for generations
-            </h2>
-            <p className="text-sm leading-relaxed text-neutral-700 md:text-base">
-              The photograph is translated into an enamel image using a
-              proprietary, complex polymerization and formulation process. This
-              chemistry is what fuses the color permanently to the enamel
-              surface on the medallion. It has been refined over decades so that
-              every portrait remains clear, stable, and faithful to the original
-              image.
-            </p>
-
-            <p className="text-sm leading-relaxed text-neutral-700 md:text-base">
-              The result is a memorial portrait that is engineered to endure
-              outdoor conditions and everyday weather. We stand behind every
-              piece with a <span className="font-semibold">lifetime warranty</span>, so families and
-              dealers can order with confidence.
-            </p>
-          </div>
-
-          {/* Image Placeholder 2 */}
-          <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
-            <img
-              src="/images/about-placeholder-2.jpg"
-              alt="Craftsmanship placeholder"
-              className="h-full w-full object-cover opacity-80"
-            />
-          </div>
-        </div>
-
-        {/* Third Block: Family Values */}
-        <div className="mt-20 flex flex-col items-center text-center">
-          <h2 className="font-serif text-2xl font-semibold md:text-3xl">
-            A memorial treated like our own family
-          </h2>
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-neutral-700 md:text-base">
-            As a family owned studio, we know that every photograph sent to us
-            carries a story that cannot be replaced. Each memorial is handled
-            with the same care we would give to our own loved ones. This is not
-            just production work, it is personal work, and we approach it with
-            respect, patience, and attention to detail.
-          </p>
-
-          {/* Image Placeholder 3 */}
-          <div className="mt-10 h-64 w-full max-w-3xl overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-80">
-            <img
-              src="/images/about-placeholder-3.jpg"
-              alt="Family placeholder"
-              className="h-full w-full object-cover opacity-80"
-            />
-          </div>
-        </div>
-      </section>
+        <section className="mt-10 grid gap-8 md:grid-cols-3">
+          {[
+            {
+              title: t({
+                en: "For monuments and more",
+                ru: "Для памятников и не только",
+                uk: "Для пам’ятників і не тільки",
+              }),
+              body: t({
+                en: "Headstones, mausoleums, plaques, and indoor memorial displays.",
+                ru: "Надгробия, мавзолеи, таблички и домашние мемориалы.",
+                uk: "Надгробки, мавзолеї, таблички та домашні меморіали.",
+              }),
+            },
+            {
+              title: t({
+                en: "Dealers and families",
+                ru: "Для дилеров и семей",
+                uk: "Для дилерів і родин",
+              }),
+              body: t({
+                en: "We work with monument dealers and also directly with individuals.",
+                ru: "Мы работаем с мастерскими памятников и напрямую с семьями.",
+                uk: "Ми працюємо з майстернями пам’ятників і напряму з родинами.",
+              }),
+            },
+            {
+              title: t({
+                en: "Made with care",
+                ru: "С заботой",
+                uk: "З турботою",
+              }),
+              body: t({
+                en: "We treat each memorial as if it were for our own family.",
+                ru: "Мы относимся к каждому заказу как к памяти нашей семьи.",
+                uk: "Ми ставимося до кожного замовлення як до пам’яті нашої родини.",
+              }),
+            },
+          ].map((c) => (
+            <div
+              key={c.title}
+              className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm"
+            >
+              <h3 className="font-serif text-lg font-semibold text-neutral-900">
+                {c.title}
+              </h3>
+              <p className="mt-2 text-sm text-neutral-600">{c.body}</p>
+            </div>
+          ))}
+        </section>
+      </div>
     </main>
   );
 }
