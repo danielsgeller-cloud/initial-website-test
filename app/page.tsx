@@ -1,7 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "../components/i18n/LanguageProvider";
 
 export default function HomePage() {
+  const { t } = useLanguage();
+
   return (
     <main className="flex flex-col">
       {/* HERO */}
@@ -9,7 +14,7 @@ export default function HomePage() {
         <div className="absolute inset-0">
           <Image
             src="/images/field-hero.jpg"
-            alt="Soft focus field with warm light"
+            alt={t("home_hero_image_alt")}
             fill
             priority
             className="hero-bg-image"
@@ -20,29 +25,29 @@ export default function HomePage() {
         <div className="relative z-10 flex h-full items-center">
           <div className="mx-auto flex max-w-5xl flex-col items-center px-4 text-center text-white md:px-6">
             <h1 className="font-serif text-4xl font-semibold tracking-tight md:text-5xl lg:text-6xl">
-              Elegant enamel photo cameos that honor a life forever
+              {t("home_hero_title")}
             </h1>
             <p className="mt-4 max-w-2xl text-sm text-neutral-100 md:text-base">
-              Custom kiln fired enamel photo medallions created for outdoor monuments and private homes. Each piece is built to stay clear and bright in every season.
+              {t("home_hero_subtitle")}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link
                 href="/contact"
                 className="rounded-full bg-amber-500 px-8 py-3 text-sm font-semibold uppercase tracking-[0.15em] text-black shadow-md transition hover:bg-amber-400"
               >
-                Order a cameo
+                {t("cta_order")}
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* INTRO SECTION */}
+      {/* INTRO */}
       <section className="relative bg-neutral-900/5 py-12 md:py-16">
         <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-40">
           <Image
             src="/images/field-soft-repeat.jpg"
-            alt="Soft field texture"
+            alt={t("home_intro_bg_alt")}
             fill
             className="section-bg-pan"
           />
@@ -52,11 +57,10 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-4xl px-4 md:px-6">
           <div className="rounded-2xl bg-white/90 px-6 py-8 shadow-[0_18px_40px_rgba(15,23,42,0.18)] backdrop-blur-sm md:px-10 md:py-10">
             <h2 className="font-serif text-2xl font-semibold text-neutral-900 md:text-3xl">
-              Custom enamel photo memorial cameos for headstones and mausoleums
+              {t("home_intro_title")}
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-neutral-600 md:text-base">
-              We transform your favorite photograph into a kiln fired enamel
-              portrait on a metal medallion that is finished to mount on bronze and stone. Our cameos are engineered for granite, marble, bronze markers, mausoleums, and even indoor displays at home. They resist fading, moisture, and freezing temperatures while preserving a clear, dignified likeness. We work with monument dealers and individual families, and every order receives careful retouching, color work, and inspection.
+              {t("home_intro_body")}
             </p>
             <div className="mt-8 flex justify-center">
               <div className="h-px w-24 bg-neutral-300" />
@@ -65,42 +69,47 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* THREE IMAGE BLOCKS */}
+      {/* LINKS */}
       <section className="relative bg-gradient-to-b from-neutral-100 via-neutral-50 to-neutral-100 py-12 md:py-16">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-amber-100/25 via-transparent to-transparent" />
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <div className="grid gap-6 md:grid-cols-3">
             {[
               {
-                label: "About us",
+                key: "about",
+                label: t("home_tile_about"),
                 href: "/about",
                 image: "/images/about-studio.jpg",
+                alt: t("home_tile_about_alt"),
               },
               {
-                label: "Why our cameos",
-                href: "/why-our-cameos",
+                key: "why",
+                label: t("home_tile_why"),
+                href: "/payment",
                 image: "/images/why-cameos-closeup.jpg",
+                alt: t("home_tile_why_alt"),
               },
               {
-                label: "Contact us",
+                key: "contact",
+                label: t("home_tile_contact"),
                 href: "/contact",
                 image: "/images/contact-headstone-flowers.jpg",
+                alt: t("home_tile_contact_alt"),
               },
             ].map((item) => (
               <Link
-                key={item.label}
+                key={item.key}
                 href={item.href}
                 className="group relative block aspect-square overflow-hidden rounded-md shadow-md shadow-neutral-300/40"
               >
                 <Image
                   src={item.image}
-                  alt={item.label}
+                  alt={item.alt}
                   fill
-                  className="object-cover transition duration-700 group-hover:scale-105 group-hover:brightness-110"
+                  className="object-cover transition duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/10 transition group-hover:from-black/60 group-hover:via-black/35" />
+                <div className="absolute inset-0 bg-black/40" />
                 <div className="absolute inset-0 flex items-end justify-center pb-6">
-                  <span className="rounded-full border border-white/80 bg-black/35 px-6 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-md">
+                  <span className="rounded-full border border-white/80 bg-black/35 px-6 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white">
                     {item.label}
                   </span>
                 </div>
@@ -110,87 +119,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FEATURE SECTION */}
-      <section className="relative py-12 md:py-16">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <Image
-            src="/images/granite-texture.jpg"
-            alt="Granite stone texture"
-            fill
-            className="stone-bg-pan"
-          />
-          <div className="absolute inset-0 bg-white/80" />
-        </div>
-
-        <div className="relative mx-auto grid max-w-6xl gap-10 px-4 md:grid-cols-2 md:px-6 md:items-center">
-          <div className="rounded-2xl bg-white/95 px-6 py-7 shadow-[0_16px_32px_rgba(15,23,42,0.18)] backdrop-blur-sm md:px-8 md:py-8">
-            <h2 className="font-serif text-2xl font-semibold text-neutral-900 md:text-3xl">
-              How your custom enamel cameo is created
-            </h2>
-            <p className="mt-4 text-sm text-neutral-600 md:text-base">
-              We guide you from the first photo you send to a finished cameo
-              that arrives ready for installation. The process is personal and
-              straightforward.
-            </p>
-            <ol className="mt-5 space-y-4 text-sm text-neutral-700 md:text-base">
-              <li>
-                <span className="font-semibold text-amber-600">
-                  1. Upload a photo
-                </span>
-                <br />
-                Share a digital file or a scan of a printed photo. We can work
-                with old or damaged images.
-              </li>
-              <li>
-                <span className="font-semibold text-amber-600">
-                  2. Choose shape and size
-                </span>
-                <br />
-                Select oval, rectangular, or square formats that match your
-                monument and cemetery guidelines.
-              </li>
-              <li>
-                <span className="font-semibold text-amber-600">
-                  3. We craft your enamel cameo
-                </span>
-                <br />
-                The image is retouched, color balanced, and fired multiple
-                times in the kiln to fuse pigment and glass.
-              </li>
-              <li>
-                <span className="font-semibold text-amber-600">
-                  4. We ship ready for installation
-                </span>
-                <br />
-                Your cameo is inspected by hand and shipped with mounting
-                guidance for you or your monument dealer.
-              </li>
-            </ol>
-            <Link
-              href="/pricing"
-              className="mt-5 inline-flex items-center rounded-full border border-neutral-300 bg-white/80 px-6 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-900 transition hover:border-amber-500 hover:text-amber-600"
-            >
-              View pricing and sizes
-            </Link>
-          </div>
-
-          <div className="relative mx-auto h-80 w-full max-w-md overflow-hidden rounded-3xl border border-white/80 bg-white/50 shadow-[0_18px_40px_rgba(15,23,42,0.25)] backdrop-blur-sm">
-            <Image
-              src="/images/cameo-on-headstone.jpg"
-              alt="Enamel photo cameo mounted on a granite headstone"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* CTA SECTION */}
+      {/* CTA */}
       <section className="relative w-full overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src="/images/field-sunset-wide.jpg"
-            alt="Field at sunset with soft light"
+            alt={t("home_cta_bg_alt")}
             fill
             className="cta-bg-image"
           />
@@ -199,17 +133,16 @@ export default function HomePage() {
 
         <div className="relative mx-auto flex max-w-5xl flex-col items-center px-4 py-16 text-center text-white md:px-6 md:py-20">
           <h2 className="font-serif text-3xl font-semibold md:text-4xl">
-            Ready to order a cameo or request more information
+            {t("home_cta_title")}
           </h2>
           <p className="mt-4 max-w-2xl text-sm text-neutral-100 md:text-base">
-            Share your photo, stone details, and any questions. We reply
-            personally with options, pricing, and a clear next step.
+            {t("home_cta_body")}
           </p>
           <Link
             href="/contact"
-            className="mt-8 rounded-full bg-amber-500 px-10 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-black shadow-lg shadow-amber-500/40 transition hover:bg-amber-400 hover:shadow-amber-400/50"
+            className="mt-8 rounded-full bg-amber-500 px-10 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-black shadow-lg transition hover:bg-amber-400"
           >
-            Order a cameo
+            {t("cta_order")}
           </Link>
         </div>
       </section>

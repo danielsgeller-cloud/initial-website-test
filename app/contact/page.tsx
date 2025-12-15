@@ -1,10 +1,61 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
+
+type Lang = "en" | "ru" | "uk";
+
+const COPY: Record<
+  Lang,
+  {
+    title: string;
+    nameLabel: string;
+    emailLabel: string;
+    messageLabel: string;
+    sending: string;
+    send: string;
+    success: string;
+    error: string;
+  }
+> = {
+  en: {
+    title: "Contact Pictures in Ceramic",
+    nameLabel: "Name",
+    emailLabel: "Email",
+    messageLabel: "Message",
+    sending: "Sending...",
+    send: "Send",
+    success: "Thank you. Your message has been sent.",
+    error: "Something went wrong. Please try again later.",
+  },
+  ru: {
+    title: "Связаться с Pictures in Ceramic",
+    nameLabel: "Имя",
+    emailLabel: "Эл. почта",
+    messageLabel: "Сообщение",
+    sending: "Отправка...",
+    send: "Отправить",
+    success: "Спасибо. Ваше сообщение отправлено.",
+    error: "Произошла ошибка. Пожалуйста, попробуйте позже.",
+  },
+  uk: {
+    title: "Зв’язатися з Pictures in Ceramic",
+    nameLabel: "Ім’я",
+    emailLabel: "Ел. пошта",
+    messageLabel: "Повідомлення",
+    sending: "Надсилання...",
+    send: "Надіслати",
+    success: "Дякуємо. Ваше повідомлення надіслано.",
+    error: "Сталася помилка. Будь ласка, спробуйте пізніше.",
+  },
+};
 
 export default function ContactPage() {
+  const { lang } = useLanguage();
+  const t = COPY[(lang as Lang) || "en"] ?? COPY.en;
+
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
-    "idle"
+    "idle",
   );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -44,70 +95,63 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-semibold mb-4">
-        Contact Pictures in Ceramic
-      </h1>
+    <main className="mx-auto max-w-xl p-6">
+      <h1 className="mb-4 text-2xl font-semibold">{t.title}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block mb-1 text-sm font-medium" htmlFor="name">
-            Name
+          <label className="mb-1 block text-sm font-medium" htmlFor="name">
+            {t.nameLabel}
           </label>
           <input
             id="name"
             name="name"
             required
-            className="w-full border rounded px-3 py-2"
+            className="w-full rounded border px-3 py-2"
           />
         </div>
 
         <div>
-          <label className="block mb-1 text-sm font-medium" htmlFor="email">
-            Email
+          <label className="mb-1 block text-sm font-medium" htmlFor="email">
+            {t.emailLabel}
           </label>
           <input
             id="email"
             name="email"
             type="email"
             required
-            className="w-full border rounded px-3 py-2"
+            className="w-full rounded border px-3 py-2"
           />
         </div>
 
         <div>
-          <label className="block mb-1 text-sm font-medium" htmlFor="message">
-            Message
+          <label className="mb-1 block text-sm font-medium" htmlFor="message">
+            {t.messageLabel}
           </label>
           <textarea
             id="message"
             name="message"
             required
             rows={5}
-            className="w-full border rounded px-3 py-2"
+            className="w-full rounded border px-3 py-2"
           />
         </div>
 
         <button
           type="submit"
           disabled={status === "sending"}
-          className="px-4 py-2 rounded bg-black text-white"
+          className="rounded bg-black px-4 py-2 text-white disabled:opacity-60"
         >
-          {status === "sending" ? "Sending..." : "Send"}
+          {status === "sending" ? t.sending : t.send}
         </button>
 
         {status === "sent" && (
-          <p className="text-green-600 text-sm mt-2">
-            Thank you. Your message has been sent.
-          </p>
+          <p className="mt-2 text-sm text-green-600">{t.success}</p>
         )}
         {status === "error" && (
-          <p className="text-red-600 text-sm mt-2">
-            Something went wrong. Please try again later.
-          </p>
+          <p className="mt-2 text-sm text-red-600">{t.error}</p>
         )}
       </form>
     </main>
   );
 }
-
