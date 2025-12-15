@@ -33,3 +33,7 @@ prisma/dev.db
 
 # build
 .next
+
+# env files
+.env
+.env.*
