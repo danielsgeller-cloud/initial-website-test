@@ -1,55 +1,49 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import Stripe from "stripe";
+import { getRecord } from "@/lib/stripeStore";
+
+export const runtime = "nodejs";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: "2024-06-20",
+});
 
 export async function POST(req: Request) {
+  const body = await req.json();
+
+  const reference = String(body.reference || "").trim();
+  const remainingAmount = Number(body.remainingAmount); // dollars
+
+  if (!reference) return NextResponse.json({ error: "Missing reference" }, { status: 400 });
+  if (!Number.isFinite(remainingAmount) || remainingAmount <= 0) {
+    return NextResponse.json({ error: "Invalid remainingAmount" }, { status: 400 });
+  }
+
+  const rec = await getRecord(reference);
+  if (!rec) return NextResponse.json({ error: "No saved Stripe record for reference" }, { status: 404 });
+
+  const amountCents = Math.round(remainingAmount * 100);
+
   try {
-    const token = req.headers.get("x-admin-token");
-    if (!process.env.ADMIN_TOKEN || token !== process.env.ADMIN_TOKEN) {
-      return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 401 });
-    }
-
-    const { email, amountCents, orderRef } = await req.json();
-
-    if (!email || typeof email !== "string") {
-      return NextResponse.json({ ok: false, error: "Missing email." }, { status: 400 });
-    }
-    if (!amountCents || typeof amountCents !== "number" || amountCents < 50) {
-      return NextResponse.json({ ok: false, error: "Amount must be at least $0.50." }, { status: 400 });
-    }
-
-    const customers = await stripe.customers.list({ email, limit: 1 });
-    const customer = customers.data[0];
-    if (!customer) {
-      return NextResponse.json({ ok: false, error: "No Stripe customer found for that email." }, { status: 404 });
-    }
-
-    const fullCustomer = await stripe.customers.retrieve(customer.id);
-    // @ts-ignore
-    const defaultPm = fullCustomer?.invoice_settings?.default_payment_method;
-
-    if (!defaultPm || typeof defaultPm !== "string") {
-      return NextResponse.json(
-        { ok: false, error: "No saved payment method found. Customer must pay remainder manually." },
-        { status: 400 },
-      );
-    }
-
     const pi = await stripe.paymentIntents.create({
       amount: amountCents,
       currency: "usd",
-      customer: customer.id,
-      payment_method: defaultPm,
+      customer: rec.customerId,
+      payment_method: rec.paymentMethodId,
       off_session: true,
       confirm: true,
       metadata: {
-        type: "remainder",
-        orderRef: orderRef || "",
+        reference,
+        kind: "final",
       },
-      description: orderRef ? `Remaining balance for ${orderRef}` : "Remaining balance for enamel cameo",
     });
 
     return NextResponse.json({ ok: true, paymentIntentId: pi.id, status: pi.status });
   } catch (err: any) {
-    return NextResponse.json({ ok: false, error: err?.message || "Stripe error." }, { status: 500 });
+    console.error("charge-remaining failed:", err);
+    return NextResponse.json(
+      { ok: false, error: err?.message || "charge-remaining failed" },
+      { status: 500 }
+    );
   }
 }
