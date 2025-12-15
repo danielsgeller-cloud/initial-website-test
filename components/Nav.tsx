@@ -2,36 +2,42 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import LanguageSlider from "./i18n/LanguageSlider";
+import { useLanguage } from "./i18n/LanguageProvider";
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <header className="w-full border-b border-neutral-200 bg-white">
-      {/* Top language and contact bar */}
       <div className="bg-neutral-900 text-xs text-neutral-100">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-1.5 md:px-6">
-          <p className="text-[11px] md:text-xs">
-            Service available in English, Ukrainian, and Russian
-          </p>
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2 md:px-6">
+          <div className="flex items-center gap-3">
+            <LanguageSlider />
+            <p className="hidden text-[11px] md:block">{t("topbar_service")}</p>
+          </div>
+
           <div className="flex flex-wrap items-center gap-3 md:gap-4">
             <a href="tel:17322976008" className="hover:text-amber-300">
-              (732) 297-6008
+              {t("phone_display")}
             </a>
             <span className="hidden text-neutral-500 md:inline">|</span>
             <a
               href="mailto:info@picturesinceramic.com"
               className="hidden hover:text-amber-300 md:inline"
             >
-              info@picturesinceramic.com
+              {t("email_display")}
             </a>
           </div>
         </div>
+
+        <div className="mx-auto max-w-6xl px-4 pb-2 md:hidden md:px-6">
+          <p className="text-[11px] text-neutral-200">{t("topbar_service")}</p>
+        </div>
       </div>
 
-      {/* Main navigation */}
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6">
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full border border-amber-200 bg-amber-50 text-sm font-semibold text-amber-800">
             P
@@ -41,38 +47,36 @@ export default function Nav() {
               Pictures in Ceramic
             </span>
             <span className="text-[11px] text-neutral-500 md:text-xs">
-              Enamel memorial cameos
+              {t("brand_tagline")}
             </span>
           </div>
         </Link>
 
-        {/* Desktop nav */}
         <div className="hidden items-center gap-6 md:flex">
           <nav className="flex items-center gap-5 text-sm text-neutral-700">
             <Link href="/" className="hover:text-amber-600">
-              Home
+              {t("nav_home")}
             </Link>
             <Link href="/about" className="hover:text-amber-600">
-              About
+              {t("nav_about")}
             </Link>
-            <Link href="/why-our-cameos" className="hover:text-amber-600">
-              Why Our Cameos
+            <Link href="/payment" className="hover:text-amber-600">
+              {t("nav_why")}
             </Link>
             <Link href="/pricing" className="hover:text-amber-600">
-              Pricing
+              {t("nav_pricing")}
             </Link>
             <Link href="/contact" className="hover:text-amber-600">
-              Contact
+              {t("nav_contact")}
             </Link>
             <Link href="/order-form" className="hover:text-amber-600">
-              Order Form
+              {t("nav_order")}
             </Link>
           </nav>
 
-          {/* Search icon */}
           <button
             type="button"
-            aria-label="Search"
+            aria-label={t("search_label")}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 hover:border-amber-500 hover:text-amber-600"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -83,63 +87,69 @@ export default function Nav() {
             </svg>
           </button>
 
-          {/* CTA */}
           <Link
             href="/order-form"
             className="rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-sm hover:bg-amber-400"
           >
-            Order a cameo
+            {t("cta_order")}
           </Link>
         </div>
 
-        {/* Mobile menu button */}
         <button
-          className="md:hidden rounded-md border border-neutral-300 p-2"
+          className="rounded-md border border-neutral-300 p-2 md:hidden"
           onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
+          type="button"
         >
-          <svg className="h-5 w-5" fill="none" stroke="currentColor">
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" aria-hidden="true">
             <path strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
 
-        {/* Mobile menu */}
         {menuOpen && (
           <div
             className="fixed inset-0 z-50 bg-black/40"
             onClick={() => setMenuOpen(false)}
           >
             <div
-              className="absolute right-0 top-0 h-full w-64 bg-white p-6 shadow-xl"
+              className="absolute right-0 top-0 h-full w-72 bg-white p-6 shadow-xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                className="mb-6 rounded-md border border-neutral-300 p-2"
-                onClick={() => setMenuOpen(false)}
-              >
-                Close
-              </button>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500">
+                  Menu
+                </span>
+                <button
+                  className="rounded-md border border-neutral-300 px-3 py-1 text-xs"
+                  onClick={() => setMenuOpen(false)}
+                  type="button"
+                >
+                  Close
+                </button>
+              </div>
 
-              <nav className="grid gap-4 text-sm text-neutral-700">
+              <div className="mt-4">
+                <LanguageSlider />
+              </div>
+
+              <nav className="mt-6 grid gap-4 text-sm text-neutral-700">
                 <Link href="/" onClick={() => setMenuOpen(false)}>
-                  Home
+                  {t("nav_home")}
                 </Link>
                 <Link href="/about" onClick={() => setMenuOpen(false)}>
-                  About
+                  {t("nav_about")}
                 </Link>
-                <Link
-                  href="/why-our-cameos"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Why Our Cameos
+                <Link href="/payment" onClick={() => setMenuOpen(false)}>
+                  {t("nav_why")}
                 </Link>
                 <Link href="/pricing" onClick={() => setMenuOpen(false)}>
-                  Pricing
+                  {t("nav_pricing")}
                 </Link>
                 <Link href="/contact" onClick={() => setMenuOpen(false)}>
-                  Contact
+                  {t("nav_contact")}
                 </Link>
                 <Link href="/order-form" onClick={() => setMenuOpen(false)}>
-                  Order Form
+                  {t("nav_order")}
                 </Link>
               </nav>
 
@@ -148,7 +158,7 @@ export default function Nav() {
                 className="mt-6 block rounded-full bg-amber-500 px-5 py-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-black shadow-sm hover:bg-amber-400"
                 onClick={() => setMenuOpen(false)}
               >
-                Order a cameo
+                {t("cta_order")}
               </Link>
             </div>
           </div>

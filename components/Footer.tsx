@@ -54,7 +54,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/why-our-cameos" className="hover:text-amber-600">
+                <a href="/payment" className="hover:text-amber-600">
                   Why our cameos
                 </a>
               </li>
