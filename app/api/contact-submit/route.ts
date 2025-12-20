@@ -59,7 +59,16 @@ console.log("SES env check", {
   fromDefined: !!fromAddress,
   toDefined: !!toAddress,
 });
-
+return NextResponse.json({
+  ok: true,
+  debug: {
+    region,
+    hasUser: !!process.env.PICS_SES_USER,
+    hasPass: !!process.env.PICS_SES_PASS,
+    from: !!process.env.SES_FROM_ADDRESS,
+    to: !!process.env.SES_TO_ADDRESS,
+  },
+});
     // Debug missing credentials
     if (!accessKeyId || !secretAccessKey) {
       console.error("Missing SES credentials in env", {
