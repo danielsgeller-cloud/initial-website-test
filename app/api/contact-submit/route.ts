@@ -68,6 +68,16 @@ async function getAmplifyCreds(): Promise<
 }
 
 export async function POST(req: Request) {
+  return NextResponse.json({
+    ok: false,
+    marker: "MARKER_DEPLOY_CHECK",
+    deploy: process.env.AWS_AMPLIFY_DEPLOYMENT_ID ?? null,
+    envKeys: Object.keys(process.env || {}).filter(k =>
+      k.includes("CONTACT_") || k.includes("PICS") || k.includes("SES") || k.startsWith("AWS_")
+    ).sort()
+  }, { status: 500 });
+
+
   try {
     const region = env("AWS_REGION") || env("AWS_DEFAULT_REGION") || "us-east-1";
 
