@@ -8,6 +8,10 @@ type Body = { name: string; email: string; message: string };
 
 async function getBody(req: Request): Promise<Body> {
   try {
+    const envKeys = Object.keys(process.env || {}).filter((k) =>
+      k.includes("PICS") || k.includes("SES_") || k.startsWith("AWS_") || k.includes("NEXT_PUBLIC_SES")
+    ).sort();
+    console.log("ENV KEYS (filtered):", envKeys);
     const json = await req.json();
     return { name: json.name ?? "", email: json.email ?? "", message: json.message ?? "" };
   } catch {
