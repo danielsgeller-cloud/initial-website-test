@@ -1,176 +1,62 @@
 import { NextResponse } from "next/server";
-import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-export const runtime = "nodejs";
-
-type Body = {
-  name: string;
-  email: string;
-  message: string;
-};
+type Body = { name: string; email: string; message: string };
 
 function env(name: string): string | undefined {
   const v = process.env[name];
-  return v && v.trim().length ? v.trim() : undefined;
-}
-
-async function getBody(req: Request): Promise<Body> {
-  const json = (await req.json()) as Partial<Body>;
-  return {
-    name: (json.name ?? "").toString(),
-    email: (json.email ?? "").toString(),
-    message: (json.message ?? "").toString(),
-  };
-}
-
-// Amplify Hosting SSR provides short-lived creds via a local "credential listener".
-// Your envKeys prove these vars exist in runtime.
-async function getAmplifyCreds(): Promise<
-  | { accessKeyId: string; secretAccessKey: string; sessionToken?: string }
-  | null
-> {
-  const enabled = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_ENABLED");
-  const host = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_HOST");
-  const port = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_PORT");
-  const path = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_PATH");
-  const timeoutMs = Number(env("AWS_AMPLIFY_CREDENTIAL_LISTENER_TIMEOUT") ?? "2000");
-
-  if (!enabled || enabled.toLowerCase() !== "true") return null;
-  if (!host || !port || !path) return null;
-
-  const url = `http://${host}:${port}${path}`;
-
-  const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const r = await fetch(url, { signal: controller.signal });
-    if (!r.ok) return null;
-
-    const data: any = await r.json();
-
-    const accessKeyId = data?.AccessKeyId || data?.accessKeyId;
-    const secretAccessKey = data?.SecretAccessKey || data?.secretAccessKey;
-    const sessionToken = data?.Token || data?.SessionToken || data?.sessionToken;
-
-    if (!accessKeyId || !secretAccessKey) return null;
-
-    return {
-      accessKeyId: String(accessKeyId),
-      secretAccessKey: String(secretAccessKey),
-      sessionToken: sessionToken ? String(sessionToken) : undefined,
-    };
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(t);
-  }
+  return v && v.trim() ? v.trim() : undefined;
 }
 
 export async function POST(req: Request) {
-  return NextResponse.json({
-    ok: false,
-    marker: "MARKER_DEPLOY_CHECK",
-    deploy: process.env.AWS_AMPLIFY_DEPLOYMENT_ID ?? null,
-    envKeys: Object.keys(process.env || {}).filter(k =>
-      k.includes("CONTACT_") || k.includes("PICS") || k.includes("SES") || k.startsWith("AWS_")
-    ).sort()
-  }, { status: 500 });
-
-
   try {
     const region = env("AWS_REGION") || env("AWS_DEFAULT_REGION") || "us-east-1";
+    const from = env("CONTACT_FROM");
+    const to = env("CONTACT_TO");
 
-    const enabled = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_ENABLED");
-    const host = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_HOST");
-    const port = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_PORT");
-    const path = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_PATH");
-    const timeout = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_TIMEOUT");
-
-    const url = (host && port && path) ? `http://${host}:${port}${path}` : null;
-
-    let listenerOk: any = null;
-    let listenerBody: any = null;
-
-    if (url) {
-      try {
-        const r = await fetch(url);
-        listenerOk = { ok: r.ok, status: r.status };
-        const txt = await r.text();
-        listenerBody = txt.slice(0, 300);
-      } catch (e: any) {
-        listenerOk = { ok: false, error: String(e?.message ?? e) };
-      }
+    if (!from || !to) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Missing CONTACT_FROM or CONTACT_TO in Amplify env vars",
+          debug: { region, from: !!from, to: !!to }
+        },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({
-      ok: false,
-      error: "DEBUG_ONLY",
-      debug: {
-        region,
-        enabled,
-        host,
-        port,
-        path,
-        timeout,
-        url,
-        listenerOk,
-        listenerBody,
-        hasAwsAccessKey: !!env("AWS_ACCESS_KEY_ID"),
-        hasAwsSecret: !!env("AWS_SECRET_ACCESS_KEY"),
-        hasAwsSession: !!env("AWS_SESSION_TOKEN"),
-      }
-    }, { status: 500 });
+    const json = (await req.json()) as Partial<Body>;
+    const name = (json.name || "").toString().trim();
+    const email = (json.email || "").toString().trim();
+    const message = (json.message || "").toString().trim();
 
-    const region = env("AWS_REGION") || env("AWS_DEFAULT_REGION") || "us-east-1";
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { ok: false, error: "Missing name/email/message" },
+        { status: 400 }
+      );
+    }
 
-    // TEMP hardcode until you add Amplify env vars CONTACT_FROM/CONTACT_TO
-    // Replace these two strings with what you want.
-    const from = "no-reply@picturesinceramic.com";
-    const to = "gellerd@rider.edu";
+    const client = new SESClient({ region });
 
-    const body = await getBody(req);
-
-    const creds = await getAmplifyCreds();
-
-    const client = new SESv2Client({
-      region,
-      credentials: creds ?? undefined,
-    });
+    const subject = `Website contact: ${name}`;
+    const text = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n`;
 
     const command = new SendEmailCommand({
-      FromEmailAddress: from,
+      Source: from,
       Destination: { ToAddresses: [to] },
-      Content: {
-        Simple: {
-          Subject: { Data: "Website Contact Form Submission" },
-          Body: {
-            Text: {
-              Data: `Name: ${body.name}\nEmail: ${body.email}\n\n${body.message}`,
-            },
-          },
-        },
-      },
-      ReplyToAddresses: body.email ? [body.email] : undefined,
+      ReplyToAddresses: [email],
+      Message: {
+        Subject: { Data: subject, Charset: "UTF-8" },
+        Body: { Text: { Data: text, Charset: "UTF-8" } }
+      }
     });
 
     const res = await client.send(command);
-
-    return NextResponse.json({
-      ok: true,
-      messageId: res.MessageId,
-      debug: {
-        region,
-        usedAmplifyCreds: !!creds,
-        listenerEnabled: env("AWS_AMPLIFY_CREDENTIAL_LISTENER_ENABLED") === "true",
-      },
-    });
+    return NextResponse.json({ ok: true, messageId: res.MessageId });
   } catch (err: any) {
     return NextResponse.json(
-      {
-        ok: false,
-        error: err?.message ?? "Unknown error",
-      },
+      { ok: false, error: err?.message ?? "Unknown error" },
       { status: 500 }
     );
   }
