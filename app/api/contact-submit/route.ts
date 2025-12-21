@@ -24,12 +24,17 @@ export async function POST(req: Request) {
     const from = process.env.CONTACT_FROM || "";
     const to = process.env.CONTACT_TO || "";
 
-    const debug = {
+    const envKeys = Object.keys(process.env || {}).filter((k) =>
+      k.includes("PICS") || k.includes("CONTACT_") || k.startsWith("AWS_") || k.includes("NEXT_PUBLIC_SES")
+    ).sort();
+
+const debug = {
       region,
       hasUser: !!accessKeyId,
       hasPass: !!secretAccessKey,
       from: !!from,
       to: !!to,
+      envKeys,
     };
 
     if (!debug.hasUser || !debug.hasPass || !debug.from || !debug.to) {
