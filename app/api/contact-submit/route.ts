@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
@@ -9,6 +10,23 @@ function env(name: string): string | undefined {
 }
 
 export async function POST(req: Request) {
+  // DEBUG: show env visibility in deployed runtime
+  const envKeys = Object.keys(process.env || {}).filter(k =>
+    k.includes("CONTACT_") || k.includes("PICS") || k.includes("SES") || k.startsWith("AWS_")
+  ).sort();
+
+  return NextResponse.json({
+    ok: false,
+    error: "DEBUG_ENV",
+    debug: {
+      CONTACT_FROM: process.env.CONTACT_FROM ?? null,
+      CONTACT_TO: process.env.CONTACT_TO ?? null,
+      CONTCT_FROM: process.env.CONTCT_FROM ?? null,
+      envKeys
+    }
+  }, { status: 500 });
+
+
   try {
     const region = env("AWS_REGION") || env("AWS_DEFAULT_REGION") || "us-east-1";
     const from = env("CONTACT_FROM");
