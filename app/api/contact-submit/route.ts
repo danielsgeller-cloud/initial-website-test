@@ -71,6 +71,49 @@ export async function POST(req: Request) {
   try {
     const region = env("AWS_REGION") || env("AWS_DEFAULT_REGION") || "us-east-1";
 
+    const enabled = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_ENABLED");
+    const host = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_HOST");
+    const port = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_PORT");
+    const path = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_PATH");
+    const timeout = env("AWS_AMPLIFY_CREDENTIAL_LISTENER_TIMEOUT");
+
+    const url = (host && port && path) ? `http://${host}:${port}${path}` : null;
+
+    let listenerOk: any = null;
+    let listenerBody: any = null;
+
+    if (url) {
+      try {
+        const r = await fetch(url);
+        listenerOk = { ok: r.ok, status: r.status };
+        const txt = await r.text();
+        listenerBody = txt.slice(0, 300);
+      } catch (e: any) {
+        listenerOk = { ok: false, error: String(e?.message ?? e) };
+      }
+    }
+
+    return NextResponse.json({
+      ok: false,
+      error: "DEBUG_ONLY",
+      debug: {
+        region,
+        enabled,
+        host,
+        port,
+        path,
+        timeout,
+        url,
+        listenerOk,
+        listenerBody,
+        hasAwsAccessKey: !!env("AWS_ACCESS_KEY_ID"),
+        hasAwsSecret: !!env("AWS_SECRET_ACCESS_KEY"),
+        hasAwsSession: !!env("AWS_SESSION_TOKEN"),
+      }
+    }, { status: 500 });
+
+    const region = env("AWS_REGION") || env("AWS_DEFAULT_REGION") || "us-east-1";
+
     // TEMP hardcode until you add Amplify env vars CONTACT_FROM/CONTACT_TO
     // Replace these two strings with what you want.
     const from = "no-reply@picturesinceramic.com";
