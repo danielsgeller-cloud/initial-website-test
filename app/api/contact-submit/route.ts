@@ -3,33 +3,21 @@ import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
 export const runtime = "nodejs";
 
-type Body = {
-  name: string;
-  email: string;
-  message: string;
-};
-
-function envBool(v?: string) {
-  return !!(v && String(v).trim().length > 0);
-}
+type Body = { name?: string; email?: string; message?: string };
 
 export async function POST(req: Request) {
   try {
-    // Read body exactly once
-    const json = (await req.json()) as Partial<Body>;
-    const body: Body = {
-      name: json?.name ?? "",
-      email: json?.email ?? "",
-      message: json?.message ?? "",
-    };
+    // READ BODY EXACTLY ONCE
+    const json = (await req.json()) as Body;
+    const name = (json.name ?? "").toString();
+    const email = (json.email ?? "").toString();
+    const message = (json.message ?? "").toString();
 
-    // Debug: what env vars exist in runtime (names only)
-    const envKeys = Object.keys(process.env || {})
-      .filter((k) => k.includes("PICS") || k.includes("SES_") || k.startsWith("AWS_") || k.includes("NEXT_PUBLIC_SES") || k.includes("CONTACT_"))
-      .sort();
-    console.log("ENV KEYS (filtered):", envKeys);
-
-    const region = process.env.NEXT_PUBLIC_SES_REGION || "us-east-1";
+    const region =
+      process.env.NEXT_PUBLIC_SES_REGION ||
+      process.env.AWS_REGION ||
+      process.env.AWS_DEFAULT_REGION ||
+      "us-east-1";
 
     const accessKeyId = process.env.PICS_SES_USER || "";
     const secretAccessKey = process.env.PICS_SES_PASS || "";
@@ -38,13 +26,11 @@ export async function POST(req: Request) {
 
     const debug = {
       region,
-      hasUser: envBool(accessKeyId),
-      hasPass: envBool(secretAccessKey),
-      from: envBool(from),
-      to: envBool(to),
+      hasUser: !!accessKeyId,
+      hasPass: !!secretAccessKey,
+      from: !!from,
+      to: !!to,
     };
-    console.log("SES env check", debug);
-    console.log("Contact body:", { name: body.name, email: body.email, message: body.message });
 
     if (!debug.hasUser || !debug.hasPass || !debug.from || !debug.to) {
       return NextResponse.json(
@@ -66,7 +52,7 @@ export async function POST(req: Request) {
           Subject: { Data: "Website Contact Form Submission" },
           Body: {
             Text: {
-              Data: `Name: ${body.name}\nEmail: ${body.email}\n\n${body.message}`,
+              Data: `Name: ${name}\nEmail: ${email}\n\n${message}`,
             },
           },
         },
@@ -74,11 +60,9 @@ export async function POST(req: Request) {
     });
 
     const res = await client.send(command);
-    console.log("SES send result:", res);
 
     return NextResponse.json({ ok: true, messageId: res.MessageId });
   } catch (err: any) {
-    console.error("SES Error", err);
     return NextResponse.json(
       { ok: false, error: err?.message ?? "Unknown error" },
       { status: 500 }
