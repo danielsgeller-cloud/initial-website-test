@@ -3,74 +3,52 @@ import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
 export const runtime = "nodejs";
 
-type Body = { name: string; email: string; message: string };
+type Body = {
+  name: string;
+  email: string;
+  message: string;
+};
 
-async function getBody(req: Request): Promise<Body> {
-  try {
-    const json = await req.json();
-    return {
-      name: json.name ?? "",
-      email: json.email ?? "",
-      message: json.message ?? "",
-    };
-  } catch {
-    const form = await req.formData();
-    return {
-      name: String(form.get("name") ?? ""),
-      email: String(form.get("email") ?? ""),
-      message: String(form.get("message") ?? ""),
-    };
-  }
+function envBool(v?: string) {
+  return !!(v && String(v).trim().length > 0);
 }
 
 export async function POST(req: Request) {
   try {
-    const body = await getBody(req);
+    // Read body exactly once
+    const json = (await req.json()) as Partial<Body>;
+    const body: Body = {
+      name: json?.name ?? "",
+      email: json?.email ?? "",
+      message: json?.message ?? "",
+    };
 
-    if (!body.name || !body.email || !body.message) {
-      return NextResponse.json(
-        { ok: false, error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-
-    const region = process.env.NEXT_PUBLIC_SES_REGION || process.env.SES_REGION || "us-east-1";
-    const accessKeyId = process.env.PICS_SES_USER || "";
-    const secretAccessKey = process.env.PICS_SES_PASS || "";
-    const fromAddress = process.env.SES_FROM_ADDRESS || "";
-    const toAddress = process.env.SES_TO_ADDRESS || "";
-
+    // Debug: what env vars exist in runtime (names only)
     const envKeys = Object.keys(process.env || {})
-      .filter(
-        (k) =>
-          k.includes("PICS") ||
-          k.includes("SES_") ||
-          k.startsWith("AWS_") ||
-          k.includes("NEXT_PUBLIC_SES")
-      )
+      .filter((k) => k.includes("PICS") || k.includes("SES_") || k.startsWith("AWS_") || k.includes("NEXT_PUBLIC_SES") || k.includes("CONTACT_"))
       .sort();
     console.log("ENV KEYS (filtered):", envKeys);
-    console.log("SES env check", {
-      region,
-      hasUser: !!accessKeyId,
-      hasPass: !!secretAccessKey,
-      fromDefined: !!fromAddress,
-      toDefined: !!toAddress,
-    });
 
-    if (!accessKeyId || !secretAccessKey || !fromAddress || !toAddress) {
+    const region = process.env.NEXT_PUBLIC_SES_REGION || "us-east-1";
+
+    const accessKeyId = process.env.PICS_SES_USER || "";
+    const secretAccessKey = process.env.PICS_SES_PASS || "";
+    const from = process.env.CONTACT_FROM || "";
+    const to = process.env.CONTACT_TO || "";
+
+    const debug = {
+      region,
+      hasUser: envBool(accessKeyId),
+      hasPass: envBool(secretAccessKey),
+      from: envBool(from),
+      to: envBool(to),
+    };
+    console.log("SES env check", debug);
+    console.log("Contact body:", { name: body.name, email: body.email, message: body.message });
+
+    if (!debug.hasUser || !debug.hasPass || !debug.from || !debug.to) {
       return NextResponse.json(
-        {
-          ok: false,
-          error: "Server email configuration error",
-          debug: {
-            region,
-            hasUser: !!accessKeyId,
-            hasPass: !!secretAccessKey,
-            from: !!fromAddress,
-            to: !!toAddress,
-          },
-        },
+        { ok: false, error: "Server email configuration error", debug },
         { status: 500 }
       );
     }
@@ -81,9 +59,8 @@ export async function POST(req: Request) {
     });
 
     const command = new SendEmailCommand({
-      FromEmailAddress: fromAddress,
-      Destination: { ToAddresses: [toAddress] },
-      ReplyToAddresses: [body.email],
+      FromEmailAddress: from,
+      Destination: { ToAddresses: [to] },
       Content: {
         Simple: {
           Subject: { Data: "Website Contact Form Submission" },
@@ -97,6 +74,7 @@ export async function POST(req: Request) {
     });
 
     const res = await client.send(command);
+    console.log("SES send result:", res);
 
     return NextResponse.json({ ok: true, messageId: res.MessageId });
   } catch (err: any) {
