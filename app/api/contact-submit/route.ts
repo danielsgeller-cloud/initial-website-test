@@ -13,8 +13,8 @@ function env(name: string): string | undefined {
 export async function POST(req: Request) {
   try {
     const region = env("AWS_REGION") || env("AWS_DEFAULT_REGION") || "us-east-1";
-    const from = env("CONTACT_FROM");
-    const to = env("CONTACT_TO");
+    const from = env("CONTACT_FROM") || env("CONTCT_FROM");
+    const to = env("CONTACT_TO") || "YOUR_TO_EMAIL_HERE";
 
     if (!from || !to) {
       return NextResponse.json(
