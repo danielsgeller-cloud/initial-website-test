@@ -36,7 +36,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Missing name/email/message" }, { status: 400 });
     }
 
-    const client = new SESClient({ region });
+    const accessKeyId = env("PICS_SES_USER");
+    const secretAccessKey = env("PICS_SES_PASS");
+
+    if (!accessKeyId || !secretAccessKey) {
+      return NextResponse.json(
+        { ok: false, error: "Missing PICS_SES_USER or PICS_SES_PASS in runtime env" },
+        { status: 500 }
+      );
+    }
+
+    const client = new SESClient({
+      region,
+      credentials: { accessKeyId, secretAccessKey },
+    });
 
     const subject = `Website contact: ${name}`;
     const text =
