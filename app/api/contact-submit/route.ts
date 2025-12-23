@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     debug: {
       CONTACT_FROM: process.env.CONTACT_FROM ?? null,
       CONTACT_TO: process.env.CONTACT_TO ?? null,
-      CONTCT_FROM: process.env.CONTCT_FROM ?? null,
+      CONTACT_FROM: process.env.CONTACT_FROM ?? null,
       envKeys
     }
   }, { status: 500 });
