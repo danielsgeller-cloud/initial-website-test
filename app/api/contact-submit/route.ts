@@ -12,6 +12,17 @@ function env(name: string): string | undefined {
 
 export async function POST(req: Request) {
   try {
+    // Try accessing env vars directly (bypassing helper)
+    const directUser = process.env.PICS_SES_USER;
+    const directPass = process.env.PICS_SES_PASS;
+
+    console.log("Direct env access:", {
+      hasDirectUser: !!directUser,
+      hasDirectPass: !!directPass,
+      directUserLength: directUser?.length,
+      allEnvKeys: Object.keys(process.env).length
+    });
+
     const region = env("AWS_REGION") || env("AWS_DEFAULT_REGION") || "us-east-1";
     const from = "gellerd@rider.edu";
     const to = "danielsgeller@gmail.com";
