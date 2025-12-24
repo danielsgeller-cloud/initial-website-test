@@ -6,11 +6,17 @@ import LanguageSlider from "./i18n/LanguageSlider";
 import { useLanguage } from "./i18n/LanguageProvider";
 import { useSession, signOut } from "next-auth/react";
 
+
+
+import { useCart } from "@/components/cart/CartProvider";
+import Link from "next/link";
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { t } = useLanguage();
   const { data: session, status } = useSession();
 
+
+  const { itemCount } = useCart();
   const isAuthed = status === "authenticated";
   const displayName =
     session?.user?.name?.trim() ||
@@ -96,7 +102,26 @@ export default function Nav() {
             )}
           </nav>
 
-          <button
+          
+          <Link
+            href="/cart"
+            aria-label={t("cart_label") || "Cart"}
+            className="relative flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 hover:border-amber-500 hover:text-amber-600"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+              <path
+                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM7.2 6h14.3l-1.7 7.2c-.2.8-.9 1.3-1.7 1.3H9c-.8 0-1.5-.5-1.7-1.3L5.1 3H2V1h4.6l.6 2.5z"
+                fill="currentColor"
+              />
+            </svg>
+            {itemCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold leading-none text-black">
+                {itemCount}
+              </span>
+            )}
+          </Link>
+
+<button
             type="button"
             aria-label={t("search_label")}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 hover:border-amber-500 hover:text-amber-600"
@@ -165,6 +190,10 @@ export default function Nav() {
               </div>
 
               <nav className="mt-6 grid gap-4 text-sm text-neutral-700">
+                <Link href="/cart" onClick={() => setMenuOpen(false)}>
+                  Cart
+                  {itemCount > 0 ? ` (${itemCount})` : ""}
+                </Link>
                 <Link href="/" onClick={() => setMenuOpen(false)}>
                   {t("nav_home")}
                 </Link>
