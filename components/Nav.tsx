@@ -9,7 +9,6 @@ import { useSession, signOut } from "next-auth/react";
 
 
 import { useCart } from "@/components/cart/CartProvider";
-import Link from "next/link";
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { t } = useLanguage();
