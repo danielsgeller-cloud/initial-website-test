@@ -6,7 +6,8 @@ import { LanguageProvider } from "../components/i18n/LanguageProvider";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
-  title: "Pictures in Ceramic - Enamel Memorial Cameos",
+    icons: { icon: "/favicon.svg" },
+title: "Pictures in Ceramic - Enamel Memorial Cameos",
   description:
     "Custom enamel memorial medallions for headstones, mausoleums, homes, and more.",
 };
