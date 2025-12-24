@@ -48,6 +48,12 @@ export default function LoginClient() {
           />
         </label>
 
+        <div className="text-right text-sm">
+          <Link href="/forgot-password" className="text-amber-600 hover:text-amber-700">
+            Forgot password?
+          </Link>
+        </div>
+
         <button
           type="submit"
           disabled={submitting}
@@ -57,7 +63,13 @@ export default function LoginClient() {
         </button>
       </form>
 
-      <div className="mt-6 text-sm text-neutral-600">
+      <div className="mt-6 text-center text-sm text-neutral-600">
+        <Link href="/register" className="text-amber-600 hover:text-amber-700">
+          Don't have an account? Register
+        </Link>
+      </div>
+
+      <div className="mt-4 text-center text-sm text-neutral-600">
         <Link className="hover:text-amber-600" href="/">
           Return home
         </Link>

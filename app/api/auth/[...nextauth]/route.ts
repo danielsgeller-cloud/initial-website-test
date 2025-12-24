@@ -19,14 +19,33 @@ const handler = NextAuth({
 
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) return null;
-if (!user.emailVerified) return null;
+        if (!user.emailVerified) return null;
         const ok = await bcrypt.compare(password, user.passwordHash);
         if (!ok) return null;
 
-        return { id: user.id, email: user.email, name: user.name ?? undefined };
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name ?? undefined,
+          role: user.role,
+        };
       },
     }),
   ],
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.role = (user as any).role;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (session.user) {
+        (session.user as any).role = token.role;
+      }
+      return session;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };

@@ -3,6 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AccountPage() {
   const router = useRouter();
@@ -42,13 +43,21 @@ export default function AccountPage() {
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={() => signOut({ callbackUrl: "/" })}
-          className="mt-6 rounded-md border border-neutral-200 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 hover:border-amber-500 hover:text-amber-600"
-        >
-          Sign out
-        </button>
+        <div className="mt-6 flex gap-3">
+          <Link
+            href="/account/edit"
+            className="rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-amber-400"
+          >
+            Edit Profile
+          </Link>
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 hover:border-amber-500 hover:text-amber-600"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
     </main>
   );
