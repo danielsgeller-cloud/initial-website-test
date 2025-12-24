@@ -10,8 +10,5 @@ export async function GET() {
     host = "unparseable";
   }
 
-  return Response.json({
-    hasDatabaseUrl: !!raw,
-    host,
-  });
+  return Response.json({ hasDatabaseUrl: !!raw, host }, { headers: { "Cache-Control": "no-store, max-age=0" } });
 }
