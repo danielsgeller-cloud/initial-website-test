@@ -3,13 +3,14 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendEmail } from "@/lib/email";
-
-function sha256(s: string) {
-  return crypto.createHash("sha256").update(s).digest("hex");
-}
+import { sha256 } from "@/lib/auth";
 
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => ({}));
+  const body = await req.json().catch(() => null);
+  if (!body) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+
   const email = String(body.email || "").toLowerCase().trim();
   const password = String(body.password || "");
   const name = body.name ? String(body.name).trim() : null;

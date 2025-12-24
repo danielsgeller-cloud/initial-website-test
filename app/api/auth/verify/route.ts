@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import crypto from "crypto";
-
-function sha256(s: string) {
-  return crypto.createHash("sha256").update(s).digest("hex");
-}
+import { sha256 } from "@/lib/auth";
 
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => ({}));
+  const body = await req.json().catch(() => null);
+  if (!body) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+
   const email = String(body.email || "").toLowerCase().trim();
   const token = String(body.token || "").trim();
 
