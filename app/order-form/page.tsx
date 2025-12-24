@@ -2,7 +2,7 @@
 
 import { useCart } from "@/components/cart/CartProvider";
 import Link from "next/link";
-import { FormEvent, useMemo, useState, useEffect } from "react";
+import { FormEvent, useMemo, useState, useEffect, Suspense } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
 
@@ -604,7 +604,7 @@ function dealerLabel(lang: Lang, dealerType: "dealer" | "individual"): string {
   return dealerType === "dealer" ? COPY.uk.dealer : COPY.uk.individual;
 }
 
-export default function OrderFormPage() {
+function OrderFormContent() {
   const { itemCount, addItem } = useCart();
   const [qty, setQty] = useState(1);
   const { lang } = useLanguage();
@@ -1168,5 +1168,13 @@ export default function OrderFormPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function OrderFormPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <OrderFormContent />
+    </Suspense>
   );
 }
