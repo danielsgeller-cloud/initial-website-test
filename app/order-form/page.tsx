@@ -783,12 +783,7 @@ export default function OrderFormPage() {
           <button
             type="button"
             onClick={() =>
-              addItem({
-                id: "order-form-request",
-                name: "Order Form Request",
-                priceCents: 0,
-                quantity: qty,
-              })
+              addItem({ id: "order-form-request", name: "Order Form Request", priceCents: 0 }, qty)
             }
             className="rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 shadow-sm hover:border-amber-500 hover:text-amber-600"
           >
