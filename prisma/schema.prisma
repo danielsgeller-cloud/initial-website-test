@@ -11,6 +11,7 @@ model User {
   id               String   @id @default(cuid())
   email            String   @unique
   name             String?
+  phone            String?
   passwordHash     String
   role             String   @default("USER")
   createdAt        DateTime @default(now())
@@ -29,4 +30,45 @@ model User {
   pendingEmail           String?
   pendingEmailTokenHash  String?
   pendingEmailExpires    DateTime?
+
+  // Relations
+  orders Order[]
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Order details
+  shape           String
+  size            String
+  finish          String  // "color" or "bw"
+  mounting        String?
+  combinePhotos   Boolean @default(false)
+  proofOption     String?
+
+  // Customer info
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  cemetery        String?
+  shipToAddress   String?
+  neededByDate    String?
+  additionalNotes String?
+
+  // Pricing
+  basePrice       Float
+  mountingPrice   Float   @default(0)
+  proofPrice      Float   @default(0)
+  baseFee         Float   @default(9)
+  combineAdjust   Float   @default(0)
+  totalPrice      Float
+
+  // Order status
+  status          String  @default("pending")  // pending, processing, completed, cancelled
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

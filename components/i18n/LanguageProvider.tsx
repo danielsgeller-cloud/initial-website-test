@@ -34,6 +34,7 @@ const DICT: Record<string, Partial<Record<Lang, string>>> = {
   },
   nav_home: { en: "Home", ru: "Главная", uk: "Головна" },
   nav_about: { en: "About", ru: "О нас", uk: "Про нас" },
+  nav_faq: { en: "FAQ", ru: "Вопросы", uk: "Питання" },
   nav_why: { en: "Payment", ru: "Оплата", uk: "Оплата" },
   nav_pricing: { en: "Medallion Pricing", ru: "Цены на медальоны", uk: "Ціни на медальйони" },
   nav_contact: { en: "Contact", ru: "Контакт", uk: "Контакт" },
@@ -109,6 +110,20 @@ const DICT: Record<string, Partial<Record<Lang, string>>> = {
 
   // Generic CTA label used across pages
   cta_order: { en: "Order a cameo", ru: "Заказать камею", uk: "Замовити камею" },
+  cart_label: { en: "Cart", ru: "Корзина", uk: "Кошик" },
+  search_label: { en: "Search", ru: "Поиск", uk: "Пошук" },
+
+  // Account pages
+  account_title: { en: "My Account", ru: "Мой аккаунт", uk: "Мій обліковий запис" },
+  account_profile: { en: "Profile Information", ru: "Информация профиля", uk: "Інформація профілю" },
+  account_email: { en: "Email", ru: "Email", uk: "Email" },
+  account_name: { en: "Name", ru: "Имя", uk: "Ім'я" },
+  account_edit_profile: { en: "Edit Profile", ru: "Редактировать профиль", uk: "Редагувати профіль" },
+  account_orders: { en: "Order History", ru: "История заказов", uk: "Історія замовлень" },
+  account_orders_desc: { en: "View all your past orders and reorder easily", ru: "Просмотр всех ваших заказов и легкое повторное заказе", uk: "Перегляд всіх ваших замовлень та легке повторне замовлення" },
+  account_view_orders: { en: "View Orders", ru: "Просмотр заказов", uk: "Переглянути замовлення" },
+  account_quick_actions: { en: "Quick Actions", ru: "Быстрые действия", uk: "Швидкі дії" },
+  account_new_order: { en: "New Order", ru: "Новый заказ", uk: "Нове замовлення" },
 };
 
 function safeT(key: string, lang: Lang): string {
