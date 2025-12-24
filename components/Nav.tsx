@@ -73,8 +73,8 @@ export default function Nav() {
             <Link href="/about" className="hover:text-amber-600">
               {t("nav_about")}
             </Link>
-            <Link href="/payment" className="hover:text-amber-600">
-              {t("nav_why")}
+            <Link href="/faq" className="hover:text-amber-600">
+              {t("nav_faq")}
             </Link>
             <Link href="/contact" className="hover:text-amber-600">
               {t("nav_contact")}
@@ -89,7 +89,10 @@ export default function Nav() {
                   {displayName}
                 </Link>
                 {(session?.user as any)?.role === "ADMIN" && (
-                  <Link href="/admin" className="hover:text-amber-600">
+                  <Link
+                    href="/admin"
+                    className="rounded-md bg-amber-100 px-3 py-1.5 text-amber-700 hover:bg-amber-200 font-medium"
+                  >
                     Admin
                   </Link>
                 )}
@@ -199,8 +202,8 @@ export default function Nav() {
                 <Link href="/about" onClick={() => setMenuOpen(false)}>
                   {t("nav_about")}
                 </Link>
-                <Link href="/payment" onClick={() => setMenuOpen(false)}>
-                  {t("nav_why")}
+                <Link href="/faq" onClick={() => setMenuOpen(false)}>
+                  {t("nav_faq")}
                 </Link>
                 <Link href="/contact" onClick={() => setMenuOpen(false)}>
                   {t("nav_contact")}
@@ -215,8 +218,12 @@ export default function Nav() {
                       {displayName}
                     </Link>
                     {(session?.user as any)?.role === "ADMIN" && (
-                      <Link href="/admin" onClick={() => setMenuOpen(false)}>
-                        Admin
+                      <Link
+                        href="/admin"
+                        onClick={() => setMenuOpen(false)}
+                        className="rounded-md bg-amber-100 px-3 py-1.5 text-amber-700 font-medium"
+                      >
+                        Admin Dashboard
                       </Link>
                     )}
                   </>

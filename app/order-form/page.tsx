@@ -2,8 +2,9 @@
 
 import { useCart } from "@/components/cart/CartProvider";
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState, useEffect } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import { useSearchParams } from "next/navigation";
 
 type Lang = "en" | "ru" | "uk";
 type Finish = "bw" | "color";
@@ -609,6 +610,7 @@ export default function OrderFormPage() {
   const { lang } = useLanguage();
   const L = (lang as Lang) || "en";
   const t = COPY[L] ?? COPY.en;
+  const searchParams = useSearchParams();
 
   const [shapeId, setShapeId] = useState<string>("oval");
   const [sizeCode, setSizeCode] = useState<string>("1");
@@ -628,6 +630,38 @@ export default function OrderFormPage() {
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | "success" | "error">(null);
   const [statusMessage, setStatusMessage] = useState<string>("");
+
+  // Handle reorder functionality
+  useEffect(() => {
+    const reorderId = searchParams?.get("reorder");
+    if (reorderId) {
+      // Fetch the order and prefill the form
+      fetch(`/api/orders?id=${reorderId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.orders && data.orders.length > 0) {
+            const order = data.orders[0];
+            // Prefill form fields
+            setName(order.customerName || "");
+            setEmail(order.customerEmail || "");
+            setPhone(order.customerPhone || "");
+            setCemetery(order.cemetery || "");
+            setShipTo(order.shipToAddress || "");
+            setDeadline(order.neededByDate || "");
+            setNotes(order.additionalNotes || "");
+            setFinish(order.finish === "color" ? "color" : "bw");
+            setCombinePhotos(order.combinePhotos || false);
+            if (order.mounting) setMounting(order.mounting);
+            if (order.proofOption) setProof(order.proofOption);
+            setStatus("success");
+            setStatusMessage("Order details loaded. Review and submit to reorder.");
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load order for reorder:", err);
+        });
+    }
+  }, [searchParams]);
 
   const selectedShape = useMemo(
     () => SHAPES.find((s) => s.id === shapeId) ?? SHAPES[0],
@@ -680,64 +714,59 @@ export default function OrderFormPage() {
 
     try {
       const shapeLabel = shapeLabelForLang(selectedShape, L);
-      const shapeDesc = shapeDescriptionForLang(selectedShape, L);
 
-      const messageLines = [
-        t.messageHeader,
-        "",
-        `${t.customerName} ${name}`,
-        `${t.customerEmail} ${email}`,
-        phone ? `${t.customerPhone} ${phone}` : "",
-        dealerType === "dealer" ? t.customerTypeDealer : t.customerTypeIndividual,
-        cemetery ? `${t.customerCemetery} ${cemetery}` : "",
-        shipTo ? `${t.customerShipTo} ${shipTo}` : "",
-        deadline ? `${t.customerDeadline} ${deadline}` : "",
-        "",
-        t.requestedConfig,
-        `${t.configShape} ${shapeLabel}`,
-        `${t.configSize} ${selectedOption.label}`,
-        `${t.configFinish} ${finishLabel(L, finish)}`,
-        `${t.baseFromList} ${formatCurrency(basePrice)}`,
-        `${t.estimatedTotal} ${formatCurrency(totalRange.min)} – ${formatCurrency(totalRange.max)}`,
-        mounting !== "none"
-          ? `${t.mountingRequested} ${mounting}`
-          : t.mountingNotSpecified,
-        selectedOption.mountingNote
-          ? `${t.wholesaleMountingNote} ${selectedOption.mountingNote}`
-          : "",
-        combinePhotos ? t.combineYes : t.combineNo,
-        proof === "email"
-          ? t.proofLineEmail
-          : proof === "printed"
-            ? t.proofLinePrinted
-            : t.proofLineNone,
-        "",
-        `${t.shapeGroup} ${shapeDesc}`,
-        "",
-        `${t.customerNotes}`,
-        notes || t.none,
-      ].filter(Boolean);
+      // Calculate pricing details
+      const mountingCost = mounting !== "none" ? 18 : 0;
+      const proofCost = proof === "printed" ? 20 : 0;
+      const baseFee = 9;
+      const combineAdjustment = combinePhotos ? Math.min(basePrice * 0.5, basePrice * 0.25) : 0;
+      const totalPrice = basePrice + mountingCost + proofCost + baseFee + combineAdjustment;
 
-      const body = {
-        name,
-        email,
-        message: messageLines.join("\n"),
+      const orderBody = {
+        shape: shapeLabel,
+        size: selectedOption.label,
+        finish: finish,
+        mounting: mounting !== "none" ? mounting : null,
+        combinePhotos: combinePhotos,
+        proofOption: proof !== "none" ? proof : null,
+        customerName: name,
+        customerEmail: email,
+        customerPhone: phone || null,
+        cemetery: cemetery || null,
+        shipToAddress: shipTo || null,
+        neededByDate: deadline || null,
+        additionalNotes: notes || null,
+        basePrice: basePrice,
+        mountingPrice: mountingCost,
+        proofPrice: proofCost,
+        baseFee: baseFee,
+        combineAdjust: combineAdjustment,
+        totalPrice: totalPrice,
       };
 
-      const res = await fetch("/api/contact-submit", {
+      const res = await fetch("/api/orders/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify(orderBody),
       });
 
       const json = await res.json();
 
-      if (!res.ok || !json.ok) {
-        throw new Error(json.error || "Server error");
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Failed to submit order");
       }
 
       setStatus("success");
-      setStatusMessage(t.success);
+      setStatusMessage(t.success + ` Order #${json.orderId} has been created.`);
+
+      // Reset form on success
+      setName("");
+      setEmail("");
+      setPhone("");
+      setCemetery("");
+      setShipTo("");
+      setDeadline("");
+      setNotes("");
     } catch (err: any) {
       setStatus("error");
       setStatusMessage(err?.message || t.error);
@@ -748,50 +777,6 @@ export default function OrderFormPage() {
 
   return (
 <main className="bg-neutral-50 pb-16 pt-10">
-
-      <div className="mx-auto flex max-w-6xl items-center justify-end px-4 pt-6 md:px-6">
-        <Link
-          href="/cart"
-          className="relative inline-flex items-center justify-center rounded-full border border-neutral-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 hover:border-amber-500 hover:text-amber-600"
-        >
-          Cart
-          {itemCount > 0 ? (
-            <span className="ml-2 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold leading-none text-black">
-              {itemCount}
-            </span>
-          ) : null}
-        </Link>
-      </div>
-
-      <div className="mx-auto max-w-6xl px-4 pt-4 md:px-6">
-        <div className="flex flex-wrap items-end gap-4">
-          <label className="grid gap-2 text-sm text-neutral-700">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500">Quantity</span>
-            <input
-              name="quantity"
-              type="number"
-              min={1}
-              max={999}
-              value={qty}
-              onChange={(e) =>
-                setQty(Math.max(1, Math.min(999, Math.floor(Number(e.target.value) || 1))))
-              }
-              className="w-28 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm"
-            />
-          </label>
-
-          <button
-            type="button"
-            onClick={() =>
-              addItem({ id: "order-form-request", name: "Order Form Request", priceCents: 0 }, qty)
-            }
-            className="rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 shadow-sm hover:border-amber-500 hover:text-amber-600"
-          >
-            Add to cart
-          </button>
-        </div>
-      </div>
-
       <div className="mx-auto max-w-6xl px-4 md:px-6">
         <section className="grid gap-10 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:items-center">
           <div>
@@ -841,6 +826,45 @@ export default function OrderFormPage() {
                 </p>
               )}
               <p className="mt-2 text-xs text-neutral-500">{t.summaryShippingHint}</p>
+            </div>
+
+            {/* Cart Controls */}
+            <div className="mt-6 pt-6 border-t border-neutral-200">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500 mb-2">
+                    Quantity
+                  </label>
+                  <input
+                    name="quantity"
+                    type="number"
+                    min={1}
+                    max={999}
+                    value={qty}
+                    onChange={(e) =>
+                      setQty(Math.max(1, Math.min(999, Math.floor(Number(e.target.value) || 1))))
+                    }
+                    className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    addItem({ id: "order-form-request", name: "Order Form Request", priceCents: 0 }, qty)
+                  }
+                  className="w-full rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black shadow-md hover:bg-amber-400 transition-colors"
+                >
+                  Add to cart
+                </button>
+
+                <Link
+                  href="/cart"
+                  className="block text-center rounded-lg border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-700 hover:border-amber-500 hover:text-amber-600 transition-colors"
+                >
+                  View Cart {itemCount > 0 && `(${itemCount})`}
+                </Link>
+              </div>
             </div>
           </aside>
         </section>

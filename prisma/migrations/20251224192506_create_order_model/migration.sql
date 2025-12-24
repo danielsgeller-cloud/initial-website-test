@@ -1,0 +1,28 @@
+-- CreateTable
+CREATE TABLE "Order" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT,
+    "shape" TEXT NOT NULL,
+    "size" TEXT NOT NULL,
+    "finish" TEXT NOT NULL,
+    "mounting" TEXT,
+    "combinePhotos" BOOLEAN NOT NULL DEFAULT false,
+    "proofOption" TEXT,
+    "customerName" TEXT NOT NULL,
+    "customerEmail" TEXT NOT NULL,
+    "customerPhone" TEXT,
+    "cemetery" TEXT,
+    "shipToAddress" TEXT,
+    "neededByDate" TEXT,
+    "additionalNotes" TEXT,
+    "basePrice" REAL NOT NULL,
+    "mountingPrice" REAL NOT NULL DEFAULT 0,
+    "proofPrice" REAL NOT NULL DEFAULT 0,
+    "baseFee" REAL NOT NULL DEFAULT 9,
+    "combineAdjust" REAL NOT NULL DEFAULT 0,
+    "totalPrice" REAL NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Order_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
