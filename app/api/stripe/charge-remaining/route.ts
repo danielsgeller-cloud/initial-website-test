@@ -4,10 +4,19 @@ import { getRecord } from "@/lib/stripeStore";
 
 export const runtime = "nodejs";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, { apiVersion: "2025-11-17.clover",
-});
+export async function GET() {
+  return new Response("Method Not Allowed", { status: 405 });
+}
+
+
+const getStripe = () => {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("Missing STRIPE_SECRET_KEY");
+  return new Stripe(key, { apiVersion: "2025-11-17.clover" });
+};
 
 export async function POST(req: Request) {
+  const stripe = getStripe();
   const body = await req.json();
 
   const reference = String(body.reference || "").trim();
