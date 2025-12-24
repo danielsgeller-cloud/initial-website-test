@@ -10,7 +10,7 @@ export type StripeRecord = {
   updatedAt: string;
 };
 
-const STORE_PATH = path.join(process.cwd(), "data", "stripe-store.json");
+const STORE_PATH = path.join(process.env.TMPDIR || "/tmp", "stripe-store.json");
 
 async function readStore(): Promise<Record<string, StripeRecord>> {
   try {
