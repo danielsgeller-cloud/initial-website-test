@@ -79,9 +79,16 @@ export default function Nav() {
             </Link>
 
             {isAuthed ? (
-              <Link href="/account" className="hover:text-amber-600">
-                {displayName}
-              </Link>
+              <>
+                <Link href="/account" className="hover:text-amber-600">
+                  {displayName}
+                </Link>
+                {(session?.user as any)?.role === "ADMIN" && (
+                  <Link href="/admin" className="hover:text-amber-600">
+                    Admin
+                  </Link>
+                )}
+              </>
             ) : (
               <Link href="/login" className="hover:text-amber-600">
                 {t("nav_account")}
@@ -175,9 +182,16 @@ export default function Nav() {
                 </Link>
 
                 {isAuthed ? (
-                  <Link href="/account" onClick={() => setMenuOpen(false)}>
-                    {displayName}
-                  </Link>
+                  <>
+                    <Link href="/account" onClick={() => setMenuOpen(false)}>
+                      {displayName}
+                    </Link>
+                    {(session?.user as any)?.role === "ADMIN" && (
+                      <Link href="/admin" onClick={() => setMenuOpen(false)}>
+                        Admin
+                      </Link>
+                    )}
+                  </>
                 ) : (
                   <Link href="/login" onClick={() => setMenuOpen(false)}>
                     {t("nav_account")}
