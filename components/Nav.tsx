@@ -71,9 +71,6 @@ export default function Nav() {
             <Link href="/payment" className="hover:text-amber-600">
               {t("nav_why")}
             </Link>
-            <Link href="/pricing" className="hover:text-amber-600">
-              {t("nav_pricing")}
-            </Link>
             <Link href="/contact" className="hover:text-amber-600">
               {t("nav_contact")}
             </Link>
@@ -87,7 +84,7 @@ export default function Nav() {
               </Link>
             ) : (
               <Link href="/login" className="hover:text-amber-600">
-                Login
+                {t("nav_account")}
               </Link>
             )}
           </nav>
@@ -111,7 +108,7 @@ export default function Nav() {
               onClick={() => signOut({ callbackUrl: "/" })}
               className="rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 shadow-sm hover:border-amber-500 hover:text-amber-600"
             >
-              Sign out
+              {t("nav_signout")}
             </button>
           ) : (
             <Link
@@ -170,9 +167,6 @@ export default function Nav() {
                 <Link href="/payment" onClick={() => setMenuOpen(false)}>
                   {t("nav_why")}
                 </Link>
-                <Link href="/pricing" onClick={() => setMenuOpen(false)}>
-                  {t("nav_pricing")}
-                </Link>
                 <Link href="/contact" onClick={() => setMenuOpen(false)}>
                   {t("nav_contact")}
                 </Link>
@@ -186,7 +180,7 @@ export default function Nav() {
                   </Link>
                 ) : (
                   <Link href="/login" onClick={() => setMenuOpen(false)}>
-                    Login
+                    {t("nav_account")}
                   </Link>
                 )}
 
@@ -199,7 +193,7 @@ export default function Nav() {
                     }}
                     className="text-left"
                   >
-                    Sign out
+                    {t("nav_signout")}
                   </button>
                 )}
               </nav>
