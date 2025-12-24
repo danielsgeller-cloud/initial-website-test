@@ -39,6 +39,8 @@ const DICT: Record<string, Partial<Record<Lang, string>>> = {
   nav_contact: { en: "Contact", ru: "Контакт", uk: "Контакт" },
   nav_order_form: { en: "Order Form", ru: "Форма заказа", uk: "Форма замовлення" },
   nav_cta: { en: "Order a cameo", ru: "Заказать камею", uk: "Замовити камею" },
+  nav_account: { en: "Account", ru: "Аккаунт", uk: "Обліковий запис" },
+  nav_signout: { en: "Sign out", ru: "Выйти", uk: "Вийти" },
 
   // Home page keys used by app/page.tsx
   home_hero_image_alt: {
