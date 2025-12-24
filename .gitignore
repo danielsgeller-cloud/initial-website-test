@@ -1,39 +1,30 @@
+# Dependencies
 node_modules/
+node_modules copy/
+
+# Next.js
 .next/
-.env
-.env.local
 
-# Stripe dev store
-data/stripe-store.json
-
-/generated/prisma
-
-# local env
+# Environment variables
 .env
 .env.local
 .env.*.local
 
-# mac
-.DS_Store
-
-# sqlite
-*.db
-*.db-journal
-prisma/dev.db
+# Backup files
+*.bak
+*.BACKUP
+*.backup
 
 # macOS
 .DS_Store
 
-# env
-.env
-.env.local
-
-# prisma local
+# SQLite
+*.db
+*.db-journal
 prisma/dev.db
 
-# build
-.next
+# Stripe dev store
+data/stripe-store.json
 
-# env files
-.env
-.env.*
+# Prisma generated
+/generated/prisma
