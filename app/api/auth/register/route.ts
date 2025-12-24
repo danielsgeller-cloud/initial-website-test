@@ -42,13 +42,21 @@ export async function POST(req: Request) {
 
   const verifyUrl = `${baseUrl}/verify-email?token=${token}&email=${encodeURIComponent(email)}`;
 
-  await sendEmail({
-    to: email,
-    subject: "Confirm your Pictures in Ceramic account",
-    text:
-      `Click to confirm your email:\n\n${verifyUrl}\n\n` +
-      `This link expires in 1 hour.\n\nIf you did not request this, ignore this email.`,
-  });
+  try {
+    await sendEmail({
+      to: email,
+      subject: "Confirm your Pictures in Ceramic account",
+      text:
+        `Click to confirm your email:\n\n${verifyUrl}\n\n` +
+        `This link expires in 1 hour.\n\nIf you did not request this, ignore this email.`,
+    });
+  } catch (emailError) {
+    console.error("Failed to send verification email:", emailError);
+    // User is created but email failed - return error so they know
+    return NextResponse.json({
+      error: "Account created but failed to send verification email. Please contact support."
+    }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true });
 }
