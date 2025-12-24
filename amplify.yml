@@ -6,9 +6,13 @@ applications:
         preBuild:
           commands:
             - npm ci
+            - echo "=== Environment Check (preBuild) ==="
+            - env | grep -E "PICS|SES|NEXTAUTH" || echo "No PICS/SES/NEXTAUTH vars found"
         build:
           commands:
             - npx prisma generate
+            - echo "=== Environment Check (build) ==="
+            - env | grep -E "PICS|SES|NEXTAUTH" || echo "No PICS/SES/NEXTAUTH vars found"
             - npm run build
       artifacts:
         baseDirectory: .next
