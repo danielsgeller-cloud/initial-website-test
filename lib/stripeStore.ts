@@ -36,3 +36,7 @@ export async function getRecord(reference: string): Promise<StripeRecord | null>
   const store = await readStore();
   return store[reference] ?? null;
 }
+
+export async function readStripeStore(): Promise<Record<string, StripeRecord>> {
+  return await readStore();
+}
