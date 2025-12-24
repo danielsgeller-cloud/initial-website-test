@@ -8,6 +8,16 @@ applications:
             - npm ci
             - echo "=== Environment Check (preBuild) ==="
             - env | grep -E "PICS|SES|NEXTAUTH" || echo "No PICS/SES/NEXTAUTH vars found"
+            - |
+              echo "Writing runtime config..."
+              cat > lib/runtime-config.json <<EOF
+              {
+                "PICS_SES_USER": "$PICS_SES_USER",
+                "PICS_SES_PASS": "$PICS_SES_PASS",
+                "AWS_REGION": "${AWS_REGION:-us-east-1}"
+              }
+              EOF
+            - cat lib/runtime-config.json
         build:
           commands:
             - npx prisma generate
