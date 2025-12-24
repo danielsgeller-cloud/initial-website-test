@@ -2,8 +2,6 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
-import { useCart } from "@/components/CartProvider";
-import Link from "next/link";
 
 type Lang = "en" | "ru" | "uk";
 type Finish = "bw" | "color";
@@ -622,27 +620,10 @@ export default function OrderFormPage() {
   const [shipTo, setShipTo] = useState<string>("");
   const [deadline, setDeadline] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
-  const [quantity, setQuantity] = useState<number>(1);
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | "success" | "error">(null);
   const [statusMessage, setStatusMessage] = useState<string>("");
-
-  const { addItem, itemCount } = useCart();
-
-  const handleAddToCart = () => {
-    addItem({
-      shape: "Cameo",
-      size: "Custom",
-      finish,
-      mounting,
-      proof,
-      photoCombination: combinePhotos,
-      quantity,
-      pricePerItem: Math.round(((totalRange?.min ?? 0) as number) / Math.max(1, quantity)),
-    });
-  };
-
 
   const selectedShape = useMemo(
     () => SHAPES.find((s) => s.id === shapeId) ?? SHAPES[0],
@@ -1089,73 +1070,15 @@ export default function OrderFormPage() {
               <p className="mt-1 text-xs text-neutral-600">{t.estHelp}</p>
             </div>
 
-            <div className="space-y-4 border-t border-neutral-200 pt-4">
-              <div className="flex items-center gap-4">
-                <label className="text-sm font-medium text-neutral-700">
-                  {L === "en" ? "Quantity:" : L === "ru" ? "Количество:" : "Кількість:"}
-                </label>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="flex h-8 w-8 items-center justify-center rounded border border-neutral-300 hover:bg-neutral-100"
-                  >
-                    −
-                  </button>
-                  <input
-                    type="number"
-                    min="1"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 rounded border border-neutral-300 px-2 py-1 text-center text-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="flex h-8 w-8 items-center justify-center rounded border border-neutral-300 hover:bg-neutral-100"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                <button
-                  type="button"
-                  onClick={handleAddToCart}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-amber-500 px-8 py-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-black shadow-md hover:bg-amber-400"
-                >
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  {L === "en" ? "Add to Cart" : L === "ru" ? "В корзину" : "До кошика"}
-                </button>
-
-                {itemCount > 0 && (
-                  <Link
-                    href="/cart"
-                    className="text-sm text-amber-600 hover:text-amber-700"
-                  >
-                    {L === "en" ? `View Cart (${itemCount} items)` : L === "ru" ? `Корзина (${itemCount})` : `Кошик (${itemCount})`}
-                  </Link>
-                )}
-              </div>
-
-              <details className="text-xs text-neutral-600">
-                <summary className="cursor-pointer font-medium hover:text-neutral-900">
-                  {L === "en" ? "Or submit inquiry directly" : L === "ru" ? "Или отправить запрос напрямую" : "Або надіслати запит напряму"}
-                </summary>
-                <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="inline-flex items-center justify-center rounded-full border-2 border-neutral-300 bg-white px-8 py-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-neutral-700 shadow-sm hover:border-amber-500 hover:text-amber-600 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {submitting ? t.submitSending : t.submit}
-                  </button>
-                  <p className="text-xs text-neutral-500">{t.submitHelp}</p>
-                </div>
-              </details>
+            <div className="flex flex-col gap-3 border-t border-neutral-200 pt-4 md:flex-row md:items-center md:justify-between">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="inline-flex items-center justify-center rounded-full bg-amber-500 px-8 py-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-black shadow-md hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {submitting ? t.submitSending : t.submit}
+              </button>
+              <p className="text-xs text-neutral-500">{t.submitHelp}</p>
             </div>
 
             {status && (
