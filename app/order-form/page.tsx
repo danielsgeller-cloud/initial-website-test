@@ -1,5 +1,7 @@
 "use client";
 
+import { useCart } from "@/components/cart/CartProvider";
+import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 
@@ -602,6 +604,9 @@ function dealerLabel(lang: Lang, dealerType: "dealer" | "individual"): string {
 }
 
 export default function OrderFormPage() {
+  const { itemCount, addItem } = useCart();
+  const [qty, setQty] = useState(1);
+
   const { lang } = useLanguage();
   const L = (lang as Lang) || "en";
   const t = COPY[L] ?? COPY.en;
@@ -632,6 +637,19 @@ export default function OrderFormPage() {
 
   const selectedOption = useMemo(() => {
     return (
+      <div className="mx-auto flex max-w-6xl items-center justify-end px-4 pt-6 md:px-6">
+        <Link
+          href="/cart"
+          className="relative inline-flex items-center justify-center rounded-full border border-neutral-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 hover:border-amber-500 hover:text-amber-600"
+        >
+          Cart
+          {itemCount > 0 ? (
+            <span className="ml-2 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold leading-none text-black">
+              {itemCount}
+            </span>
+          ) : null}
+        </Link>
+      </div>
       selectedShape.options.find((o) => o.code === sizeCode) ??
       selectedShape.options[0]
     );
@@ -1071,7 +1089,31 @@ export default function OrderFormPage() {
             </div>
 
             <div className="flex flex-col gap-3 border-t border-neutral-200 pt-4 md:flex-row md:items-center md:justify-between">
-              <button
+              
+          <div className="mt-6 flex flex-wrap items-end gap-4">
+            <label className="grid gap-2 text-sm text-neutral-700">
+              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500">Quantity</span>
+              <input
+                name="quantity"
+                type="number"
+                min={1}
+                max={999}
+                value={qty}
+                onChange={(e) => setQty(Math.max(1, Math.min(999, Math.floor(Number(e.target.value) || 1))))}
+                className="w-28 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm"
+              />
+            </label>
+
+            <button
+              type="button"
+              onClick={() => addItem({ id: "order-form-request", name: "Order Form Request", priceCents: 0, quantity: qty })}
+              className="rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 shadow-sm hover:border-amber-500 hover:text-amber-600"
+            >
+              Add to cart
+            </button>
+          </div>
+
+<button
                 type="submit"
                 disabled={submitting}
                 className="inline-flex items-center justify-center rounded-full bg-amber-500 px-8 py-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-black shadow-md hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
