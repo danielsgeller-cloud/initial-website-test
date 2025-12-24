@@ -1,11 +1,14 @@
-if (!process.env.NEXT_PUBLIC_SITE_URL) { throw new Error("Missing NEXT_PUBLIC_SITE_URL"); }
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, { apiVersion: "2025-11-17.clover",
-});
+const getStripe = () => {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new Error("Missing STRIPE_SECRET_KEY");
+  return new Stripe(key, { apiVersion: "2025-11-17.clover" });
+};
 
 export async function POST(req: Request) {
+  const stripe = getStripe();
   const body = await req.json();
 
   const depositAmount = Number(body.depositAmount);
