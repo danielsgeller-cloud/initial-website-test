@@ -40,8 +40,21 @@ export async function POST(req: Request) {
     const secretAccessKey = env("PICS_SES_PASS");
 
     if (!accessKeyId || !secretAccessKey) {
+      // Debug: log what env vars are actually available
+      console.log("Available env vars:", Object.keys(process.env).filter(k => k.includes("SES") || k.includes("PICS")));
+      console.log("PICS_SES_USER:", accessKeyId ? "SET" : "MISSING");
+      console.log("PICS_SES_PASS:", secretAccessKey ? "SET" : "MISSING");
+
       return NextResponse.json(
-        { ok: false, error: "Missing PICS_SES_USER or PICS_SES_PASS in runtime env" },
+        {
+          ok: false,
+          error: "Missing PICS_SES_USER or PICS_SES_PASS in runtime env",
+          debug: {
+            availableEnvKeys: Object.keys(process.env).filter(k => k.includes("SES") || k.includes("PICS")),
+            hasUser: !!accessKeyId,
+            hasPass: !!secretAccessKey
+          }
+        },
         { status: 500 }
       );
     }
