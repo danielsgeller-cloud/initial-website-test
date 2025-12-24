@@ -84,14 +84,21 @@ export async function POST(req: Request) {
   const confirmUrl = `${baseUrl}/confirm-email-change?token=${token}&userId=${user.id}`;
 
   // Send verification email to NEW address
-  await sendEmail({
-    to: newEmail,
-    subject: "Confirm your new email address",
-    text:
-      `Click to confirm your new email address:\n\n${confirmUrl}\n\n` +
-      `This link expires in 1 hour.\n\n` +
-      `If you did not request this change, ignore this email.`,
-  });
+  try {
+    await sendEmail({
+      to: newEmail,
+      subject: "Confirm your new email address",
+      text:
+        `Click to confirm your new email address:\n\n${confirmUrl}\n\n` +
+        `This link expires in 1 hour.\n\n` +
+        `If you did not request this change, ignore this email.`,
+    });
+  } catch (emailError) {
+    console.error("Failed to send email change verification:", emailError);
+    return NextResponse.json({
+      error: "Failed to send verification email. Please try again later."
+    }, { status: 500 });
+  }
 
   return NextResponse.json({
     ok: true,

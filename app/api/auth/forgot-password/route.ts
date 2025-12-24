@@ -46,14 +46,19 @@ export async function POST(req: Request) {
 
     const resetUrl = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
 
-    await sendEmail({
-      to: email,
-      subject: "Reset your Pictures in Ceramic password",
-      text:
-        `Click to reset your password:\n\n${resetUrl}\n\n` +
-        `This link expires in 1 hour.\n\n` +
-        `If you did not request this, ignore this email. Your password will not change.`,
-    });
+    try {
+      await sendEmail({
+        to: email,
+        subject: "Reset your Pictures in Ceramic password",
+        text:
+          `Click to reset your password:\n\n${resetUrl}\n\n` +
+          `This link expires in 1 hour.\n\n` +
+          `If you did not request this, ignore this email. Your password will not change.`,
+      });
+    } catch (emailError) {
+      console.error("Failed to send password reset email:", emailError);
+      // Don't reveal if email exists, but log the error
+    }
   }
 
   return NextResponse.json({
