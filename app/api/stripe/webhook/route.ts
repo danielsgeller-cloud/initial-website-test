@@ -4,7 +4,7 @@ import { upsertRecord } from "@/lib/stripeStore";
 
 export const runtime = "nodejs";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, { apiVersion: "2025-11-17.clover",
 });
 
 export async function POST(req: Request) {
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const reference = session.metadata?.reference || "";
     const paymentIntentId = session.payment_intent as string;
 
-    const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+    const pi = await stripe.paymentIntents.retrieve(paymentIntentId, { expand: ["payment_method"] });
 
     const customerId = typeof pi.customer === "string" ? pi.customer : pi.customer?.id || "";
     const paymentMethodId =
