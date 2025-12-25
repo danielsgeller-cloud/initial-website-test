@@ -7,7 +7,6 @@ import { prisma } from "@/lib/prisma";
 
 const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-  url: process.env.NEXTAUTH_URL || "https://picturesinceramic.com",
   session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
