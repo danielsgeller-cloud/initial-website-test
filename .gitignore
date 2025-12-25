@@ -28,3 +28,4 @@ data/stripe-store.json
 
 # Prisma generated
 /generated/prisma
+.env.production
