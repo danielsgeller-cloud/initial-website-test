@@ -1,28 +1,29 @@
 import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
-
-function makePrisma() {
-  const url = process.env.DATABASE_URL;
-
-  if (!url) {
-    // Avoid import-time crashes that cause Next to return HTML 500 pages.
-    // Throw only when code actually tries to use prisma (inside route handler try/catch).
-    return new Proxy(
-      {},
-      {
-        get() {
-          throw new Error("DATABASE_URL is missing at runtime (process.env.DATABASE_URL is empty).");
-        },
-      }
-    ) as unknown as PrismaClient;
-  }
-
-  return new PrismaClient({ datasources: { db: { url } } });
+declare global {
+  // eslint-disable-next-line no-var
+  var __PIC_PRISMA__: PrismaClient | undefined;
 }
 
-export const prisma = globalForPrisma.prisma ?? makePrisma();
+/**
+ * Get or create Prisma Client instance.
+ * Uses connection pooling and caches the instance globally.
+ * DATABASE_URL is read automatically from env by Prisma via schema.prisma
+ */
+function getPrismaClient(): PrismaClient {
+  if (!globalThis.__PIC_PRISMA__) {
+    globalThis.__PIC_PRISMA__ = new PrismaClient({
+      log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    });
+  }
+  return globalThis.__PIC_PRISMA__;
+}
 
-if (process.env.NODE_ENV !== "production" && !(prisma as any).__isProxy) {
-  globalForPrisma.prisma = prisma;
+export const prisma = getPrismaClient();
+
+// Cleanup on hot reload in development
+if (process.env.NODE_ENV !== 'production') {
+  if (globalThis.__PIC_PRISMA__) {
+    globalThis.__PIC_PRISMA__.$disconnect();
+  }
 }
