@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
@@ -6,6 +8,14 @@ import { sendEmail } from "@/lib/email";
 import { sha256 } from "@/lib/auth";
 
 export async function POST(req: Request) {
+    if (req.headers.get("x-pic-envcheck") === "1") {
+      return NextResponse.json({
+        hasDatabaseUrl: !!process.env.DATABASE_URL,
+        amplifyDeploymentId: process.env.AWS_AMPLIFY_DEPLOYMENT_ID || null,
+        nodeEnv: process.env.NODE_ENV || null
+      }, { status: 200 });
+    }
+
   try {
     const body = await req.json().catch(() => null);
     if (!body) {
