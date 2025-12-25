@@ -35,15 +35,12 @@ applications:
               EOF
             - cat .env.production
             - npm run build
+            - echo "=== Copying .env.production into build output ==="
+            - cp .env.production .next/.env.production
       artifacts:
-        baseDirectory: .
+        baseDirectory: .next
         files:
-          - '.env.production'
-          - '.next/**/*'
-          - 'node_modules/**/*'
-          - 'public/**/*'
-          - 'package.json'
-          - 'next.config.mjs'
+          - '**/*'
       cache:
         paths:
           - node_modules/**/*
