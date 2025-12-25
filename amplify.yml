@@ -7,7 +7,7 @@ applications:
           commands:
             - npm ci
             - echo "=== Environment Check (preBuild) ==="
-            - env | grep -E "PICS|SES|NEXTAUTH" || echo "No PICS/SES/NEXTAUTH vars found"
+            - env | grep -E "DATABASE_URL|PICS|SES|NEXTAUTH" || echo "No env vars found"
             - |
               echo "Writing runtime config..."
               cat > lib/runtime-config.json <<EOF
@@ -22,10 +22,13 @@ applications:
           commands:
             - npx prisma generate
             - echo "=== Environment Check (build) ==="
-            - env | grep -E "PICS|SES|NEXTAUTH" || echo "No PICS/SES/NEXTAUTH vars found"
+            - env | grep -E "DATABASE_URL|PICS|SES|NEXTAUTH" || echo "No env vars found"
             - npm run build
+            - echo "=== Copying assets for standalone ==="
+            - cp -r public .next/standalone/ || echo "No public directory"
+            - cp -r .next/static .next/standalone/.next/ || echo "No static directory"
       artifacts:
-        baseDirectory: .next
+        baseDirectory: .next/standalone
         files:
           - '**/*'
       cache:
