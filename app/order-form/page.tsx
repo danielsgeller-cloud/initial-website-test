@@ -626,6 +626,7 @@ function OrderFormContent() {
   const [shipTo, setShipTo] = useState<string>("");
   const [deadline, setDeadline] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | "success" | "error">(null);
@@ -1130,6 +1131,72 @@ function OrderFormContent() {
                 rows={4}
                 className="mt-2 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
               />
+            </fieldset>
+
+            <fieldset className="space-y-3">
+              <legend className="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-500">
+                Upload Images
+              </legend>
+              <p className="text-xs text-neutral-600">
+                Upload the photos you'd like on your ceramic medallion. You can upload multiple images.
+              </p>
+
+              <div className="mt-2">
+                <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-6 py-8 hover:border-amber-400 hover:bg-amber-50/30 transition-colors">
+                  <svg className="h-10 w-10 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <p className="mt-2 text-sm font-medium text-neutral-700">
+                    Click to upload or drag and drop
+                  </p>
+                  <p className="mt-1 text-xs text-neutral-500">
+                    PNG, JPG, GIF up to 10MB each
+                  </p>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      setUploadedImages(prev => [...prev, ...files]);
+                    }}
+                  />
+                </label>
+              </div>
+
+              {uploadedImages.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  <p className="text-xs font-medium text-neutral-700">
+                    Uploaded Images ({uploadedImages.length})
+                  </p>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                    {uploadedImages.map((file, idx) => (
+                      <div key={idx} className="relative group">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Upload ${idx + 1}`}
+                          className="h-24 w-full rounded-md border border-neutral-200 object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUploadedImages(prev => prev.filter((_, i) => i !== idx));
+                          }}
+                          className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                        <p className="mt-1 truncate text-xs text-neutral-600">
+                          {file.name}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </fieldset>
 
             <div className="rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 text-sm text-neutral-800">
