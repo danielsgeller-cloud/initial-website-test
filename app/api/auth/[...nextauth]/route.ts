@@ -1,13 +1,18 @@
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
-const handler = NextAuth({
+export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
+  url: process.env.NEXTAUTH_URL || "https://picturesinceramic.com",
   session: { strategy: "jwt" },
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
   providers: [
     Credentials({
       name: "Credentials",
@@ -16,22 +21,43 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const email = credentials?.email?.toLowerCase().trim();
-        const password = credentials?.password ?? "";
-        if (!email || !password) return null;
+        try {
+          const email = credentials?.email?.toLowerCase().trim();
+          const password = credentials?.password ?? "";
 
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return null;
-        if (!user.emailVerified) return null;
-        const ok = await bcrypt.compare(password, user.passwordHash);
-        if (!ok) return null;
+          if (!email || !password) {
+            console.error("[NextAuth] Missing email or password");
+            return null;
+          }
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name ?? undefined,
-          role: user.role,
-        };
+          const user = await prisma.user.findUnique({ where: { email } });
+          if (!user) {
+            console.error("[NextAuth] User not found:", email);
+            return null;
+          }
+
+          if (!user.emailVerified) {
+            console.error("[NextAuth] Email not verified:", email);
+            return null;
+          }
+
+          const ok = await bcrypt.compare(password, user.passwordHash);
+          if (!ok) {
+            console.error("[NextAuth] Invalid password for:", email);
+            return null;
+          }
+
+          console.log("[NextAuth] Login successful:", email);
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name ?? undefined,
+            role: user.role,
+          };
+        } catch (error) {
+          console.error("[NextAuth] Authorize error:", error);
+          return null;
+        }
       },
     }),
   ],
@@ -49,6 +75,9 @@ const handler = NextAuth({
       return session;
     },
   },
-});
+  debug: process.env.NODE_ENV === "development",
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
