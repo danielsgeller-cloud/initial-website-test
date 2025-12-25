@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 function money(cents: number) {
   return (cents / 100).toLocaleString(undefined, { style: "currency", currency: "USD" });
@@ -9,6 +11,47 @@ function money(cents: number) {
 
 export default function CartPage() {
   const { items, itemCount, subtotalCents, setQty, removeItem, clear } = useCart();
+  const { data: session } = useSession();
+  const [checkingOut, setCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  async function handleCheckout() {
+    setCheckingOut(true);
+    setCheckoutError(null);
+
+    try {
+      const response = await fetch("/api/stripe/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerEmail: session?.user?.email || "",
+          customerName: session?.user?.name || "",
+          items: items.map(item => ({
+            name: item.name,
+            amount: item.priceCents / 100, // Convert cents to dollars
+            quantity: item.quantity,
+            description: item.description || undefined,
+          })),
+          paymentType: "full",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || "Checkout failed");
+      }
+
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error: any) {
+      console.error("Checkout error:", error);
+      setCheckoutError(error.message || "Failed to start checkout");
+      setCheckingOut(false);
+    }
+  }
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
@@ -106,20 +149,57 @@ export default function CartPage() {
               <div className="text-sm text-neutral-700">Subtotal</div>
               <div className="text-sm font-semibold text-neutral-900">{money(subtotalCents)}</div>
             </div>
+
+            {checkoutError && (
+              <div className="mt-4 rounded-md border border-red-300 bg-red-50 p-3">
+                <p className="text-xs text-red-800">{checkoutError}</p>
+              </div>
+            )}
+
             <div className="mt-6 grid gap-3">
+              {/* Full Payment Button */}
+              <button
+                onClick={handleCheckout}
+                disabled={checkingOut || !session}
+                className="text-center rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-md hover:from-amber-600 hover:to-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                {checkingOut ? "Processing..." : "Pay Now"}
+              </button>
+
+              {/* Future: Deposit Payment Option - Placeholder */}
+              {/*
+              <button
+                className="text-center rounded-full border-2 border-amber-500 bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-amber-600 hover:bg-amber-50 transition-colors"
+              >
+                Pay Deposit (50%)
+              </button>
+              */}
+
               <Link
                 href="/order-form"
-                className="text-center rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-amber-400"
+                className="text-center rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 hover:border-amber-500 hover:text-amber-600"
               >
                 Continue to order form
               </Link>
               <Link
                 href="/shop"
-                className="text-center rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 hover:border-amber-500 hover:text-amber-600"
+                className="text-center rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-600 hover:border-neutral-400"
               >
                 Continue shopping
               </Link>
             </div>
+
+            {!session && (
+              <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3">
+                <p className="text-xs text-amber-800">
+                  <Link href="/login" className="font-semibold hover:underline">
+                    Sign in
+                  </Link>{" "}
+                  to complete checkout
+                </p>
+              </div>
+            )}
+
             <div className="mt-4 text-xs text-neutral-500">
               Taxes and shipping, if applicable, are calculated later.
             </div>

@@ -38,6 +38,47 @@ export default function OrderHistoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
+
+  async function handlePayOrder(order: Order) {
+    setPayingOrderId(order.id);
+
+    try {
+      const response = await fetch("/api/stripe/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: order.id,
+          customerEmail: order.customerEmail,
+          customerName: order.customerName,
+          items: [
+            {
+              name: `${order.shape} - ${order.size} (${order.finish === "color" ? "Color" : "B&W"})`,
+              amount: order.totalPrice,
+              quantity: 1,
+              description: `Order #${order.id.slice(0, 8)}`,
+            },
+          ],
+          paymentType: "full",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || "Payment failed");
+      }
+
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error: any) {
+      console.error("Payment error:", error);
+      alert(error.message || "Failed to start payment");
+      setPayingOrderId(null);
+    }
+  }
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -351,11 +392,33 @@ export default function OrderHistoryPage() {
                       </div>
                     </div>
 
-                    {/* Reorder Button */}
-                    <div className="mt-4">
+                    {/* Action Buttons */}
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      {/* Payment Button - Show for pending orders */}
+                      {order.status === "pending" && (
+                        <button
+                          onClick={() => handlePayOrder(order)}
+                          disabled={payingOrderId === order.id}
+                          className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {payingOrderId === order.id ? "Processing..." : "Pay Now"}
+                        </button>
+                      )}
+
+                      {/* Future: Deposit Payment Option - Placeholder */}
+                      {/*
+                      {order.status === "pending" && (
+                        <button
+                          className="px-6 py-3 border-2 border-emerald-500 bg-white hover:bg-emerald-50 text-emerald-600 font-semibold rounded-lg transition-colors"
+                        >
+                          Pay Deposit (50%)
+                        </button>
+                      )}
+                      */}
+
                       <Link
                         href={`/order-form?reorder=${order.id}`}
-                        className="inline-block px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
+                        className="inline-block px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
                       >
                         Reorder
                       </Link>
