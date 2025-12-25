@@ -25,13 +25,13 @@ applications:
             - env | grep -E "DATABASE_URL|PICS|SES|NEXTAUTH" || echo "No env vars found"
             - |
               echo "=== Writing .env.production for runtime ==="
-              # Strip whitespace from env var names (Amplify adds spaces sometimes)
-              DB_URL=$(printenv DATABASE_URL)
-              AUTH_URL=$(printenv NEXTAUTH_URL)
-              AUTH_SECRET=$(printenv NEXTAUTH_SECRET)
-              SES_USER=$(printenv PICS_SES_USER)
-              SES_PASS=$(printenv PICS_SES_PASS)
-              SES_REGION=$(printenv NEXT_PUBLIC_SES_REGION)
+              # Extract env vars even if names have trailing spaces (Amplify bug)
+              DB_URL=$(env | grep "^DATABASE_URL" | cut -d'=' -f2-)
+              AUTH_URL=$(env | grep "^NEXTAUTH_URL" | cut -d'=' -f2- | head -1)
+              AUTH_SECRET=$(env | grep "NEXTAUTH_SECRET" | cut -d'=' -f2-)
+              SES_USER=$(env | grep "^PICS_SES_USER" | cut -d'=' -f2-)
+              SES_PASS=$(env | grep "^PICS_SES_PASS" | cut -d'=' -f2-)
+              SES_REGION=$(env | grep "^NEXT_PUBLIC_SES_REGION" | cut -d'=' -f2-)
               cat > .env.production <<EOF
               DATABASE_URL=$DB_URL
               NEXTAUTH_URL=$AUTH_URL
