@@ -25,13 +25,20 @@ applications:
             - env | grep -E "DATABASE_URL|PICS|SES|NEXTAUTH" || echo "No env vars found"
             - |
               echo "=== Writing .env.production for runtime ==="
+              # Strip whitespace from env var names (Amplify adds spaces sometimes)
+              DB_URL=$(printenv DATABASE_URL)
+              AUTH_URL=$(printenv NEXTAUTH_URL)
+              AUTH_SECRET=$(printenv NEXTAUTH_SECRET)
+              SES_USER=$(printenv PICS_SES_USER)
+              SES_PASS=$(printenv PICS_SES_PASS)
+              SES_REGION=$(printenv NEXT_PUBLIC_SES_REGION)
               cat > .env.production <<EOF
-              DATABASE_URL=$DATABASE_URL
-              NEXTAUTH_URL=$NEXTAUTH_URL
-              NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-              PICS_SES_USER=$PICS_SES_USER
-              PICS_SES_PASS=$PICS_SES_PASS
-              NEXT_PUBLIC_SES_REGION=$NEXT_PUBLIC_SES_REGION
+              DATABASE_URL=$DB_URL
+              NEXTAUTH_URL=$AUTH_URL
+              NEXTAUTH_SECRET=$AUTH_SECRET
+              PICS_SES_USER=$SES_USER
+              PICS_SES_PASS=$SES_PASS
+              NEXT_PUBLIC_SES_REGION=$SES_REGION
               EOF
             - cat .env.production
             - npm run build
