@@ -17,10 +17,11 @@ export default function Nav() {
 
   const { itemCount } = useCart();
   const isAuthed = status === "authenticated";
-  const displayName =
+  const userName =
     session?.user?.name?.trim() ||
-    session?.user?.email?.trim() ||
-    "Account";
+    session?.user?.email?.split("@")[0] ||
+    "User";
+  const displayName = `Hi, ${userName}`;
 
   return (
     <header className="w-full border-b border-neutral-200 bg-white">
@@ -85,7 +86,13 @@ export default function Nav() {
 
             {isAuthed ? (
               <>
-                <Link href="/account" className="hover:text-amber-600">
+                <Link
+                  href="/account"
+                  className="flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-amber-800 hover:bg-amber-100 border border-amber-200 font-medium transition-all"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
                   {displayName}
                 </Link>
                 {(session?.user as any)?.role === "ADMIN" && (
@@ -214,7 +221,14 @@ export default function Nav() {
 
                 {isAuthed ? (
                   <>
-                    <Link href="/account" onClick={() => setMenuOpen(false)}>
+                    <Link
+                      href="/account"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-amber-800 border border-amber-200 font-medium"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
                       {displayName}
                     </Link>
                     {(session?.user as any)?.role === "ADMIN" && (
