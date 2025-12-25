@@ -27,6 +27,7 @@ applications:
             - echo "=== Copying assets for standalone ==="
             - cp -r public .next/standalone/ || echo "No public directory"
             - cp -r .next/static .next/standalone/.next/ || echo "No static directory"
+            - cp .next/required-server-files.json .next/standalone/required-server-files.json
       artifacts:
         baseDirectory: .next/standalone
         files:
