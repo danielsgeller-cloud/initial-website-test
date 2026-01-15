@@ -10,11 +10,15 @@ applications:
             - env | grep -E "DATABASE_URL|PICS|SES|NEXTAUTH" || echo "No env vars found"
             - |
               echo "Writing runtime config..."
+              # Extract env vars safely even if names have trailing spaces
+              SES_USER=$(env | grep "^PICS_SES_USER" | cut -d'=' -f2-)
+              SES_PASS=$(env | grep "^PICS_SES_PASS" | cut -d'=' -f2-)
+              AWS_REG=$(env | grep "^AWS_REGION" | cut -d'=' -f2-)
               cat > lib/runtime-config.json <<EOF
               {
-                "PICS_SES_USER": "$PICS_SES_USER",
-                "PICS_SES_PASS": "$PICS_SES_PASS",
-                "AWS_REGION": "${AWS_REGION:-us-east-1}"
+                "PICS_SES_USER": "$SES_USER",
+                "PICS_SES_PASS": "$SES_PASS",
+                "AWS_REGION": "${AWS_REG:-us-east-1}"
               }
               EOF
             - cat lib/runtime-config.json
