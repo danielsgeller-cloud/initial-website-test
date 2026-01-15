@@ -32,6 +32,9 @@ applications:
               SES_USER=$(env | grep "^PICS_SES_USER" | cut -d'=' -f2-)
               SES_PASS=$(env | grep "^PICS_SES_PASS" | cut -d'=' -f2-)
               SES_REGION=$(env | grep "^NEXT_PUBLIC_SES_REGION" | cut -d'=' -f2-)
+              STRIPE_SECRET=$(env | grep "^STRIPE_SECRET_KEY" | cut -d'=' -f2-)
+              STRIPE_PUBLIC=$(env | grep "^STRIPE_PUBLISHABLE_KEY" | cut -d'=' -f2-)
+              SITE_URL=$(env | grep "^NEXT_PUBLIC_SITE_URL" | cut -d'=' -f2-)
               cat > .env.production <<EOF
               DATABASE_URL=$DB_URL
               NEXTAUTH_URL=$AUTH_URL
@@ -39,6 +42,10 @@ applications:
               PICS_SES_USER=$SES_USER
               PICS_SES_PASS=$SES_PASS
               NEXT_PUBLIC_SES_REGION=$SES_REGION
+              STRIPE_SECRET_KEY=$STRIPE_SECRET
+              STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLIC
+              NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLIC
+              NEXT_PUBLIC_SITE_URL=$SITE_URL
               EOF
             - cat .env.production
             - npm run build
