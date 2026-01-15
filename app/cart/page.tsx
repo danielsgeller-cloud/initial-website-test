@@ -30,7 +30,6 @@ export default function CartPage() {
             name: item.name,
             amount: item.priceCents / 100, // Convert cents to dollars
             quantity: item.quantity,
-            description: item.description || undefined,
           })),
           paymentType: "full",
         }),
