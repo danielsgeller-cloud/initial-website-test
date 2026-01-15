@@ -130,19 +130,6 @@ export default function Nav() {
             )}
           </Link>
 
-<button
-            type="button"
-            aria-label={t("search_label")}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 hover:border-amber-500 hover:text-amber-600"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
-              <path
-                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L19 20.49 20.49 19 15.5 14zM10 14a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-
           {isAuthed ? (
             <button
               type="button"

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth-config";
 
 const getStripe = () => {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
   try {
     const stripe = getStripe();
     const body = await req.json();
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     // Get order details from request
     const {
