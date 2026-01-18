@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 interface FAQItem {
-  question: { en: string; ru: string; uk: string };
-  answer: { en: string; ru: string; uk: string };
+  question: { en: string; es: string };
+  answer: { en: string; es: string };
 }
 
 const faqData: FAQItem[] = [
