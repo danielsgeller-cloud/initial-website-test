@@ -6,6 +6,7 @@ import { FormEvent, useMemo, useState, useEffect, Suspense } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
 import { useUploadThing } from "@/lib/uploadthing";
+import MedallionPreview from "@/components/MedallionPreview";
 
 type Lang = "en" | "ru" | "uk";
 type Finish = "bw" | "color";
@@ -812,79 +813,88 @@ function OrderFormContent() {
             <p className="mt-4 text-xs text-neutral-500">{t.note}</p>
           </div>
 
-          <aside className="rounded-2xl bg-white p-5 shadow-sm shadow-neutral-200">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500">
-              {t.summaryTitle}
-            </h2>
-            <div className="mt-4 space-y-2 text-sm text-neutral-700">
-              <p>
-                <span className="font-medium">{t.summaryShape}</span>{" "}
-                {shapeLabelForLang(selectedShape, L)}
-              </p>
-              <p>
-                <span className="font-medium">{t.summarySize}</span>{" "}
-                {selectedOption.label}
-              </p>
-              <p>
-                <span className="font-medium">{t.summaryFinish}</span>{" "}
-                {finishLabel(L, finish)}
-              </p>
-              <p>
-                <span className="font-medium">{t.summaryBase}</span>{" "}
-                <span className="font-semibold text-amber-700">
-                  {formatCurrency(basePrice)}
-                </span>
-              </p>
-              {combinePhotos && (
-                <p className="text-xs text-neutral-600">{t.summaryCombineHint}</p>
-              )}
-              {selectedOption.mountingNote && (
-                <p className="text-xs text-neutral-600">
-                  {t.summaryMountingPrefix} {selectedOption.mountingNote}
+          <div className="space-y-5">
+            <aside className="rounded-2xl bg-white p-5 shadow-sm shadow-neutral-200">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500">
+                {t.summaryTitle}
+              </h2>
+              <div className="mt-4 space-y-2 text-sm text-neutral-700">
+                <p>
+                  <span className="font-medium">{t.summaryShape}</span>{" "}
+                  {shapeLabelForLang(selectedShape, L)}
                 </p>
-              )}
-              <p className="mt-2 text-xs text-neutral-500">{t.summaryShippingHint}</p>
-            </div>
-
-            {/* Cart Controls */}
-            <div className="mt-6 pt-6 border-t border-neutral-200">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500 mb-2">
-                    Quantity
-                  </label>
-                  <input
-                    name="quantity"
-                    type="number"
-                    min={1}
-                    max={999}
-                    value={qty}
-                    onChange={(e) =>
-                      setQty(Math.max(1, Math.min(999, Math.floor(Number(e.target.value) || 1))))
-                    }
-                    className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    addItem({ id: "order-form-request", name: "Order Form Request", priceCents: 0 }, qty)
-                  }
-                  className="w-full rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black shadow-md hover:bg-amber-400 transition-colors"
-                >
-                  Add to cart
-                </button>
-
-                <Link
-                  href="/cart"
-                  className="block text-center rounded-lg border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-700 hover:border-amber-500 hover:text-amber-600 transition-colors"
-                >
-                  View Cart {itemCount > 0 && `(${itemCount})`}
-                </Link>
+                <p>
+                  <span className="font-medium">{t.summarySize}</span>{" "}
+                  {selectedOption.label}
+                </p>
+                <p>
+                  <span className="font-medium">{t.summaryFinish}</span>{" "}
+                  {finishLabel(L, finish)}
+                </p>
+                <p>
+                  <span className="font-medium">{t.summaryBase}</span>{" "}
+                  <span className="font-semibold text-amber-700">
+                    {formatCurrency(basePrice)}
+                  </span>
+                </p>
+                {combinePhotos && (
+                  <p className="text-xs text-neutral-600">{t.summaryCombineHint}</p>
+                )}
+                {selectedOption.mountingNote && (
+                  <p className="text-xs text-neutral-600">
+                    {t.summaryMountingPrefix} {selectedOption.mountingNote}
+                  </p>
+                )}
+                <p className="mt-2 text-xs text-neutral-500">{t.summaryShippingHint}</p>
               </div>
-            </div>
-          </aside>
+
+              {/* Cart Controls */}
+              <div className="mt-6 pt-6 border-t border-neutral-200">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500 mb-2">
+                      Quantity
+                    </label>
+                    <input
+                      name="quantity"
+                      type="number"
+                      min={1}
+                      max={999}
+                      value={qty}
+                      onChange={(e) =>
+                        setQty(Math.max(1, Math.min(999, Math.floor(Number(e.target.value) || 1))))
+                      }
+                      className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      addItem({ id: "order-form-request", name: "Order Form Request", priceCents: 0 }, qty)
+                    }
+                    className="w-full rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black shadow-md hover:bg-amber-400 transition-colors"
+                  >
+                    Add to cart
+                  </button>
+
+                  <Link
+                    href="/cart"
+                    className="block text-center rounded-lg border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-700 hover:border-amber-500 hover:text-amber-600 transition-colors"
+                  >
+                    View Cart {itemCount > 0 && `(${itemCount})`}
+                  </Link>
+                </div>
+              </div>
+            </aside>
+
+            {/* Medallion Preview */}
+            <MedallionPreview
+              shapeId={shapeId}
+              size={selectedOption.size}
+              finish={finish}
+            />
+          </div>
         </section>
 
         <section className="mt-10 rounded-2xl bg-white p-6 shadow-sm shadow-neutral-200 md:p-8">

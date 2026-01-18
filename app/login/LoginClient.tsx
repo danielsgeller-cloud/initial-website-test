@@ -8,22 +8,45 @@ import { signIn } from "next-auth/react";
 export default function LoginClient() {
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") || "/";
+  const error = params.get("error");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(
+    error === "CredentialsSignin" ? "Invalid email or password. Please verify your email before signing in." : null
+  );
 
   return (
     <main className="mx-auto max-w-md px-6 py-16">
       <h1 className="text-2xl font-semibold">Sign in</h1>
+
+      {errorMsg && (
+        <div className="mt-4 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+          {errorMsg}
+        </div>
+      )}
 
       <form
         className="mt-6 grid gap-4"
         onSubmit={async (e) => {
           e.preventDefault();
           setSubmitting(true);
-          await signIn("credentials", { email, password, callbackUrl });
-          setSubmitting(false);
+          setErrorMsg(null);
+
+          const result = await signIn("credentials", {
+            email,
+            password,
+            callbackUrl,
+            redirect: false,
+          });
+
+          if (result?.error) {
+            setErrorMsg("Invalid email or password. Please verify your email before signing in.");
+            setSubmitting(false);
+          } else if (result?.url) {
+            window.location.href = result.url;
+          }
         }}
       >
         <label className="grid gap-1 text-sm">
