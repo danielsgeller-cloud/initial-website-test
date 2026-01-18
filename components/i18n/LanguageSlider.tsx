@@ -4,8 +4,7 @@ import { Lang, useLanguage } from "./LanguageProvider";
 
 const OPTIONS: { id: Lang; label: string }[] = [
   { id: "en", label: "EN" },
-  { id: "ru", label: "RU" },
-  { id: "uk", label: "UK" },
+  { id: "es", label: "ES" },
 ];
 
 export default function LanguageSlider() {

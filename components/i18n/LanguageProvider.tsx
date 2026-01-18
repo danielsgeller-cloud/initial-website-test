@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-export type Lang = "en" | "ru" | "uk";
+export type Lang = "en" | "es";
 
 type LanguageContextValue = {
   lang: Lang;
@@ -17,113 +17,99 @@ const STORAGE_KEY = "pic_lang";
 
 const DICT: Record<string, Partial<Record<Lang, string>>> = {
   topbar_service: {
-    en: "Service available in English, Ukrainian, and Russian",
-    ru: "Обслуживание на английском, украинском и русском языках",
-    uk: "Обслуговування англійською, українською та російською мовами",
+    en: "Service available in English and Spanish",
+    es: "Servicio disponible en inglés y español",
   },
-  phone_display: { en: "(732) 297-6008", ru: "(732) 297-6008", uk: "(732) 297-6008" },
-  email_display: { en: "info@picturesinceramic.com", ru: "info@picturesinceramic.com", uk: "info@picturesinceramic.com" },
-  brand_tagline: { en: "Enamel memorial medallions", ru: "Эмалевые мемориальные медальоны", uk: "Емальовані меморіальні медальйони" },
-  nav_order: { en: "Order Form", ru: "Форма заказа", uk: "Форма замовлення" },
+  phone_display: { en: "(732) 297-6008", es: "(732) 297-6008" },
+  email_display: { en: "info@picturesinceramic.com", es: "info@picturesinceramic.com" },
+  brand_tagline: { en: "Enamel memorial medallions", es: "Medallones conmemorativos de esmalte" },
+  nav_order: { en: "Order Form", es: "Formulario de Pedido" },
   // Header / top bar
-  top_language_label: { en: "Language", ru: "Язык", uk: "Мова" },
+  top_language_label: { en: "Language", es: "Idioma" },
   top_service_line: {
-    en: "Service available in English, Ukrainian, and Russian",
-    ru: "Обслуживание на английском, украинском и русском языках",
-    uk: "Обслуговування англійською, українською та російською мовами",
+    en: "Service available in English and Spanish",
+    es: "Servicio disponible en inglés y español",
   },
-  nav_home: { en: "Home", ru: "Главная", uk: "Головна" },
-  nav_about: { en: "About", ru: "О нас", uk: "Про нас" },
-  nav_faq: { en: "FAQ", ru: "Вопросы", uk: "Питання" },
-  nav_why: { en: "Payment", ru: "Оплата", uk: "Оплата" },
-  nav_pricing: { en: "Medallion Pricing", ru: "Цены на медальоны", uk: "Ціни на медальйони" },
-  nav_contact: { en: "Contact", ru: "Контакт", uk: "Контакт" },
-  nav_order_form: { en: "Order Form", ru: "Форма заказа", uk: "Форма замовлення" },
-  nav_cta: { en: "Order a cameo", ru: "Заказать камею", uk: "Замовити камею" },
-  nav_account: { en: "Account", ru: "Аккаунт", uk: "Обліковий запис" },
-  nav_signout: { en: "Sign out", ru: "Выйти", uk: "Вийти" },
+  nav_home: { en: "Home", es: "Inicio" },
+  nav_about: { en: "About", es: "Nosotros" },
+  nav_faq: { en: "FAQ", es: "Preguntas" },
+  nav_why: { en: "Payment", es: "Pago" },
+  nav_pricing: { en: "Medallion Pricing", es: "Precios de Medallones" },
+  nav_contact: { en: "Contact", es: "Contacto" },
+  nav_order_form: { en: "Order Form", es: "Formulario de Pedido" },
+  nav_cta: { en: "Order a cameo", es: "Ordenar un camafeo" },
+  nav_account: { en: "Account", es: "Cuenta" },
+  nav_signout: { en: "Sign out", es: "Cerrar sesión" },
 
   // Home page keys used by app/page.tsx
   home_hero_image_alt: {
     en: "Soft focus field with warm light",
-    ru: "Поле в мягком фокусе при тёплом свете",
-    uk: "Поле з м’яким фокусом і теплим світлом",
+    es: "Campo de enfoque suave con luz cálida",
   },
   home_hero_title: {
     en: "Elegant enamel photo cameos that honor a life forever",
-    ru: "Элегантные эмалевые фотокамеи, которые сохраняют память навсегда",
-    uk: "Елегантні емальовані фотокамеї, що вшановують пам’ять назавжди",
+    es: "Elegantes camafeos fotográficos de esmalte que honran una vida para siempre",
   },
   home_hero_subtitle: {
     en: "Custom kiln fired enamel photo medallions created for outdoor monuments and private homes. Each piece is built to stay clear and bright in every season.",
-    ru: "Индивидуальные эмалевые фотомедальоны, обожжённые в печи, для наружных памятников и домашних мемориалов. Каждое изделие сохраняет чёткость и яркость в любое время года.",
-    uk: "Індивідуальні емальовані фотомедальйони, випалені в печі, для зовнішніх пам’ятників і домашніх меморіалів. Кожен виріб зберігає чіткість і яскравість у будь-яку пору року.",
+    es: "Medallones fotográficos de esmalte horneado personalizados para monumentos al aire libre y hogares privados. Cada pieza está diseñada para mantenerse clara y brillante en todas las estaciones.",
   },
   home_intro_bg_alt: {
     en: "Soft field texture",
-    ru: "Мягкая текстура поля",
-    uk: "М’яка текстура поля",
+    es: "Textura suave de campo",
   },
   home_intro_title: {
     en: "Custom enamel photo memorial cameos for headstones and mausoleums",
-    ru: "Индивидуальные эмалевые фото-камеи для надгробий и мавзолеев",
-    uk: "Індивідуальні емальовані фотокамеї для надгробків і мавзолеїв",
+    es: "Camafeos fotográficos conmemorativos de esmalte personalizados para lápidas y mausoleos",
   },
   home_intro_body: {
     en: "We transform your favorite photograph into a kiln fired enamel portrait on a metal medallion for outdoor monuments and home memorials. We work with monument dealers and individual families, and every order receives careful retouching and inspection.",
-    ru: "Мы превращаем вашу любимую фотографию в эмалевый портрет, обожжённый в печи, на металлическом медальоне для памятников и домашних мемориалов. Мы работаем и с мастерскими, и с семьями, а каждый заказ проходит ретушь и контроль качества.",
-    uk: "Ми перетворюємо вашу улюблену фотографію на емальований портрет, випалений у печі, на металевому медальйоні для пам’ятників і домашніх меморіалів. Ми працюємо з майстернями та з родинами, а кожне замовлення проходить ретуш і контроль якості.",
+    es: "Transformamos su fotografía favorita en un retrato de esmalte horneado sobre un medallón de metal para monumentos al aire libre y memoriales en el hogar. Trabajamos con distribuidores de monumentos y familias individuales, y cada pedido recibe un cuidadoso retoque e inspección.",
   },
-  home_tile_about: { en: "About us", ru: "О нас", uk: "Про нас" },
-  home_tile_why: { en: "Payment", ru: "Оплата", uk: "Оплата" },
-  home_tile_contact: { en: "Contact us", ru: "Связаться", uk: "Контакт" },
+  home_tile_about: { en: "About us", es: "Nosotros" },
+  home_tile_why: { en: "Payment", es: "Pago" },
+  home_tile_contact: { en: "Contact us", es: "Contáctanos" },
   home_tile_about_alt: {
     en: "About our studio",
-    ru: "О нашей мастерской",
-    uk: "Про нашу майстерню",
+    es: "Sobre nuestro estudio",
   },
   home_tile_why_alt: {
     en: "Closeup of an enamel cameo",
-    ru: "Крупный план эмалевой камеи",
-    uk: "Крупний план емальованої камеї",
+    es: "Primer plano de un camafeo de esmalte",
   },
   home_tile_contact_alt: {
     en: "Headstone flowers at a memorial",
-    ru: "Цветы у памятника",
-    uk: "Квіти біля пам’ятника",
+    es: "Flores en lápida en un memorial",
   },
   home_cta_bg_alt: {
     en: "Field at sunset with soft light",
-    ru: "Поле на закате при мягком свете",
-    uk: "Поле на заході сонця з м’яким світлом",
+    es: "Campo al atardecer con luz suave",
   },
   home_cta_title: {
     en: "Ready to order a cameo or request more information",
-    ru: "Готовы заказать камею или задать вопрос",
-    uk: "Готові замовити камею або поставити запитання",
+    es: "¿Listo para ordenar un camafeo o solicitar más información?",
   },
   home_cta_body: {
     en: "Share your photo, stone details, and any questions. We reply personally with options, pricing, and a clear next step.",
-    ru: "Отправьте фото, информацию о памятнике и вопросы. Мы ответим лично с вариантами, ценами и следующим шагом.",
-    uk: "Надішліть фото, деталі пам’ятника та запитання. Ми відповімо особисто з варіантами, цінами та наступним кроком.",
+    es: "Comparta su foto, detalles de la lápida y cualquier pregunta. Responderemos personalmente con opciones, precios y el siguiente paso claro.",
   },
 
   // Generic CTA label used across pages
-  cta_order: { en: "Order a cameo", ru: "Заказать камею", uk: "Замовити камею" },
-  cart_label: { en: "Cart", ru: "Корзина", uk: "Кошик" },
-  search_label: { en: "Search", ru: "Поиск", uk: "Пошук" },
+  cta_order: { en: "Order a cameo", es: "Ordenar un camafeo" },
+  cart_label: { en: "Cart", es: "Carrito" },
+  search_label: { en: "Search", es: "Buscar" },
 
   // Account pages
-  account_title: { en: "My Account", ru: "Мой аккаунт", uk: "Мій обліковий запис" },
-  account_profile: { en: "Profile Information", ru: "Информация профиля", uk: "Інформація профілю" },
-  account_email: { en: "Email", ru: "Email", uk: "Email" },
-  account_name: { en: "Name", ru: "Имя", uk: "Ім'я" },
-  account_edit_profile: { en: "Edit Profile", ru: "Редактировать профиль", uk: "Редагувати профіль" },
-  account_orders: { en: "Order History", ru: "История заказов", uk: "Історія замовлень" },
-  account_orders_desc: { en: "View all your past orders and reorder easily", ru: "Просмотр всех ваших заказов и легкое повторное заказе", uk: "Перегляд всіх ваших замовлень та легке повторне замовлення" },
-  account_view_orders: { en: "View Orders", ru: "Просмотр заказов", uk: "Переглянути замовлення" },
-  account_quick_actions: { en: "Quick Actions", ru: "Быстрые действия", uk: "Швидкі дії" },
-  account_new_order: { en: "New Order", ru: "Новый заказ", uk: "Нове замовлення" },
+  account_title: { en: "My Account", es: "Mi Cuenta" },
+  account_profile: { en: "Profile Information", es: "Información del Perfil" },
+  account_email: { en: "Email", es: "Correo Electrónico" },
+  account_name: { en: "Name", es: "Nombre" },
+  account_edit_profile: { en: "Edit Profile", es: "Editar Perfil" },
+  account_orders: { en: "Order History", es: "Historial de Pedidos" },
+  account_orders_desc: { en: "View all your past orders and reorder easily", es: "Ver todos sus pedidos anteriores y volver a ordenar fácilmente" },
+  account_view_orders: { en: "View Orders", es: "Ver Pedidos" },
+  account_quick_actions: { en: "Quick Actions", es: "Acciones Rápidas" },
+  account_new_order: { en: "New Order", es: "Nuevo Pedido" },
 };
 
 function safeT(key: string, lang: Lang): string {
@@ -138,7 +124,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY) as Lang | null;
-      if (saved === "en" || saved === "ru" || saved === "uk") setLangState(saved);
+      if (saved === "en" || saved === "es") setLangState(saved);
     } catch {}
   }, []);
 
