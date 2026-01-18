@@ -1,6 +1,5 @@
 "use client";
 
-import { useCart } from "@/components/cart/CartProvider";
 import Link from "next/link";
 import { FormEvent, useMemo, useState, useEffect, Suspense } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
@@ -606,8 +605,6 @@ function dealerLabel(lang: Lang, dealerType: "dealer" | "individual"): string {
 }
 
 function OrderFormContent() {
-  const { itemCount, addItem } = useCart();
-  const [qty, setQty] = useState(1);
   const { lang } = useLanguage();
   const L = (lang as Lang) || "en";
   const t = COPY[L] ?? COPY.en;
@@ -846,44 +843,6 @@ function OrderFormContent() {
               <p className="mt-2 text-xs text-neutral-500">{t.summaryShippingHint}</p>
             </div>
 
-            {/* Cart Controls */}
-            <div className="mt-6 pt-6 border-t border-neutral-200">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500 mb-2">
-                    Quantity
-                  </label>
-                  <input
-                    name="quantity"
-                    type="number"
-                    min={1}
-                    max={999}
-                    value={qty}
-                    onChange={(e) =>
-                      setQty(Math.max(1, Math.min(999, Math.floor(Number(e.target.value) || 1))))
-                    }
-                    className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    addItem({ id: "order-form-request", name: "Order Form Request", priceCents: 0 }, qty)
-                  }
-                  className="w-full rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black shadow-md hover:bg-amber-400 transition-colors"
-                >
-                  Add to cart
-                </button>
-
-                <Link
-                  href="/cart"
-                  className="block text-center rounded-lg border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-700 hover:border-amber-500 hover:text-amber-600 transition-colors"
-                >
-                  View Cart {itemCount > 0 && `(${itemCount})`}
-                </Link>
-              </div>
-            </div>
           </aside>
         </section>
 
