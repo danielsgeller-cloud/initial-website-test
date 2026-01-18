@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 
-type Lang = "en" | "ru" | "uk";
+type Lang = "en" | "es";
 
 const COPY: Record<
   Lang,
@@ -28,25 +28,15 @@ const COPY: Record<
     success: "Thank you. Your message has been sent.",
     error: "Something went wrong. Please try again later.",
   },
-  ru: {
-    title: "Связаться с Pictures in Ceramic",
-    nameLabel: "Имя",
-    emailLabel: "Эл. почта",
-    messageLabel: "Сообщение",
-    sending: "Отправка...",
-    send: "Отправить",
-    success: "Спасибо. Ваше сообщение отправлено.",
-    error: "Произошла ошибка. Пожалуйста, попробуйте позже.",
-  },
-  uk: {
-    title: "Зв’язатися з Pictures in Ceramic",
-    nameLabel: "Ім’я",
-    emailLabel: "Ел. пошта",
-    messageLabel: "Повідомлення",
-    sending: "Надсилання...",
-    send: "Надіслати",
-    success: "Дякуємо. Ваше повідомлення надіслано.",
-    error: "Сталася помилка. Будь ласка, спробуйте пізніше.",
+  es: {
+    title: "Contactar Pictures in Ceramic",
+    nameLabel: "Nombre",
+    emailLabel: "Correo Electrónico",
+    messageLabel: "Mensaje",
+    sending: "Enviando...",
+    send: "Enviar",
+    success: "Gracias. Su mensaje ha sido enviado.",
+    error: "Algo salió mal. Por favor, inténtelo de nuevo más tarde.",
   },
 };
 
