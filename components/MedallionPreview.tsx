@@ -83,7 +83,7 @@ export default function MedallionPreview({ shapeId, size, finish }: MedallionPre
   const shapeHeight = dimensions.height * scale;
 
   let shapePath = "";
-  let shapeElement: JSX.Element;
+  let shapeElement;
 
   switch (shapeId) {
     case "oval":
