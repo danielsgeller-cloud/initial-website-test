@@ -7,35 +7,21 @@ applications:
           commands:
             - npm ci
             - echo "=== Environment Check (preBuild) ==="
-            - env | grep -E "DATABASE_URL|PICS|SES|NEXTAUTH" || echo "No env vars found"
-            - |
-              echo "Writing runtime config..."
-              # Extract env vars safely even if names have trailing spaces
-              SES_USER=$(env | grep "^PICS_SES_USER" | cut -d'=' -f2-)
-              SES_PASS=$(env | grep "^PICS_SES_PASS" | cut -d'=' -f2-)
-              AWS_REG=$(env | grep "^AWS_REGION" | cut -d'=' -f2-)
-              cat > lib/runtime-config.json <<EOF
-              {
-                "PICS_SES_USER": "$SES_USER",
-                "PICS_SES_PASS": "$SES_PASS",
-                "AWS_REGION": "${AWS_REG:-us-east-1}"
-              }
-              EOF
-            - cat lib/runtime-config.json
+            - env | grep -E "DATABASE_URL|GMAIL|NEXTAUTH" || echo "No env vars found"
         build:
           commands:
             - npx prisma generate
             - echo "=== Environment Check (build) ==="
-            - env | grep -E "DATABASE_URL|PICS|SES|NEXTAUTH" || echo "No env vars found"
+            - env | grep -E "DATABASE_URL|GMAIL|NEXTAUTH" || echo "No env vars found"
             - |
               echo "=== Writing .env.production for runtime ==="
               # Extract env vars even if names have trailing spaces (Amplify bug)
               DB_URL=$(env | grep "^DATABASE_URL" | cut -d'=' -f2-)
               AUTH_URL=$(env | grep "^NEXTAUTH_URL" | cut -d'=' -f2- | head -1)
               AUTH_SECRET=$(env | grep "NEXTAUTH_SECRET" | cut -d'=' -f2-)
-              SES_USER=$(env | grep "^PICS_SES_USER" | cut -d'=' -f2-)
-              SES_PASS=$(env | grep "^PICS_SES_PASS" | cut -d'=' -f2-)
-              SES_REGION=$(env | grep "^NEXT_PUBLIC_SES_REGION" | cut -d'=' -f2-)
+              GMAIL_USER=$(env | grep "^GMAIL_USER" | cut -d'=' -f2-)
+              GMAIL_PASS=$(env | grep "^GMAIL_APP_PASSWORD" | cut -d'=' -f2-)
+              CONTACT_FROM=$(env | grep "^CONTACT_FROM" | cut -d'=' -f2-)
               STRIPE_SECRET=$(env | grep "^STRIPE_SECRET_KEY" | cut -d'=' -f2-)
               STRIPE_PUBLIC=$(env | grep "^STRIPE_PUBLISHABLE_KEY" | cut -d'=' -f2-)
               SITE_URL=$(env | grep "^NEXT_PUBLIC_SITE_URL" | cut -d'=' -f2-)
@@ -43,9 +29,9 @@ applications:
               DATABASE_URL=$DB_URL
               NEXTAUTH_URL=$AUTH_URL
               NEXTAUTH_SECRET=$AUTH_SECRET
-              PICS_SES_USER=$SES_USER
-              PICS_SES_PASS=$SES_PASS
-              NEXT_PUBLIC_SES_REGION=$SES_REGION
+              GMAIL_USER=$GMAIL_USER
+              GMAIL_APP_PASSWORD=$GMAIL_PASS
+              CONTACT_FROM=$CONTACT_FROM
               STRIPE_SECRET_KEY=$STRIPE_SECRET
               STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLIC
               NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLIC

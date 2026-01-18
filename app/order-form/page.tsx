@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FormEvent, useMemo, useState, useEffect, Suspense } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
+import { useUploadThing } from "@/lib/uploadthing";
 
 type Lang = "en" | "ru" | "uk";
 type Finish = "bw" | "color";
@@ -626,7 +627,21 @@ function OrderFormContent() {
   const [shipTo, setShipTo] = useState<string>("");
   const [deadline, setDeadline] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
+
+  const { startUpload } = useUploadThing("orderImages", {
+    onClientUploadComplete: (res) => {
+      const urls = res?.map((file) => file.url) || [];
+      setUploadedImages(prev => [...prev, ...urls]);
+      setUploadingImages(false);
+    },
+    onUploadError: (error: Error) => {
+      console.error("Upload error:", error);
+      alert("Failed to upload images. Please try again.");
+      setUploadingImages(false);
+    },
+  });
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | "success" | "error">(null);
@@ -743,6 +758,7 @@ function OrderFormContent() {
         baseFee: baseFee,
         combineAdjust: combineAdjustment,
         totalPrice: totalPrice,
+        imageUrls: uploadedImages,
       };
 
       const res = await fetch("/api/orders/submit", {
@@ -768,6 +784,7 @@ function OrderFormContent() {
       setShipTo("");
       setDeadline("");
       setNotes("");
+      setUploadedImages([]);
     } catch (err: any) {
       setStatus("error");
       setStatusMessage(err?.message || t.error);
@@ -1144,22 +1161,27 @@ function OrderFormContent() {
               <div className="mt-2">
                 <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-6 py-8 hover:border-amber-400 hover:bg-amber-50/30 transition-colors">
                   <svg className="h-10 w-10 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 4 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                   <p className="mt-2 text-sm font-medium text-neutral-700">
-                    Click to upload or drag and drop
+                    {uploadingImages ? "Uploading..." : "Click to upload or drag and drop"}
                   </p>
                   <p className="mt-1 text-xs text-neutral-500">
-                    PNG, JPG, GIF up to 10MB each
+                    High-resolution images up to 16MB each (JPG, PNG, GIF)
                   </p>
                   <input
                     type="file"
                     multiple
                     accept="image/*"
+                    disabled={uploadingImages}
                     className="hidden"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const files = Array.from(e.target.files || []);
-                      setUploadedImages(prev => [...prev, ...files]);
+                      if (files.length > 0) {
+                        setUploadingImages(true);
+                        await startUpload(files);
+                        e.target.value = ""; // Reset input
+                      }
                     }}
                   />
                 </label>
@@ -1171,10 +1193,10 @@ function OrderFormContent() {
                     Uploaded Images ({uploadedImages.length})
                   </p>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                    {uploadedImages.map((file, idx) => (
+                    {uploadedImages.map((url, idx) => (
                       <div key={idx} className="relative group">
                         <img
-                          src={URL.createObjectURL(file)}
+                          src={url}
                           alt={`Upload ${idx + 1}`}
                           className="h-24 w-full rounded-md border border-neutral-200 object-cover"
                         />
@@ -1190,7 +1212,7 @@ function OrderFormContent() {
                           </svg>
                         </button>
                         <p className="mt-1 truncate text-xs text-neutral-600">
-                          {file.name}
+                          Image {idx + 1}
                         </p>
                       </div>
                     ))}

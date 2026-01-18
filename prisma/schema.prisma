@@ -47,6 +47,7 @@ model Order {
   mounting        String?
   combinePhotos   Boolean @default(false)
   proofOption     String?
+  imageUrls       String[] @default([])  // Uploaded image URLs
 
   // Customer info
   customerName    String
