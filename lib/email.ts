@@ -1,35 +1,41 @@
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
-import { serverEnv } from "./server-env";
+import nodemailer from "nodemailer";
 
 type SendEmailOptions = {
-  to: string;
+  to: string | string[]; // Support single email or array of emails
   subject: string;
   text: string;
+  html?: string; // Optional HTML version
   from?: string;
   replyTo?: string;
 };
 
 export async function sendEmail(opts: SendEmailOptions) {
-  const region = serverEnv.AWS_REGION;
-  const from = opts.from || process.env.CONTACT_FROM || process.env.SES_FROM_ADDRESS || "gellerd@rider.edu";
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
 
-  const client = new SESClient({
-    region,
-    credentials: {
-      accessKeyId: serverEnv.PICS_SES_USER,
-      secretAccessKey: serverEnv.PICS_SES_PASS,
+  if (!gmailUser || !gmailAppPassword) {
+    console.error("CRITICAL: Missing GMAIL_USER or GMAIL_APP_PASSWORD");
+    throw new Error("Email service not configured");
+  }
+
+  // Create transporter using Gmail SMTP
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // use SSL
+    auth: {
+      user: gmailUser,
+      pass: gmailAppPassword,
     },
   });
 
-  const command = new SendEmailCommand({
-    Source: from,
-    Destination: { ToAddresses: [opts.to] },
-    ReplyToAddresses: opts.replyTo ? [opts.replyTo] : undefined,
-    Message: {
-      Subject: { Data: opts.subject, Charset: "UTF-8" },
-      Body: { Text: { Data: opts.text, Charset: "UTF-8" } },
-    },
+  // Send email
+  await transporter.sendMail({
+    from: opts.from || gmailUser,
+    to: opts.to,
+    subject: opts.subject,
+    text: opts.text,
+    html: opts.html,
+    replyTo: opts.replyTo,
   });
-
-  await client.send(command);
 }

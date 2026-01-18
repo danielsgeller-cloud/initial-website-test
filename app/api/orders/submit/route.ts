@@ -35,6 +35,7 @@ export async function POST(req: Request) {
       baseFee,
       combineAdjust,
       totalPrice,
+      imageUrls,
     } = body;
 
     // Validate required fields
@@ -70,6 +71,7 @@ export async function POST(req: Request) {
         baseFee: parseFloat(baseFee) || 9,
         combineAdjust: parseFloat(combineAdjust) || 0,
         totalPrice: parseFloat(totalPrice) || 0,
+        imageUrls: imageUrls || [],
         status: "pending",
       },
     });
@@ -117,8 +119,15 @@ Thank you for choosing Pictures in Ceramic!
       // Don't fail the order submission if email fails
     }
 
-    // Send notification to admin
-    const adminEmail = process.env.CONTACT_EMAIL || "info@picturesinceramic.com";
+    // Send notification to admin(s)
+    const adminEmail = process.env.ADMIN_EMAIL || "info@picturesinceramic.com";
+    const adminEmailCC = process.env.ADMIN_EMAIL_CC; // Optional third email
+
+    // Build recipient list - always include main admin, add CC if provided
+    const adminRecipients = adminEmailCC
+      ? [adminEmail, adminEmailCC]
+      : adminEmail;
+
     const adminEmailBody = `
 New Order Received!
 
@@ -144,11 +153,13 @@ ${neededByDate ? `- Needed by: ${neededByDate}` : ""}
 ${additionalNotes ? `Additional Notes: ${additionalNotes}` : ""}
 
 Total Price: $${totalPrice}
+
+${imageUrls && imageUrls.length > 0 ? `Images: ${imageUrls.length} file(s) uploaded` : ""}
     `.trim();
 
     try {
       await sendEmail({
-        to: adminEmail,
+        to: adminRecipients,
         subject: `New Order #${order.id}`,
         text: adminEmailBody,
       });

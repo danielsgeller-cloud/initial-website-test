@@ -7,9 +7,6 @@ type Body = { name: string; email: string; message: string };
 
 export async function POST(req: Request) {
   try {
-    const from = process.env.CONTACT_FROM || "gellerd@rider.edu";
-    const to = process.env.CONTACT_TO || "danielsgeller@gmail.com";
-
     const json = (await req.json()) as Partial<Body>;
     const name = (json.name || "").toString().trim();
     const email = (json.email || "").toString().trim();
@@ -19,19 +16,64 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Missing name/email/message" }, { status: 400 });
     }
 
-    const subject = `Website contact: ${name}`;
-    const text =
+        // Admin notification email
+    const adminEmail = process.env.ADMIN_EMAIL || "danielsgeller@gmail.com";
+    const adminEmailCc = process.env.ADMIN_EMAIL_CC;
+
+    const adminRecipients = adminEmailCc
+      ? [adminEmail, adminEmailCc]
+      : adminEmail;
+
+
+    const adminSubject = `Website contact: ${name}`;
+    const adminText =
       `Name: ${name}\n` +
       `Email: ${email}\n\n` +
       `Message:\n${message}\n`;
 
-    await sendEmail({
-      to,
-      from,
-      replyTo: email,
-      subject,
-      text,
+    console.log("ENV CHECK IN ROUTE", {
+      GMAIL_USER: process.env.GMAIL_USER,
+      GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD,
     });
+
+
+    // Send to admin(s)
+    await sendEmail({
+      to: adminRecipients,
+      subject: adminSubject,
+      text: adminText,
+      replyTo: email,
+    });
+
+    // Customer confirmation email
+    const customerSubject = "Thank you for contacting Pictures in Ceramic";
+    const customerText = `
+Hi ${name},
+
+Thank you for reaching out to Pictures in Ceramic!
+
+We have received your message and will get back to you as soon as possible, typically within 1-2 business days.
+
+Your message:
+${message}
+
+If you have any urgent questions, please feel free to call us directly.
+
+Best regards,
+Pictures in Ceramic Team
+    `.trim();
+
+    // Send confirmation to customer
+    try {
+      await sendEmail({
+        to: email,
+        subject: customerSubject,
+        text: customerText,
+      });
+    } catch (emailError) {
+      console.error("Failed to send customer confirmation:", emailError);
+      // Don't fail the request if customer confirmation fails
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
