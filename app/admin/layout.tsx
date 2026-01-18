@@ -10,9 +10,49 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Show loading state while checking auth
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-neutral-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if not authenticated or not an admin
+  if (status === "unauthenticated" || (session?.user as any)?.role !== "ADMIN") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-neutral-50">
+        <div className="mx-auto max-w-md rounded-lg border border-red-200 bg-white p-8 text-center shadow-lg">
+          <div className="mb-4 text-5xl">🚫</div>
+          <h1 className="text-2xl font-bold text-neutral-900">Access Denied</h1>
+          <p className="mt-3 text-neutral-600">
+            You don't have permission to access the admin panel.
+          </p>
+          <div className="mt-6 flex flex-col gap-3">
+            <Link
+              href="/login?callbackUrl=/admin"
+              className="rounded-md bg-amber-500 px-4 py-2 text-sm font-semibold text-black hover:bg-amber-400"
+            >
+              Sign in as admin
+            </Link>
+            <Link
+              href="/"
+              className="text-sm text-neutral-600 hover:text-amber-600"
+            >
+              Return to home
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const navLinks = [
     { href: "/admin", label: "Dashboard" },
