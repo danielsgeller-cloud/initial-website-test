@@ -84,7 +84,7 @@ export default function HomePage() {
               {
                 key: "why",
                 label: t("home_tile_why"),
-                href: "/payment",
+                href: "/about",
                 image: "/images/why-cameos-closeup.jpg",
                 alt: t("home_tile_why_alt"),
               },

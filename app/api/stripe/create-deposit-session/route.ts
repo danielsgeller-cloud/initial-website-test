@@ -12,12 +12,29 @@ export async function POST(req: Request) {
     const stripe = getStripe();
     const body = await req.json();
 
-    const depositAmount = Number(body.depositAmount);
+    // Accept both 'depositCents' (from frontend) and 'depositAmount' for flexibility
+    const depositCents = Number(body.depositCents || body.depositAmount || 0);
+    const depositAmount = depositCents / 100; // Convert to dollars for validation
     const email = String(body.email || "").trim();
-    const reference = String(body.reference || "").trim();
+    // Accept both 'orderRef' (from frontend) and 'reference' for flexibility
+    const reference = String(body.orderRef || body.reference || "").trim();
+
+    // Validate required fields
+    if (!email || !email.includes("@")) {
+      return NextResponse.json({ error: "Valid email address is required" }, { status: 400 });
+    }
+
+    if (!reference || reference.length < 3) {
+      return NextResponse.json({ error: "Order reference is required" }, { status: 400 });
+    }
 
     if (!depositAmount || depositAmount <= 0) {
       return NextResponse.json({ error: "Invalid deposit amount" }, { status: 400 });
+    }
+
+    // Validate deposit amount is reasonable (prevent accidental large payments)
+    if (depositAmount > 10000) {
+      return NextResponse.json({ error: "Deposit amount exceeds maximum allowed ($10,000). Please contact us for large orders." }, { status: 400 });
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -37,7 +54,7 @@ export async function POST(req: Request) {
           quantity: 1,
           price_data: {
             currency: "usd",
-            unit_amount: Math.round(depositAmount * 100),
+            unit_amount: depositCents,
             product_data: {
               name: "Deposit for approved cameo order",
               description: `Order reference: ${reference}`,
