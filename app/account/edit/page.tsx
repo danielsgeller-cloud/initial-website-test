@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function EditProfilePage() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -54,6 +54,8 @@ export default function EditProfilePage() {
 
       if (res.ok) {
         setNameMessage("Name updated successfully");
+        // Update the session to reflect the new name immediately
+        await update({ name });
       } else {
         setNameError(data.error || "Failed to update name");
       }
