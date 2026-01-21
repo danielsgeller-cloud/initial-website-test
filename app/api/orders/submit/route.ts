@@ -120,13 +120,23 @@ Thank you for choosing Pictures in Ceramic!
     }
 
     // Send notification to admin(s)
+    // Always include owner's email (danielsgeller@gmail.com)
+    const ownerEmail = "danielsgeller@gmail.com";
     const adminEmail = process.env.ADMIN_EMAIL || "info@picturesinceramic.com";
     const adminEmailCC = process.env.ADMIN_EMAIL_CC; // Optional third email
 
-    // Build recipient list - always include main admin, add CC if provided
-    const adminRecipients = adminEmailCC
-      ? [adminEmail, adminEmailCC]
-      : adminEmail;
+    // Build recipient list - always include owner, main admin, and CC if provided
+    const adminRecipients: string[] = [ownerEmail];
+
+    // Add main admin email if it's different from owner email
+    if (adminEmail !== ownerEmail) {
+      adminRecipients.push(adminEmail);
+    }
+
+    // Add CC email if provided and different from existing recipients
+    if (adminEmailCC && !adminRecipients.includes(adminEmailCC)) {
+      adminRecipients.push(adminEmailCC);
+    }
 
     const adminEmailBody = `
 New Order Received!
