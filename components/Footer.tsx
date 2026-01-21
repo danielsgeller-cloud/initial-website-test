@@ -91,15 +91,19 @@ export default function Footer() {
               Connect
             </h3>
             <div className="mt-3 flex gap-3 text-sm">
-              {/* Placeholder social links */}
+              {/* Social media links */}
               <a
-                href="#"
+                href="https://www.facebook.com/picturesinceramic"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-700 hover:border-amber-500 hover:text-amber-600"
               >
                 Facebook
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/picturesinceramic"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-700 hover:border-amber-500 hover:text-amber-600"
               >
                 Instagram
