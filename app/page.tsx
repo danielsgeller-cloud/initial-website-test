@@ -32,7 +32,7 @@ export default function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link
-                href="/contact"
+                href="/order-form"
                 className="rounded-full bg-amber-500 px-8 py-3 text-sm font-semibold uppercase tracking-[0.15em] text-black shadow-md transition hover:bg-amber-400"
               >
                 {t("cta_order")}
@@ -139,7 +139,7 @@ export default function HomePage() {
             {t("home_cta_body")}
           </p>
           <Link
-            href="/contact"
+            href="/order-form"
             className="mt-8 rounded-full bg-amber-500 px-10 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-black shadow-lg transition hover:bg-amber-400"
           >
             {t("cta_order")}
