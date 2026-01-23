@@ -63,8 +63,8 @@ export default function CartPage() {
         <div className="mt-10 rounded-lg border border-neutral-200 bg-white p-8">
           <div className="text-neutral-900">Your cart is empty.</div>
           <div className="mt-4">
-            <Link href="/shop" className="rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-amber-400">
-              Continue shopping
+            <Link href="/order-form" className="rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-amber-400">
+              Place an Order
             </Link>
           </div>
         </div>
@@ -174,18 +174,6 @@ export default function CartPage() {
               </button>
               */}
 
-              <Link
-                href="/order-form"
-                className="text-center rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 hover:border-amber-500 hover:text-amber-600"
-              >
-                Continue to order form
-              </Link>
-              <Link
-                href="/shop"
-                className="text-center rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-600 hover:border-neutral-400"
-              >
-                Continue shopping
-              </Link>
             </div>
 
             {!session && (
@@ -198,6 +186,13 @@ export default function CartPage() {
                 </p>
               </div>
             )}
+
+            <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-3">
+              <p className="text-xs font-semibold text-blue-900">Deposit Required</p>
+              <p className="mt-1 text-xs text-blue-800">
+                A deposit (counted towards the final cost) is required before work begins on your order.
+              </p>
+            </div>
 
             <div className="mt-4 text-xs text-neutral-500">
               Taxes and shipping, if applicable, are calculated later.

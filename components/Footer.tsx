@@ -54,16 +54,6 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/payment" className="hover:text-amber-600">
-                  Why our cameos
-                </a>
-              </li>
-              <li>
-                <a href="/pricing" className="hover:text-amber-600">
-                  Pricing
-                </a>
-              </li>
-              <li>
                 <a href="/faq" className="hover:text-amber-600">
                   Frequently asked questions
                 </a>
@@ -76,7 +66,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Right column: hours and social */}
+          {/* Right column: hours */}
           <div className="text-sm text-neutral-600">
             <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
               Studio hours
@@ -86,25 +76,6 @@ export default function Footer() {
               <li>Saturday: By appointment</li>
               <li>Sunday: By appointment</li>
             </ul>
-
-            <h3 className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
-              Connect
-            </h3>
-            <div className="mt-3 flex gap-3 text-sm">
-              {/* Placeholder social links */}
-              <a
-                href="#"
-                className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-700 hover:border-amber-500 hover:text-amber-600"
-              >
-                Facebook
-              </a>
-              <a
-                href="#"
-                className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-700 hover:border-amber-500 hover:text-amber-600"
-              >
-                Instagram
-              </a>
-            </div>
           </div>
         </div>
 

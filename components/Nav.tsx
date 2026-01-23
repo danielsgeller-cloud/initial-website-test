@@ -29,7 +29,6 @@ export default function Nav() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2 md:px-6">
           <div className="flex items-center gap-3">
             <LanguageSlider />
-            <p className="hidden text-[11px] md:block">{t("topbar_service")}</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 md:gap-4">
@@ -44,10 +43,6 @@ export default function Nav() {
               {t("email_display")}
             </a>
           </div>
-        </div>
-
-        <div className="mx-auto max-w-6xl px-4 pb-2 md:hidden md:px-6">
-          <p className="text-[11px] text-neutral-200">{t("topbar_service")}</p>
         </div>
       </div>
 
@@ -76,6 +71,9 @@ export default function Nav() {
             </Link>
             <Link href="/faq" className="hover:text-amber-600">
               {t("nav_faq")}
+            </Link>
+            <Link href="/payment" className="hover:text-amber-600">
+              {t("nav_why")}
             </Link>
             <Link href="/contact" className="hover:text-amber-600">
               {t("nav_contact")}
@@ -198,6 +196,9 @@ export default function Nav() {
                 </Link>
                 <Link href="/faq" onClick={() => setMenuOpen(false)}>
                   {t("nav_faq")}
+                </Link>
+                <Link href="/payment" onClick={() => setMenuOpen(false)}>
+                  {t("nav_why")}
                 </Link>
                 <Link href="/contact" onClick={() => setMenuOpen(false)}>
                   {t("nav_contact")}
