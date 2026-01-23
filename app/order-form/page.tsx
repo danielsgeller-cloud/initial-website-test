@@ -630,7 +630,7 @@ function OrderFormContent() {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [uploadingImages, setUploadingImages] = useState(false);
 
-  // Convert image files to base64
+  // Compress and convert image files to base64
   const handleImageUpload = async (files: File[]) => {
     setUploadingImages(true);
 
@@ -638,9 +638,9 @@ function OrderFormContent() {
       const base64Images: string[] = [];
 
       for (const file of files) {
-        // Validate file size (max 2MB to keep database reasonable)
-        if (file.size > 2 * 1024 * 1024) {
-          alert(`${file.name} is too large. Please use images under 2MB.`);
+        // Validate file size (max 10MB original)
+        if (file.size > 10 * 1024 * 1024) {
+          alert(`${file.name} is too large. Please use images under 10MB.`);
           continue;
         }
 
@@ -650,15 +650,57 @@ function OrderFormContent() {
           continue;
         }
 
-        // Convert to base64
-        const base64 = await new Promise<string>((resolve, reject) => {
+        // Compress image using canvas
+        const compressedBase64 = await new Promise<string>((resolve, reject) => {
+          const img = new Image();
           const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
+
+          reader.onload = (e) => {
+            img.src = e.target?.result as string;
+          };
+
+          img.onload = () => {
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+              reject(new Error('Failed to get canvas context'));
+              return;
+            }
+
+            // Calculate dimensions (max 1920px width/height, maintain aspect ratio)
+            let width = img.width;
+            let height = img.height;
+            const maxDimension = 1920;
+
+            if (width > maxDimension || height > maxDimension) {
+              if (width > height) {
+                height = (height / width) * maxDimension;
+                width = maxDimension;
+              } else {
+                width = (width / height) * maxDimension;
+                height = maxDimension;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            // Draw and compress
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Convert to base64 with compression (0.8 quality for JPEGs)
+            const base64 = canvas.toDataURL('image/jpeg', 0.8);
+            resolve(base64);
+          };
+
+          img.onerror = () => reject(new Error('Failed to load image'));
+          reader.onerror = () => reject(new Error('Failed to read file'));
+
           reader.readAsDataURL(file);
         });
 
-        base64Images.push(base64);
+        base64Images.push(compressedBase64);
       }
 
       setUploadedImages(prev => [...prev, ...base64Images]);
@@ -793,6 +835,13 @@ function OrderFormContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderBody),
       });
+
+      // Check if response is JSON before parsing
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        // Server returned HTML error (likely CloudFront blocking large request)
+        throw new Error("Request too large. Please use fewer or smaller images (images are auto-compressed to fit).");
+      }
 
       const json = await res.json();
 
@@ -1203,7 +1252,7 @@ function OrderFormContent() {
                     {uploadingImages ? "Uploading..." : "Click to upload or drag and drop"}
                   </p>
                   <p className="mt-1 text-xs text-neutral-500">
-                    High-resolution images up to 2MB each (JPG, PNG, GIF)
+                    High-resolution images up to 10MB each (auto-compressed, JPG/PNG/GIF)
                   </p>
                   <input
                     type="file"
