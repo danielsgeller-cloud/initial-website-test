@@ -5,7 +5,6 @@ import Link from "next/link";
 import { FormEvent, useMemo, useState, useEffect, Suspense } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
-import { useUploadThing } from "@/lib/uploadthing";
 import MedallionPreview from "@/components/MedallionPreview";
 
 type Lang = "en" | "ru" | "uk";
@@ -631,18 +630,45 @@ function OrderFormContent() {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [uploadingImages, setUploadingImages] = useState(false);
 
-  const { startUpload } = useUploadThing("orderImages", {
-    onClientUploadComplete: (res) => {
-      const urls = res?.map((file) => file.url) || [];
-      setUploadedImages(prev => [...prev, ...urls]);
-      setUploadingImages(false);
-    },
-    onUploadError: (error: Error) => {
+  // Convert image files to base64
+  const handleImageUpload = async (files: File[]) => {
+    setUploadingImages(true);
+
+    try {
+      const base64Images: string[] = [];
+
+      for (const file of files) {
+        // Validate file size (max 2MB to keep database reasonable)
+        if (file.size > 2 * 1024 * 1024) {
+          alert(`${file.name} is too large. Please use images under 2MB.`);
+          continue;
+        }
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          alert(`${file.name} is not an image file.`);
+          continue;
+        }
+
+        // Convert to base64
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        base64Images.push(base64);
+      }
+
+      setUploadedImages(prev => [...prev, ...base64Images]);
+    } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload images. Please try again.");
+      alert("Failed to process images. Please try again.");
+    } finally {
       setUploadingImages(false);
-    },
-  });
+    }
+  };
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | "success" | "error">(null);
@@ -1177,7 +1203,7 @@ function OrderFormContent() {
                     {uploadingImages ? "Uploading..." : "Click to upload or drag and drop"}
                   </p>
                   <p className="mt-1 text-xs text-neutral-500">
-                    High-resolution images up to 16MB each (JPG, PNG, GIF)
+                    High-resolution images up to 2MB each (JPG, PNG, GIF)
                   </p>
                   <input
                     type="file"
@@ -1188,8 +1214,7 @@ function OrderFormContent() {
                     onChange={async (e) => {
                       const files = Array.from(e.target.files || []);
                       if (files.length > 0) {
-                        setUploadingImages(true);
-                        await startUpload(files);
+                        await handleImageUpload(files);
                         e.target.value = ""; // Reset input
                       }
                     }}

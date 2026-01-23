@@ -28,6 +28,7 @@ interface Order {
   size: string;
   totalPrice: number;
   status: string;
+  imageUrls: string[];
   createdAt: string;
 }
 
