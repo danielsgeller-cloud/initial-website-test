@@ -17,10 +17,10 @@ export default function AboutPage() {
       <section className="relative h-[320px] w-full overflow-hidden bg-neutral-900 md:h-[420px]">
         <div className="absolute inset-0 bg-neutral-800">
           <img
-            src="/images/about-hero-placeholder.jpg"
+            src="/images/field-sunset-wide.jpg"
             alt={pick(lang, {
-              en: "Studio placeholder",
-              es: "Imagen del estudio",
+              en: "Memorial landscape",
+              es: "Paisaje conmemorativo",
             })}
             className="h-full w-full object-cover opacity-40"
           />
@@ -48,10 +48,10 @@ export default function AboutPage() {
           {/* Image Placeholder 1 */}
           <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
             <img
-              src="/images/about-placeholder-1.jpg"
+              src="/images/about-studio.jpg"
               alt={pick(lang, {
-                en: "Family studio placeholder",
-                es: "Imagen del estudio familiar",
+                en: "Family studio",
+                es: "Estudio familiar",
               })}
               className="h-full w-full object-cover opacity-80"
             />
@@ -124,10 +124,10 @@ export default function AboutPage() {
           {/* Image Placeholder 2 */}
           <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
             <img
-              src="/images/about-placeholder-2.jpg"
+              src="/images/granite-texture.jpg"
               alt={pick(lang, {
-                en: "Craftsmanship placeholder",
-                es: "Imagen del proceso artesanal",
+                en: "Granite memorial material",
+                es: "Material de granito conmemorativo",
               })}
               className="h-full w-full object-cover opacity-80"
             />
@@ -153,10 +153,10 @@ export default function AboutPage() {
           {/* Image Placeholder 3 */}
           <div className="mt-10 h-64 w-full max-w-3xl overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-80">
             <img
-              src="/images/about-placeholder-3.jpg"
+              src="/images/field-soft-repeat.jpg"
               alt={pick(lang, {
-                en: "Family placeholder",
-                es: "Imagen familiar",
+                en: "Peaceful memorial landscape",
+                es: "Paisaje conmemorativo tranquilo",
               })}
               className="h-full w-full object-cover opacity-80"
             />
