@@ -27,6 +27,7 @@ interface Order {
   combineAdjust: number;
   totalPrice: number;
   status: string;
+  imageUrls: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -336,6 +337,30 @@ export default function OrderHistoryPage() {
                         <p className="mt-1 text-neutral-600 text-sm">
                           {order.additionalNotes}
                         </p>
+                      </div>
+                    )}
+
+                    {/* Uploaded Images */}
+                    {order.imageUrls && order.imageUrls.length > 0 && (
+                      <div className="mt-4">
+                        <p className="font-medium text-neutral-900 mb-3">
+                          Uploaded Images ({order.imageUrls.length})
+                        </p>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                          {order.imageUrls.map((imageData, idx) => (
+                            <div key={idx} className="relative group">
+                              <img
+                                src={imageData}
+                                alt={`Order image ${idx + 1}`}
+                                className="h-32 w-full rounded-lg border border-neutral-200 object-cover shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                onClick={() => window.open(imageData, '_blank')}
+                              />
+                              <p className="mt-1 text-xs text-center text-neutral-600">
+                                Image {idx + 1}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
 
