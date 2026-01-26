@@ -2,9 +2,9 @@
 
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 
-type Lang = "en" | "es";
+type Lang = "en" | "es" | "ru" | "uk";
 
-function pick(lang: Lang, m: { en: string; es: string }) {
+function pick(lang: Lang, m: { en: string; es: string; ru?: string; uk?: string }) {
   return m[lang] ?? m.en;
 }
 

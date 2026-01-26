@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 
-type Lang = "en" | "es";
+type Lang = "en" | "es" | "ru" | "uk";
 
-const COPY: Record<
+const COPY: Partial<Record<
   Lang,
   {
     title: string;
@@ -17,7 +17,7 @@ const COPY: Record<
     success: string;
     error: string;
   }
-> = {
+>> = {
   en: {
     title: "Contact Pictures in Ceramic",
     nameLabel: "Name",

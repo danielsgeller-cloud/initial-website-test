@@ -7,7 +7,7 @@ import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
 import MedallionPreview from "@/components/MedallionPreview";
 
-type Lang = "en" | "ru" | "uk";
+type Lang = "en" | "es" | "ru" | "uk";
 type Finish = "bw" | "color";
 
 type PriceOption = {
@@ -26,7 +26,7 @@ type ShapeGroup = {
   options: PriceOption[];
 };
 
-const COPY: Record<
+const COPY: Partial<Record<
   Lang,
   {
     heroTitle: string;
@@ -119,7 +119,7 @@ const COPY: Record<
     customerNotes: string;
     none: string;
   }
-> = {
+>> = {
   en: {
     heroTitle: "Order an enamel photo cameo",
     heroBody:
