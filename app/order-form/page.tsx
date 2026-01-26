@@ -859,9 +859,13 @@ function OrderFormContent() {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      addItem({ id: "order-form-request", name: "Order Form Request", priceCents: 0 }, qty)
-                    }
+                    onClick={() => {
+                      const shapeLabel = shapeLabelForLang(selectedShape, L);
+                      const finishText = finishLabel(L, finish);
+                      const itemName = `${shapeLabel} ${selectedOption.size} - ${finishText}`;
+                      const itemId = `cameo-${shapeId}-${sizeCode}-${finish}`;
+                      addItem({ id: itemId, name: itemName, priceCents: basePrice * 100 }, qty);
+                    }}
                     className="w-full rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black shadow-md hover:bg-amber-400 transition-colors"
                   >
                     Add to cart

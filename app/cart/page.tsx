@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 function money(cents: number) {
   return (cents / 100).toLocaleString(undefined, { style: "currency", currency: "USD" });
@@ -9,6 +11,18 @@ function money(cents: number) {
 
 export default function CartPage() {
   const { items, itemCount, subtotalCents, setQty, removeItem, clear } = useCart();
+  const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handlePlaceOrder() {
+    if (items.length === 0) return;
+
+    setSubmitting(true);
+
+    // Navigate to contact page with cart data or show order form
+    // For now, navigate to order form
+    router.push("/order-form");
+  }
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
@@ -105,6 +119,16 @@ export default function CartPage() {
             <div className="mt-3 flex items-center justify-between">
               <div className="text-sm text-neutral-700">Subtotal</div>
               <div className="text-sm font-semibold text-neutral-900">{money(subtotalCents)}</div>
+            </div>
+
+            <div className="mt-6">
+              <button
+                onClick={handlePlaceOrder}
+                disabled={submitting || items.length === 0}
+                className="w-full text-center rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-md hover:from-amber-600 hover:to-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                {submitting ? "Processing..." : "Place Order Request"}
+              </button>
             </div>
 
             <div className="mt-6 rounded-md border border-blue-200 bg-blue-50 p-4">
