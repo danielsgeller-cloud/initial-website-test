@@ -224,6 +224,23 @@ export default function FAQPage() {
           </div>
         </div>
 
+        {/* Size Chart */}
+        <div className="mt-12 bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="p-6 bg-gradient-to-r from-amber-50 to-amber-100">
+            <h2 className="text-2xl font-bold text-neutral-900 text-center">
+              {lang === "en" && "Oval Medallion Size Chart"}
+              {lang === "es" && "Tabla de Tamaños de Medallones Ovalados"}
+            </h2>
+          </div>
+          <div className="p-4">
+            <img
+              src="/images/size-chart-oval.jpg"
+              alt={lang === "en" ? "Exact sizes for oval medallions" : "Tamaños exactos para medallones ovalados"}
+              className="w-full max-w-2xl mx-auto"
+            />
+          </div>
+        </div>
+
         {/* Back Link */}
         <div className="mt-8 text-center">
           <Link

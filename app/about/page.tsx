@@ -162,6 +162,43 @@ export default function AboutPage() {
             />
           </div>
         </div>
+
+        {/* Fourth Block: Company Info and Warranty */}
+        <div className="mt-20 grid gap-10 md:grid-cols-2">
+          <div className="overflow-hidden rounded-xl bg-white shadow-md">
+            <img
+              src="/images/company-warranty.jpg"
+              alt={pick(lang, {
+                en: "Pictures in Ceramic company information and lifetime warranty",
+                es: "Información de la empresa Pictures in Ceramic y garantía de por vida",
+              })}
+              className="h-full w-full object-contain"
+            />
+          </div>
+
+          <div className="overflow-hidden rounded-xl bg-white shadow-md">
+            <img
+              src="/images/process-description.jpg"
+              alt={pick(lang, {
+                en: "Kiln-fired porcelain enamel process description",
+                es: "Descripción del proceso de esmalte de porcelana cocido en horno",
+              })}
+              className="h-full w-full object-contain"
+            />
+          </div>
+        </div>
+
+        {/* Fifth Block: Optional Frames */}
+        <div className="mt-10 overflow-hidden rounded-xl bg-white shadow-md">
+          <img
+            src="/images/frames-modifications.jpg"
+            alt={pick(lang, {
+              en: "Optional bronze frames and photo modification services",
+              es: "Marcos de bronce opcionales y servicios de modificación de fotos",
+            })}
+            className="w-full object-contain"
+          />
+        </div>
       </section>
     </main>
   );
