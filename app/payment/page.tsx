@@ -32,9 +32,9 @@ export default function PaymentPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          orderRef: orderRef.trim(),
+          reference: orderRef.trim(),
           email: email.trim(),
-          depositCents,
+          depositAmount: depositCents / 100, // Convert cents to dollars
         }),
       });
 

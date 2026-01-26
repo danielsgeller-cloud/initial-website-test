@@ -627,90 +627,6 @@ function OrderFormContent() {
   const [shipTo, setShipTo] = useState<string>("");
   const [deadline, setDeadline] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [uploadingImages, setUploadingImages] = useState(false);
-
-  // Compress and convert image files to base64
-  const handleImageUpload = async (files: File[]) => {
-    setUploadingImages(true);
-
-    try {
-      const base64Images: string[] = [];
-
-      for (const file of files) {
-        // Validate file size (max 10MB original)
-        if (file.size > 10 * 1024 * 1024) {
-          alert(`${file.name} is too large. Please use images under 10MB.`);
-          continue;
-        }
-
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-          alert(`${file.name} is not an image file.`);
-          continue;
-        }
-
-        // Compress image using canvas
-        const compressedBase64 = await new Promise<string>((resolve, reject) => {
-          const img = new Image();
-          const reader = new FileReader();
-
-          reader.onload = (e) => {
-            img.src = e.target?.result as string;
-          };
-
-          img.onload = () => {
-            // Create canvas
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            if (!ctx) {
-              reject(new Error('Failed to get canvas context'));
-              return;
-            }
-
-            // Calculate dimensions (max 1920px width/height, maintain aspect ratio)
-            let width = img.width;
-            let height = img.height;
-            const maxDimension = 1920;
-
-            if (width > maxDimension || height > maxDimension) {
-              if (width > height) {
-                height = (height / width) * maxDimension;
-                width = maxDimension;
-              } else {
-                width = (width / height) * maxDimension;
-                height = maxDimension;
-              }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-
-            // Draw and compress
-            ctx.drawImage(img, 0, 0, width, height);
-
-            // Convert to base64 with compression (0.8 quality for JPEGs)
-            const base64 = canvas.toDataURL('image/jpeg', 0.8);
-            resolve(base64);
-          };
-
-          img.onerror = () => reject(new Error('Failed to load image'));
-          reader.onerror = () => reject(new Error('Failed to read file'));
-
-          reader.readAsDataURL(file);
-        });
-
-        base64Images.push(compressedBase64);
-      }
-
-      setUploadedImages(prev => [...prev, ...base64Images]);
-    } catch (error) {
-      console.error("Upload error:", error);
-      alert("Failed to process images. Please try again.");
-    } finally {
-      setUploadingImages(false);
-    }
-  };
 
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<null | "success" | "error">(null);
@@ -827,7 +743,6 @@ function OrderFormContent() {
         baseFee: baseFee,
         combineAdjust: combineAdjustment,
         totalPrice: totalPrice,
-        imageUrls: uploadedImages,
       };
 
       const res = await fetch("/api/orders/submit", {
@@ -860,7 +775,6 @@ function OrderFormContent() {
       setShipTo("");
       setDeadline("");
       setNotes("");
-      setUploadedImages([]);
     } catch (err: any) {
       setStatus("error");
       setStatusMessage(err?.message || t.error);
@@ -1233,76 +1147,6 @@ function OrderFormContent() {
                 rows={4}
                 className="mt-2 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
               />
-            </fieldset>
-
-            <fieldset className="space-y-3">
-              <legend className="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-500">
-                Upload Images
-              </legend>
-              <p className="text-xs text-neutral-600">
-                Upload the photos you'd like on your ceramic medallion. You can upload multiple images.
-              </p>
-
-              <div className="mt-2">
-                <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-6 py-8 hover:border-amber-400 hover:bg-amber-50/30 transition-colors">
-                  <svg className="h-10 w-10 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 4 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  <p className="mt-2 text-sm font-medium text-neutral-700">
-                    {uploadingImages ? "Uploading..." : "Click to upload or drag and drop"}
-                  </p>
-                  <p className="mt-1 text-xs text-neutral-500">
-                    High-resolution images up to 10MB each (auto-compressed, JPG/PNG/GIF)
-                  </p>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    disabled={uploadingImages}
-                    className="hidden"
-                    onChange={async (e) => {
-                      const files = Array.from(e.target.files || []);
-                      if (files.length > 0) {
-                        await handleImageUpload(files);
-                        e.target.value = ""; // Reset input
-                      }
-                    }}
-                  />
-                </label>
-              </div>
-
-              {uploadedImages.length > 0 && (
-                <div className="mt-3 space-y-2">
-                  <p className="text-xs font-medium text-neutral-700">
-                    Uploaded Images ({uploadedImages.length})
-                  </p>
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                    {uploadedImages.map((url, idx) => (
-                      <div key={idx} className="relative group">
-                        <img
-                          src={url}
-                          alt={`Upload ${idx + 1}`}
-                          className="h-24 w-full rounded-md border border-neutral-200 object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setUploadedImages(prev => prev.filter((_, i) => i !== idx));
-                          }}
-                          className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                        <p className="mt-1 truncate text-xs text-neutral-600">
-                          Image {idx + 1}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </fieldset>
 
             <div className="rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 text-sm text-neutral-800">

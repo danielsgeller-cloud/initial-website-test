@@ -68,15 +68,15 @@ export default function AboutPage() {
 
             <p className="text-sm leading-relaxed text-neutral-700 md:text-base">
               {pick(lang, {
-                en: 'Over forty years ago, [OWNER NAME] began learning the art of enamel memorial medallion creation in Ukraine. What started as deep respect for memorial traditions became a lifelong dedication to a rare and highly technical craft.',
-                es: "Hace más de cuarenta años, [OWNER NAME] comenzó a aprender el arte de crear medallones conmemorativos de esmalte en Ucrania. Lo que comenzó como un profundo respeto por las tradiciones conmemorativas se convirtió en una dedicación de toda la vida a un oficio raro y altamente técnico.",
+                en: 'Over forty years ago, we began learning the art of enamel memorial medallion creation in Ukraine. What started as deep respect for memorial traditions became a lifelong dedication to a rare and highly technical craft.',
+                es: "Hace más de cuarenta años, comenzamos a aprender el arte de crear medallones conmemorativos de esmalte en Ucrania. Lo que comenzó como un profundo respeto por las tradiciones conmemorativas se convirtió en una dedicación de toda la vida a un oficio raro y altamente técnico.",
               })}
             </p>
 
             <p className="text-sm leading-relaxed text-neutral-700 md:text-base">
               {pick(lang, {
-                en: "After immigrating to the United States, [OWNER NAME] rebuilt the studio from the ground up. By the early 1990s, our family opened the workshop that continues its work today, serving families and monument dealers across the country.",
-                es: "Después de emigrar a los Estados Unidos, [OWNER NAME] reconstruyó el estudio desde cero. A principios de la década de 1990, nuestra familia abrió el taller que continúa su trabajo hoy, sirviendo a familias y distribuidores de monumentos en todo el país.",
+                en: "After immigrating to the United States, we rebuilt the studio from the ground up. By the early 1990s, our family opened the workshop that continues its work today, serving families and monument dealers across the country.",
+                es: "Después de emigrar a los Estados Unidos, reconstruimos el estudio desde cero. A principios de la década de 1990, nuestra familia abrió el taller que continúa su trabajo hoy, sirviendo a familias y distribuidores de monumentos en todo el país.",
               })}
             </p>
           </div>
@@ -94,8 +94,8 @@ export default function AboutPage() {
 
             <p className="text-sm leading-relaxed text-neutral-700 md:text-base">
               {pick(lang, {
-                en: "Each portrait begins with a carefully prepared [BRASS_OR_BRONZE] medallion blank that is cut and finished for mounting on granite, marble, bronze markers, or indoor displays. The surface is coated multiple times with high quality enamel to create a stable, durable base.",
-                es: "Cada retrato comienza con una pieza de medallón de [BRASS_OR_BRONZE] cuidadosamente preparada que se corta y termina para montar en granito, mármol, marcadores de bronce o exhibiciones interiores. La superficie se recubre varias veces con esmalte de alta calidad para crear una base estable y duradera.",
+                en: "Each portrait begins with a carefully prepared copper medallion blank that is cut and finished for mounting on granite, marble, bronze markers, or indoor displays. The surface is coated multiple times with high quality enamel to create a stable, durable base.",
+                es: "Cada retrato comienza con una pieza de medallón de cobre cuidadosamente preparada que se corta y termina para montar en granito, mármol, marcadores de bronce o exhibiciones interiores. La superficie se recubre varias veces con esmalte de alta calidad para crear una base estable y duradera.",
               })}
             </p>
 

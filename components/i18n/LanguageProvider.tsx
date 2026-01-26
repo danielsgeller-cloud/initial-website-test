@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-export type Lang = "en" | "es";
+export type Lang = "en" | "es" | "ru" | "uk";
 
 type LanguageContextValue = {
   lang: Lang;
@@ -124,7 +124,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY) as Lang | null;
-      if (saved === "en" || saved === "es") setLangState(saved);
+      if (saved === "en" || saved === "es" || saved === "ru" || saved === "uk") setLangState(saved);
     } catch {}
   }, []);
 
