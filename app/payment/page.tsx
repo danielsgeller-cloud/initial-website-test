@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 type Status = "idle" | "loading" | "error" | "ready";
 
@@ -54,6 +55,15 @@ export default function PaymentPage() {
   return (
     <main className="min-h-screen bg-neutral-50 py-12">
       <div className="mx-auto max-w-3xl px-4 md:px-6">
+        <div className="mb-6 flex justify-end">
+          <Link
+            href="/login"
+            className="text-sm text-neutral-600 hover:text-amber-600 transition-colors font-medium"
+          >
+            Admin Login →
+          </Link>
+        </div>
+
         <header className="text-center">
           <h1 className="font-serif text-3xl font-semibold text-neutral-900 md:text-4xl">
             Payment

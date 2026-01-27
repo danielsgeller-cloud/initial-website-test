@@ -105,7 +105,7 @@ export default function HomePage() {
                   src={item.image}
                   alt={item.alt}
                   fill
-                  className="object-cover transition duration-700 group-hover:scale-105"
+                  className="object-contain transition duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/40" />
                 <div className="absolute inset-0 flex items-end justify-center pb-6">
