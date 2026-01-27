@@ -38,6 +38,26 @@ const COPY: Partial<Record<
     success: "Gracias. Su mensaje ha sido enviado.",
     error: "Algo salió mal. Por favor, inténtelo de nuevo más tarde.",
   },
+  ru: {
+    title: "Связаться с Pictures in Ceramic",
+    nameLabel: "Имя",
+    emailLabel: "Электронная почта",
+    messageLabel: "Сообщение",
+    sending: "Отправка...",
+    send: "Отправить",
+    success: "Спасибо. Ваше сообщение отправлено.",
+    error: "Что-то пошло не так. Пожалуйста, попробуйте позже.",
+  },
+  uk: {
+    title: "Зв'язатися з Pictures in Ceramic",
+    nameLabel: "Ім'я",
+    emailLabel: "Електронна пошта",
+    messageLabel: "Повідомлення",
+    sending: "Відправка...",
+    send: "Відправити",
+    success: "Дякуємо. Ваше повідомлення надіслано.",
+    error: "Щось пішло не так. Будь ласка, спробуйте пізніше.",
+  },
 };
 
 export default function ContactPage() {

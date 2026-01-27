@@ -3,13 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import { faqData } from "./faq-data";
 
-interface FAQItem {
-  question: { en: string; es: string };
-  answer: { en: string; es: string };
-}
-
-const faqData: FAQItem[] = [
+const faqDataLocal = [
   {
     question: {
       en: "What are ceramic photo medallions?",
@@ -130,7 +126,7 @@ const faqData: FAQItem[] = [
       es: "Aceptamos varios métodos de pago para su conveniencia. Visite nuestra página de Pago o contáctenos directamente para conocer las opciones y términos de pago actuales. Trabajamos tanto con clientes individuales como con distribuidores de monumentos."
     }
   }
-];
+]; // This can be removed after verification
 
 export default function FAQPage() {
   const { lang } = useLanguage();
@@ -148,10 +144,14 @@ export default function FAQPage() {
           <h1 className="text-4xl font-bold text-neutral-900 mb-4">
             {lang === "en" && "Frequently Asked Questions"}
             {lang === "es" && "Preguntas Frecuentes"}
+            {lang === "ru" && "Часто задаваемые вопросы"}
+            {lang === "uk" && "Часті запитання"}
           </h1>
           <p className="text-lg text-neutral-600">
             {lang === "en" && "Find answers to common questions about our ceramic photo medallions"}
             {lang === "es" && "Encuentre respuestas a preguntas comunes sobre nuestros medallones fotográficos de cerámica"}
+            {lang === "ru" && "Найдите ответы на часто задаваемые вопросы о наших керамических фото-медальонах"}
+            {lang === "uk" && "Знайдіть відповіді на часті запитання про наші керамічні фото-медальйони"}
           </p>
         </div>
 
@@ -201,10 +201,14 @@ export default function FAQPage() {
           <h2 className="text-2xl font-bold mb-3">
             {lang === "en" && "Still have questions?"}
             {lang === "es" && "¿Aún tiene preguntas?"}
+            {lang === "ru" && "Остались вопросы?"}
+            {lang === "uk" && "Залишилися питання?"}
           </h2>
           <p className="mb-6 text-amber-50">
             {lang === "en" && "We're here to help. Contact us directly for personalized assistance."}
             {lang === "es" && "Estamos aquí para ayudar. Contáctenos directamente para asistencia personalizada."}
+            {lang === "ru" && "Мы здесь, чтобы помочь. Свяжитесь с нами напрямую для персональной помощи."}
+            {lang === "uk" && "Ми тут, щоб допомогти. Зв'яжіться з нами безпосередньо для персональної допомоги."}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
@@ -213,6 +217,8 @@ export default function FAQPage() {
             >
               {lang === "en" && "Contact Us"}
               {lang === "es" && "Contáctenos"}
+              {lang === "ru" && "Связаться с нами"}
+              {lang === "uk" && "Зв'язатися з нами"}
             </Link>
             <Link
               href="/order-form"
@@ -220,6 +226,8 @@ export default function FAQPage() {
             >
               {lang === "en" && "Place an Order"}
               {lang === "es" && "Hacer un Pedido"}
+              {lang === "ru" && "Сделать заказ"}
+              {lang === "uk" && "Зробити замовлення"}
             </Link>
           </div>
         </div>
@@ -230,12 +238,19 @@ export default function FAQPage() {
             <h2 className="text-2xl font-bold text-neutral-900 text-center">
               {lang === "en" && "Oval Medallion Size Chart"}
               {lang === "es" && "Tabla de Tamaños de Medallones Ovalados"}
+              {lang === "ru" && "Таблица размеров овальных медальонов"}
+              {lang === "uk" && "Таблиця розмірів овальних медальйонів"}
             </h2>
           </div>
           <div className="p-4">
             <img
               src="/images/size-chart-oval.jpg"
-              alt={lang === "en" ? "Exact sizes for oval medallions" : "Tamaños exactos para medallones ovalados"}
+              alt={
+                lang === "en" ? "Exact sizes for oval medallions" :
+                lang === "es" ? "Tamaños exactos para medallones ovalados" :
+                lang === "ru" ? "Точные размеры для овальных медальонов" :
+                "Точні розміри для овальних медальйонів"
+              }
               className="w-full max-w-2xl mx-auto"
             />
           </div>
@@ -249,6 +264,8 @@ export default function FAQPage() {
           >
             {lang === "en" && "← Back to Home"}
             {lang === "es" && "← Volver al Inicio"}
+            {lang === "ru" && "← Вернуться на главную"}
+            {lang === "uk" && "← Повернутися на головну"}
           </Link>
         </div>
       </div>
