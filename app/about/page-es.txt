@@ -1,0 +1,76 @@
+// This file contains all Spanish translations for the About page
+// Copy these into the about/page.tsx file, replacing ru and uk translations
+
+Type definition:
+type Lang = "en" | "es";
+
+Pick function:
+function pick(lang: Lang, m: { en: string; es: string }) {
+  return m[lang] ?? m.en;
+}
+
+Translations:
+
+1. Studio placeholder:
+en: "Studio placeholder"
+es: "Imagen del estudio"
+
+2. About Our Studio:
+en: "About Our Studio"
+es: "Sobre Nuestro Estudio"
+
+3. Subtitle:
+en: "A family tradition of craftsmanship, care, and kiln fired enamel portraiture."
+es: "Una tradición familiar de artesanía, cuidado y retratos de esmalte horneado."
+
+4. Family studio placeholder:
+en: "Family studio placeholder"
+es: "Imagen del estudio familiar"
+
+5. A craft learned over decades:
+en: "A craft learned over decades"
+es: "Un oficio aprendido a través de décadas"
+
+6. Opening paragraph:
+en: "Over forty years ago, [OWNER NAME] began learning the art of enamel memorial medallion creation in Ukraine. What started as deep respect for memorial traditions became a lifelong dedication to a rare and highly technical craft."
+es: "Hace más de cuarenta años, [OWNER NAME] comenzó a aprender el arte de crear medallones conmemorativos de esmalte en Ucrania. Lo que comenzó como un profundo respeto por las tradiciones conmemorativas se convirtió en una dedicación de toda la vida a un oficio raro y altamente técnico."
+
+7. Second paragraph:
+en: "After immigrating to the United States, [OWNER NAME] rebuilt the studio from the ground up. By the early 1990s, our family opened the workshop that continues its work today, serving families and monument dealers across the country."
+es: "Después de emigrar a los Estados Unidos, [OWNER NAME] reconstruyó el estudio desde cero. A principios de la década de 1990, nuestra familia abrió el taller que continúa su trabajo hoy, sirviendo a familias y distribuidores de monumentos en todo el país."
+
+8. High quality enamel:
+en: "High quality enamel on precisely finished metal"
+es: "Esmalte de alta calidad sobre metal terminado con precisión"
+
+9. Process description 1:
+en: "Each portrait begins with a carefully prepared [BRASS_OR_BRONZE] medallion blank that is cut and finished for mounting on granite, marble, bronze markers, or indoor displays. The surface is coated multiple times with high quality enamel to create a stable, durable base."
+es: "Cada retrato comienza con una pieza de medallón de [BRASS_OR_BRONZE] cuidadosamente preparada que se corta y termina para montar en granito, mármol, marcadores de bronce o exhibiciones interiores. La superficie se recubre varias veces con esmalte de alta calidad para crear una base estable y duradera."
+
+10. Proprietary chemistry:
+en: "Proprietary chemistry that fixes the image for generations"
+es: "Química patentada que fija la imagen por generaciones"
+
+11. Chemistry description:
+en: "The photograph is translated into an enamel image using a proprietary, complex polymerization and formulation process. This chemistry is what permanently fuses the color to the enamel surface on the medallion. It has been refined over decades so that every portrait remains clear, stable, and faithful to the original image."
+es: "La fotografía se traduce en una imagen de esmalte utilizando un proceso patentado y complejo de polimerización y formulación. Esta química es lo que fusiona permanentemente el color a la superficie de esmalte del medallón. Se ha refinado durante décadas para que cada retrato permanezca claro, estable y fiel a la imagen original."
+
+12. Warranty paragraph:
+en: "The result is a memorial portrait engineered to endure outdoor conditions and everyday weather. We stand behind every piece with a lifetime warranty, so families and dealers can order with confidence."
+es: "El resultado es un retrato conmemorativo diseñado para soportar condiciones al aire libre y el clima cotidiano. Respaldamos cada pieza con una garantía de por vida, para que las familias y distribuidores puedan ordenar con confianza."
+
+13. Craftsmanship placeholder:
+en: "Craftsmanship placeholder"
+es: "Imagen del proceso artesanal"
+
+14. Family values heading:
+en: "A memorial treated like our own family"
+es: "Un memorial tratado como nuestra propia familia"
+
+15. Family values paragraph:
+en: "As a family owned studio, we know every photograph carries a story that cannot be replaced. Each memorial is handled with the same care we would give to our own loved ones. This is not production work. It is personal work, approached with respect, patience, and attention to detail."
+es: "Como un estudio familiar, sabemos que cada fotografía lleva una historia que no puede ser reemplazada. Cada memorial se maneja con el mismo cuidado que daríamos a nuestros propios seres queridos. Esto no es trabajo de producción. Es trabajo personal, abordado con respeto, paciencia y atención al detalle."
+
+16. Family placeholder:
+en: "Family placeholder"
+es: "Imagen familiar"

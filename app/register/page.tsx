@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function RegisterPage() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -21,14 +23,14 @@ export default function RegisterPage() {
 
     // Validate password confirmation
     if (password !== confirmPassword) {
-      setErr("Passwords do not match");
+      setErr(t("register_passwords_no_match"));
       setLoading(false);
       return;
     }
 
     // Validate password strength
     if (password.length < 8) {
-      setErr("Password must be at least 8 characters long");
+      setErr(t("register_password_length_error"));
       setLoading(false);
       return;
     }
@@ -43,17 +45,17 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.error || "Registration failed");
+        throw new Error(data?.error || t("register_failed"));
       }
 
-      setMsg("Account created successfully! Check your email to verify your account before signing in.");
+      setMsg(t("register_success"));
       setEmail("");
       setName("");
       setPassword("");
       setConfirmPassword("");
       setPhone("");
     } catch (e: any) {
-      setErr(e?.message || "Registration failed");
+      setErr(e?.message || t("register_failed"));
     } finally {
       setLoading(false);
     }
@@ -68,9 +70,9 @@ export default function RegisterPage() {
         <div className="bg-white rounded-2xl shadow-2xl border border-amber-100 p-8 md:p-10">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-neutral-900">Create Account</h1>
+            <h1 className="text-3xl font-bold text-neutral-900">{t("register_title")}</h1>
             <p className="mt-3 text-sm text-neutral-600">
-              Join Pictures in Ceramic to start ordering custom memorial portraits
+              {t("register_subtitle")}
             </p>
           </div>
 
@@ -91,13 +93,13 @@ export default function RegisterPage() {
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-neutral-700 mb-2">
-                Full Name <span className="text-neutral-400 font-normal">(optional)</span>
+                {t("register_name")} <span className="text-neutral-400 font-normal">({t("register_name_optional")})</span>
               </label>
               <input
                 id="name"
                 type="text"
                 className="w-full rounded-lg border border-neutral-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
-                placeholder="Enter your full name"
+                placeholder={t("register_name_placeholder")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -106,13 +108,13 @@ export default function RegisterPage() {
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-2">
-                Email Address <span className="text-red-500">*</span>
+                {t("register_email")} <span className="text-red-500">{t("register_required")}</span>
               </label>
               <input
                 id="email"
                 type="email"
                 className="w-full rounded-lg border border-neutral-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
-                placeholder="your.email@example.com"
+                placeholder={t("register_email_placeholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -122,13 +124,13 @@ export default function RegisterPage() {
             {/* Phone */}
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-neutral-700 mb-2">
-                Phone Number <span className="text-neutral-400 font-normal">(optional)</span>
+                {t("register_phone")} <span className="text-neutral-400 font-normal">({t("register_name_optional")})</span>
               </label>
               <input
                 id="phone"
                 type="tel"
                 className="w-full rounded-lg border border-neutral-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
-                placeholder="(123) 456-7890"
+                placeholder={t("register_phone_placeholder")}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
@@ -137,27 +139,27 @@ export default function RegisterPage() {
             {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-2">
-                Password <span className="text-red-500">*</span>
+                {t("register_password")} <span className="text-red-500">{t("register_required")}</span>
               </label>
               <input
                 id="password"
                 type="password"
                 className="w-full rounded-lg border border-neutral-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
-                placeholder="Create a strong password"
+                placeholder={t("register_password_placeholder")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
               />
               <p className="mt-1.5 text-xs text-neutral-500">
-                Must be at least 8 characters long
+                {t("register_password_min")}
               </p>
             </div>
 
             {/* Confirm Password */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-neutral-700 mb-2">
-                Confirm Password <span className="text-red-500">*</span>
+                {t("register_confirm_password")} <span className="text-red-500">{t("register_required")}</span>
               </label>
               <input
                 id="confirmPassword"
@@ -167,19 +169,19 @@ export default function RegisterPage() {
                     ? "border-red-300 focus:ring-red-500"
                     : "border-neutral-300 focus:ring-amber-500"
                 }`}
-                placeholder="Re-enter your password"
+                placeholder={t("register_confirm_password_placeholder")}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
               {showPasswordMismatch && (
                 <p className="mt-1.5 text-xs text-red-600">
-                  Passwords do not match
+                  {t("register_passwords_no_match")}
                 </p>
               )}
               {passwordsMatch && confirmPassword.length > 0 && (
                 <p className="mt-1.5 text-xs text-green-600">
-                  Passwords match ✓
+                  {t("register_passwords_match")}
                 </p>
               )}
             </div>
@@ -196,10 +198,10 @@ export default function RegisterPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Creating Account...
+                  {t("register_submitting")}
                 </span>
               ) : (
-                "Create Account"
+                t("register_submit")
               )}
             </button>
           </form>
@@ -211,20 +213,20 @@ export default function RegisterPage() {
                 href="/login"
                 className="text-amber-600 hover:text-amber-700 font-medium transition-colors"
               >
-                Already have an account? Sign in
+                {t("register_already_have_account")}
               </Link>
               <Link
                 href="/"
                 className="text-neutral-600 hover:text-neutral-700 transition-colors"
               >
-                ← Return to home
+                {t("register_return_home")}
               </Link>
             </div>
           </div>
 
           {/* Privacy Note */}
           <p className="mt-6 text-xs text-center text-neutral-500">
-            By creating an account, you agree to receive order updates and account notifications via email.
+            {t("register_privacy_note")}
           </p>
         </div>
       </div>

@@ -48,10 +48,10 @@ export default function AboutPage() {
           {/* Image Placeholder 1 */}
           <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
             <img
-              src="/images/about-studio.jpg"
+              src="/images/medallions-showcase.jpg"
               alt={pick(lang, {
-                en: "Family studio",
-                es: "Estudio familiar",
+                en: "Ceramic photo medallions showcase",
+                es: "Exhibición de medallones fotográficos de cerámica",
               })}
               className="h-full w-full object-cover opacity-80"
             />
