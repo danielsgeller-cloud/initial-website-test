@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function EditProfilePage() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const [name, setName] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -53,14 +55,14 @@ export default function EditProfilePage() {
       const data = await res.json();
 
       if (res.ok) {
-        setNameMessage("Name updated successfully");
+        setNameMessage(t("account_name_updated"));
         // Update the session to reflect the new name immediately
         await update({ name });
       } else {
-        setNameError(data.error || "Failed to update name");
+        setNameError(data.error || t("account_name_failed"));
       }
     } catch (err) {
-      setNameError("Something went wrong");
+      setNameError(t("account_error"));
     } finally {
       setNameLoading(false);
     }
@@ -73,7 +75,7 @@ export default function EditProfilePage() {
     setPasswordError("");
 
     if (newPassword !== confirmPassword) {
-      setPasswordError("Passwords do not match");
+      setPasswordError(t("account_passwords_no_match"));
       setPasswordLoading(false);
       return;
     }
@@ -88,15 +90,15 @@ export default function EditProfilePage() {
       const data = await res.json();
 
       if (res.ok) {
-        setPasswordMessage("Password updated successfully");
+        setPasswordMessage(t("account_password_updated"));
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
       } else {
-        setPasswordError(data.error || "Failed to update password");
+        setPasswordError(data.error || t("account_password_failed"));
       }
     } catch (err) {
-      setPasswordError("Something went wrong");
+      setPasswordError(t("account_error"));
     } finally {
       setPasswordLoading(false);
     }
@@ -118,14 +120,14 @@ export default function EditProfilePage() {
       const data = await res.json();
 
       if (res.ok) {
-        setEmailMessage(data.message || "Verification email sent to new address");
+        setEmailMessage(data.message || t("account_email_sent"));
         setNewEmail("");
         setEmailPassword("");
       } else {
-        setEmailError(data.error || "Failed to change email");
+        setEmailError(data.error || t("account_email_failed"));
       }
     } catch (err) {
-      setEmailError("Something went wrong");
+      setEmailError(t("account_error"));
     } finally {
       setEmailLoading(false);
     }
@@ -134,7 +136,7 @@ export default function EditProfilePage() {
   if (status === "loading") {
     return (
       <main className="mx-auto max-w-3xl px-4 py-10">
-        <p>Loading...</p>
+        <p>{t("loading")}</p>
       </main>
     );
   }
@@ -143,16 +145,16 @@ export default function EditProfilePage() {
     <main className="mx-auto max-w-3xl px-4 py-10">
       <div className="mb-6">
         <Link href="/account" className="text-sm text-amber-600 hover:text-amber-700">
-          ← Back to account
+          {t("account_back")}
         </Link>
       </div>
 
-      <h1 className="text-2xl font-semibold text-neutral-900">Edit Profile</h1>
+      <h1 className="text-2xl font-semibold text-neutral-900">{t("account_edit_title")}</h1>
 
       {/* Personal Information Section */}
       <section className="mt-6 rounded-lg border border-neutral-200 bg-white p-6">
-        <h2 className="text-lg font-semibold text-neutral-900">Personal Information</h2>
-        <p className="mt-1 text-sm text-neutral-600">Update your name</p>
+        <h2 className="text-lg font-semibold text-neutral-900">{t("account_personal_info")}</h2>
+        <p className="mt-1 text-sm text-neutral-600">{t("account_update_name_desc")}</p>
 
         <form onSubmit={handleNameUpdate} className="mt-4 grid gap-4">
           {nameMessage && (
@@ -167,13 +169,13 @@ export default function EditProfilePage() {
           )}
 
           <label className="grid gap-1 text-sm">
-            <span className="text-xs font-medium text-neutral-700">Name</span>
+            <span className="text-xs font-medium text-neutral-700">{t("account_name_label")}</span>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-              placeholder="Your name"
+              placeholder={t("account_name_placeholder")}
             />
           </label>
 
@@ -182,15 +184,15 @@ export default function EditProfilePage() {
             disabled={nameLoading}
             className="w-full rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-amber-400 disabled:opacity-60"
           >
-            {nameLoading ? "Updating..." : "Update name"}
+            {nameLoading ? t("account_updating") : t("account_update_name")}
           </button>
         </form>
       </section>
 
       {/* Change Password Section */}
       <section className="mt-4 rounded-lg border border-neutral-200 bg-white p-6">
-        <h2 className="text-lg font-semibold text-neutral-900">Change Password</h2>
-        <p className="mt-1 text-sm text-neutral-600">Update your password</p>
+        <h2 className="text-lg font-semibold text-neutral-900">{t("account_change_password")}</h2>
+        <p className="mt-1 text-sm text-neutral-600">{t("account_update_password_desc")}</p>
 
         <form onSubmit={handlePasswordUpdate} className="mt-4 grid gap-4">
           {passwordMessage && (
@@ -205,7 +207,7 @@ export default function EditProfilePage() {
           )}
 
           <label className="grid gap-1 text-sm">
-            <span className="text-xs font-medium text-neutral-700">Current password</span>
+            <span className="text-xs font-medium text-neutral-700">{t("account_current_password")}</span>
             <input
               type="password"
               value={currentPassword}
@@ -216,7 +218,7 @@ export default function EditProfilePage() {
           </label>
 
           <label className="grid gap-1 text-sm">
-            <span className="text-xs font-medium text-neutral-700">New password</span>
+            <span className="text-xs font-medium text-neutral-700">{t("account_new_password")}</span>
             <input
               type="password"
               value={newPassword}
@@ -224,12 +226,12 @@ export default function EditProfilePage() {
               required
               minLength={8}
               className="rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-              placeholder="At least 8 characters"
+              placeholder={t("account_password_min")}
             />
           </label>
 
           <label className="grid gap-1 text-sm">
-            <span className="text-xs font-medium text-neutral-700">Confirm new password</span>
+            <span className="text-xs font-medium text-neutral-700">{t("account_confirm_new_password")}</span>
             <input
               type="password"
               value={confirmPassword}
@@ -245,16 +247,16 @@ export default function EditProfilePage() {
             disabled={passwordLoading}
             className="w-full rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-amber-400 disabled:opacity-60"
           >
-            {passwordLoading ? "Updating..." : "Update password"}
+            {passwordLoading ? t("account_updating") : t("account_update_password")}
           </button>
         </form>
       </section>
 
       {/* Change Email Section */}
       <section className="mt-4 rounded-lg border border-neutral-200 bg-white p-6">
-        <h2 className="text-lg font-semibold text-neutral-900">Change Email</h2>
+        <h2 className="text-lg font-semibold text-neutral-900">{t("account_change_email")}</h2>
         <p className="mt-1 text-sm text-neutral-600">
-          We'll send a verification link to your new email address
+          {t("account_email_verification_desc")}
         </p>
 
         <form onSubmit={handleEmailChange} className="mt-4 grid gap-4">
@@ -270,26 +272,26 @@ export default function EditProfilePage() {
           )}
 
           <label className="grid gap-1 text-sm">
-            <span className="text-xs font-medium text-neutral-700">New email</span>
+            <span className="text-xs font-medium text-neutral-700">{t("account_new_email")}</span>
             <input
               type="email"
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               required
               className="rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-              placeholder="newemail@example.com"
+              placeholder={t("account_new_email_placeholder")}
             />
           </label>
 
           <label className="grid gap-1 text-sm">
-            <span className="text-xs font-medium text-neutral-700">Confirm password</span>
+            <span className="text-xs font-medium text-neutral-700">{t("account_confirm_password_label")}</span>
             <input
               type="password"
               value={emailPassword}
               onChange={(e) => setEmailPassword(e.target.value)}
               required
               className="rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-              placeholder="Enter your password"
+              placeholder={t("account_enter_password")}
             />
           </label>
 
@@ -298,7 +300,7 @@ export default function EditProfilePage() {
             disabled={emailLoading}
             className="w-full rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-amber-400 disabled:opacity-60"
           >
-            {emailLoading ? "Sending..." : "Change email"}
+            {emailLoading ? t("account_sending") : t("account_change_email_btn")}
           </button>
         </form>
       </section>

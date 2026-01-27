@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 interface Order {
   id: string;
@@ -35,6 +36,7 @@ interface Order {
 export default function OrderHistoryPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { t } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -160,16 +162,16 @@ export default function OrderHistoryPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-neutral-900">Order History</h1>
+            <h1 className="text-3xl font-bold text-neutral-900">{t("order_history")}</h1>
             <p className="mt-2 text-neutral-600">
-              View and track all your orders
+              {t("order_history_desc")}
             </p>
           </div>
           <Link
             href="/order-form"
             className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all"
           >
-            New Order
+            {t("nav_new_order")}
           </Link>
         </div>
       </div>
@@ -192,16 +194,16 @@ export default function OrderHistoryPage() {
               />
             </svg>
             <h3 className="mt-4 text-lg font-semibold text-neutral-900">
-              No orders yet
+              {t("order_no_orders")}
             </h3>
             <p className="mt-2 text-neutral-600">
-              Start by creating your first order
+              {t("order_first_order_desc")}
             </p>
             <Link
               href="/order-form"
               className="mt-6 inline-block px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
             >
-              Create Your First Order
+              {t("order_create_first")}
             </Link>
           </div>
         </div>
@@ -217,49 +219,48 @@ export default function OrderHistoryPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
                       <h3 className="text-lg font-semibold text-neutral-900">
-                        Order #{order.id.slice(0, 8)}
+                        {t("order_number")}{order.id.slice(0, 8)}
                       </h3>
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
                           order.status
                         )}`}
                       >
-                        {order.status.charAt(0).toUpperCase() +
-                          order.status.slice(1)}
+                        {t(`order_status_${order.status}`)}
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       <div>
                         <p className="text-neutral-600">
-                          <span className="font-medium">Shape:</span> {order.shape}
+                          <span className="font-medium">{t("order_shape")}</span> {order.shape}
                         </p>
                         <p className="text-neutral-600">
-                          <span className="font-medium">Size:</span> {order.size}
+                          <span className="font-medium">{t("order_size")}</span> {order.size}
                         </p>
                         <p className="text-neutral-600">
-                          <span className="font-medium">Finish:</span>{" "}
-                          {order.finish === "color" ? "Color" : "Black & White"}
+                          <span className="font-medium">{t("order_finish")}</span>{" "}
+                          {order.finish === "color" ? t("order_finish_color") : t("order_finish_bw")}
                         </p>
                         {order.mounting && (
                           <p className="text-neutral-600">
-                            <span className="font-medium">Mounting:</span>{" "}
+                            <span className="font-medium">{t("order_mounting")}</span>{" "}
                             {order.mounting}
                           </p>
                         )}
                       </div>
                       <div>
                         <p className="text-neutral-600">
-                          <span className="font-medium">Date:</span>{" "}
+                          <span className="font-medium">{t("order_date")}</span>{" "}
                           {formatDate(order.createdAt)}
                         </p>
                         <p className="text-neutral-600">
-                          <span className="font-medium">Total:</span> $
+                          <span className="font-medium">{t("order_total")}</span> $
                           {order.totalPrice.toFixed(2)}
                         </p>
                         {order.neededByDate && (
                           <p className="text-neutral-600">
-                            <span className="font-medium">Needed by:</span>{" "}
+                            <span className="font-medium">{t("order_needed_by")}</span>{" "}
                             {order.neededByDate}
                           </p>
                         )}
@@ -275,7 +276,7 @@ export default function OrderHistoryPage() {
                     }
                     className="ml-4 text-amber-600 hover:text-amber-700 font-medium text-sm"
                   >
-                    {selectedOrder?.id === order.id ? "Hide Details" : "View Details"}
+                    {selectedOrder?.id === order.id ? t("order_hide_details") : t("order_view_details")}
                   </button>
                 </div>
 
@@ -283,27 +284,27 @@ export default function OrderHistoryPage() {
                 {selectedOrder?.id === order.id && (
                   <div className="mt-6 pt-6 border-t border-neutral-200">
                     <h4 className="font-semibold text-neutral-900 mb-3">
-                      Order Details
+                      {t("order_details")}
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       <div className="space-y-2">
                         <p className="text-neutral-600">
-                          <span className="font-medium">Customer Name:</span>{" "}
+                          <span className="font-medium">{t("order_customer_name")}</span>{" "}
                           {order.customerName}
                         </p>
                         <p className="text-neutral-600">
-                          <span className="font-medium">Email:</span>{" "}
+                          <span className="font-medium">{t("order_email")}</span>{" "}
                           {order.customerEmail}
                         </p>
                         {order.customerPhone && (
                           <p className="text-neutral-600">
-                            <span className="font-medium">Phone:</span>{" "}
+                            <span className="font-medium">{t("order_phone")}</span>{" "}
                             {order.customerPhone}
                           </p>
                         )}
                         {order.cemetery && (
                           <p className="text-neutral-600">
-                            <span className="font-medium">Cemetery:</span>{" "}
+                            <span className="font-medium">{t("order_cemetery")}</span>{" "}
                             {order.cemetery}
                           </p>
                         )}
@@ -311,18 +312,18 @@ export default function OrderHistoryPage() {
                       <div className="space-y-2">
                         {order.shipToAddress && (
                           <p className="text-neutral-600">
-                            <span className="font-medium">Ship to:</span>{" "}
+                            <span className="font-medium">{t("order_ship_to")}</span>{" "}
                             {order.shipToAddress}
                           </p>
                         )}
                         {order.combinePhotos && (
                           <p className="text-neutral-600">
-                            <span className="font-medium">Combining photos:</span> Yes
+                            <span className="font-medium">{t("order_combining_photos")}</span> {t("order_yes")}
                           </p>
                         )}
                         {order.proofOption && (
                           <p className="text-neutral-600">
-                            <span className="font-medium">Proof option:</span>{" "}
+                            <span className="font-medium">{t("order_proof_option")}</span>{" "}
                             {order.proofOption}
                           </p>
                         )}
@@ -332,7 +333,7 @@ export default function OrderHistoryPage() {
                     {order.additionalNotes && (
                       <div className="mt-4">
                         <p className="font-medium text-neutral-900">
-                          Additional Notes:
+                          {t("order_additional_notes")}
                         </p>
                         <p className="mt-1 text-neutral-600 text-sm">
                           {order.additionalNotes}
@@ -344,19 +345,19 @@ export default function OrderHistoryPage() {
                     {order.imageUrls && order.imageUrls.length > 0 && (
                       <div className="mt-4">
                         <p className="font-medium text-neutral-900 mb-3">
-                          Uploaded Images ({order.imageUrls.length})
+                          {t("order_uploaded_images")} ({order.imageUrls.length})
                         </p>
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                           {order.imageUrls.map((imageData, idx) => (
                             <div key={idx} className="relative group">
                               <img
                                 src={imageData}
-                                alt={`Order image ${idx + 1}`}
+                                alt={`${t("order_image")} ${idx + 1}`}
                                 className="h-32 w-full rounded-lg border border-neutral-200 object-cover shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                                 onClick={() => window.open(imageData, '_blank')}
                               />
                               <p className="mt-1 text-xs text-center text-neutral-600">
-                                Image {idx + 1}
+                                {t("order_image")} {idx + 1}
                               </p>
                             </div>
                           ))}
@@ -367,18 +368,18 @@ export default function OrderHistoryPage() {
                     {/* Price Breakdown */}
                     <div className="mt-6 p-4 bg-neutral-50 rounded-lg">
                       <h5 className="font-semibold text-neutral-900 mb-2">
-                        Price Breakdown
+                        {t("order_price_breakdown")}
                       </h5>
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-neutral-600">Base Price:</span>
+                          <span className="text-neutral-600">{t("order_base_price")}</span>
                           <span className="text-neutral-900">
                             ${order.basePrice.toFixed(2)}
                           </span>
                         </div>
                         {order.mountingPrice > 0 && (
                           <div className="flex justify-between">
-                            <span className="text-neutral-600">Mounting:</span>
+                            <span className="text-neutral-600">{t("order_mounting")}</span>
                             <span className="text-neutral-900">
                               ${order.mountingPrice.toFixed(2)}
                             </span>
@@ -386,7 +387,7 @@ export default function OrderHistoryPage() {
                         )}
                         {order.proofPrice > 0 && (
                           <div className="flex justify-between">
-                            <span className="text-neutral-600">Proof:</span>
+                            <span className="text-neutral-600">{t("order_proof")}</span>
                             <span className="text-neutral-900">
                               ${order.proofPrice.toFixed(2)}
                             </span>
@@ -395,7 +396,7 @@ export default function OrderHistoryPage() {
                         {order.combineAdjust > 0 && (
                           <div className="flex justify-between">
                             <span className="text-neutral-600">
-                              Combine Photos Adjustment:
+                              {t("order_combine_adjust")}
                             </span>
                             <span className="text-neutral-900">
                               ${order.combineAdjust.toFixed(2)}
@@ -403,13 +404,13 @@ export default function OrderHistoryPage() {
                           </div>
                         )}
                         <div className="flex justify-between">
-                          <span className="text-neutral-600">Base Fee:</span>
+                          <span className="text-neutral-600">{t("order_base_fee")}</span>
                           <span className="text-neutral-900">
                             ${order.baseFee.toFixed(2)}
                           </span>
                         </div>
                         <div className="flex justify-between pt-2 border-t border-neutral-200 font-semibold">
-                          <span className="text-neutral-900">Total:</span>
+                          <span className="text-neutral-900">{t("order_total")}</span>
                           <span className="text-amber-600">
                             ${order.totalPrice.toFixed(2)}
                           </span>
@@ -426,7 +427,7 @@ export default function OrderHistoryPage() {
                           disabled={payingOrderId === order.id}
                           className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {payingOrderId === order.id ? "Processing..." : "Pay Now"}
+                          {payingOrderId === order.id ? t("order_processing") : t("order_pay_now")}
                         </button>
                       )}
 
@@ -445,7 +446,7 @@ export default function OrderHistoryPage() {
                         href={`/order-form?reorder=${order.id}`}
                         className="inline-block px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
                       >
-                        Reorder
+                        {t("order_reorder")}
                       </Link>
                     </div>
                   </div>
@@ -462,7 +463,7 @@ export default function OrderHistoryPage() {
           href="/account"
           className="text-amber-600 hover:text-amber-700 font-medium"
         >
-          ← Back to Account
+          {t("order_back_account")}
         </Link>
       </div>
     </main>
