@@ -12,6 +12,7 @@ type SendEmailOptions = {
 export async function sendEmail(opts: SendEmailOptions) {
   const gmailUser = process.env.GMAIL_USER;
   const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+  const adminEmail = process.env.ADMIN_EMAIL; // info@picturesinceramic.com
 
   if (!gmailUser || !gmailAppPassword) {
     console.error("CRITICAL: Missing GMAIL_USER or GMAIL_APP_PASSWORD");
@@ -29,10 +30,24 @@ export async function sendEmail(opts: SendEmailOptions) {
     },
   });
 
+  // Always include copies to picturesinceramic@gmail.com and info@picturesinceramic.com
+  const originalRecipients = Array.isArray(opts.to) ? opts.to : [opts.to];
+  const allRecipients = [...originalRecipients];
+
+  // Add picturesinceramic@gmail.com if not already in the list
+  if (!allRecipients.includes(gmailUser)) {
+    allRecipients.push(gmailUser);
+  }
+
+  // Add info@picturesinceramic.com if not already in the list
+  if (adminEmail && !allRecipients.includes(adminEmail)) {
+    allRecipients.push(adminEmail);
+  }
+
   // Send email
   await transporter.sendMail({
     from: opts.from || gmailUser,
-    to: opts.to,
+    to: allRecipients,
     subject: opts.subject,
     text: opts.text,
     html: opts.html,

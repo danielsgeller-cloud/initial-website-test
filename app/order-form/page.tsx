@@ -2,9 +2,8 @@
 
 import { useCart } from "@/components/cart/CartProvider";
 import Link from "next/link";
-import { FormEvent, useMemo, useState, useEffect, Suspense } from "react";
+import { useMemo, useState, Suspense } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
-import { useSearchParams } from "next/navigation";
 import MedallionPreview from "@/components/MedallionPreview";
 
 type Lang = "en" | "es" | "ru" | "uk";
@@ -611,7 +610,6 @@ function OrderFormContent() {
   const { lang } = useLanguage();
   const L = (lang as Lang) || "en";
   const t = COPY[L] ?? COPY.en;
-  const searchParams = useSearchParams();
 
   const [shapeId, setShapeId] = useState<string>("oval");
   const [sizeCode, setSizeCode] = useState<string>("1");
@@ -619,50 +617,6 @@ function OrderFormContent() {
   const [mounting, setMounting] = useState<string>("none");
   const [combinePhotos, setCombinePhotos] = useState<boolean>(false);
   const [proof, setProof] = useState<string>("none");
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [dealerType, setDealerType] = useState<"dealer" | "individual">("dealer");
-  const [cemetery, setCemetery] = useState<string>("");
-  const [shipTo, setShipTo] = useState<string>("");
-  const [deadline, setDeadline] = useState<string>("");
-  const [notes, setNotes] = useState<string>("");
-
-  const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState<null | "success" | "error">(null);
-  const [statusMessage, setStatusMessage] = useState<string>("");
-
-  // Handle reorder functionality
-  useEffect(() => {
-    const reorderId = searchParams?.get("reorder");
-    if (reorderId) {
-      // Fetch the order and prefill the form
-      fetch(`/api/orders?id=${reorderId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.orders && data.orders.length > 0) {
-            const order = data.orders[0];
-            // Prefill form fields
-            setName(order.customerName || "");
-            setEmail(order.customerEmail || "");
-            setPhone(order.customerPhone || "");
-            setCemetery(order.cemetery || "");
-            setShipTo(order.shipToAddress || "");
-            setDeadline(order.neededByDate || "");
-            setNotes(order.additionalNotes || "");
-            setFinish(order.finish === "color" ? "color" : "bw");
-            setCombinePhotos(order.combinePhotos || false);
-            if (order.mounting) setMounting(order.mounting);
-            if (order.proofOption) setProof(order.proofOption);
-            setStatus("success");
-            setStatusMessage("Order details loaded. Review and submit to reorder.");
-          }
-        })
-        .catch((err) => {
-          console.error("Failed to load order for reorder:", err);
-        });
-    }
-  }, [searchParams]);
 
   const selectedShape = useMemo(
     () => SHAPES.find((s) => s.id === shapeId) ?? SHAPES[0],
@@ -706,82 +660,6 @@ function OrderFormContent() {
       max: Math.round(max),
     };
   }, [basePrice, mounting, combinePhotos, proof]);
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setSubmitting(true);
-    setStatus(null);
-    setStatusMessage("");
-
-    try {
-      const shapeLabel = shapeLabelForLang(selectedShape, L);
-
-      // Calculate pricing details
-      const mountingCost = mounting !== "none" ? 18 : 0;
-      const proofCost = proof === "printed" ? 20 : 0;
-      const baseFee = 9;
-      const combineAdjustment = combinePhotos ? Math.min(basePrice * 0.5, basePrice * 0.25) : 0;
-      const totalPrice = basePrice + mountingCost + proofCost + baseFee + combineAdjustment;
-
-      const orderBody = {
-        shape: shapeLabel,
-        size: selectedOption.label,
-        finish: finish,
-        mounting: mounting !== "none" ? mounting : null,
-        combinePhotos: combinePhotos,
-        proofOption: proof !== "none" ? proof : null,
-        customerName: name,
-        customerEmail: email,
-        customerPhone: phone || null,
-        cemetery: cemetery || null,
-        shipToAddress: shipTo || null,
-        neededByDate: deadline || null,
-        additionalNotes: notes || null,
-        basePrice: basePrice,
-        mountingPrice: mountingCost,
-        proofPrice: proofCost,
-        baseFee: baseFee,
-        combineAdjust: combineAdjustment,
-        totalPrice: totalPrice,
-      };
-
-      const res = await fetch("/api/orders/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderBody),
-      });
-
-      // Check if response is JSON before parsing
-      const contentType = res.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        // Server returned HTML error (likely CloudFront blocking large request)
-        throw new Error("Request too large. Please use fewer or smaller images (images are auto-compressed to fit).");
-      }
-
-      const json = await res.json();
-
-      if (!res.ok || !json.success) {
-        throw new Error(json.error || "Failed to submit order");
-      }
-
-      setStatus("success");
-      setStatusMessage(t.success + ` Order #${json.orderId} has been created.`);
-
-      // Reset form on success
-      setName("");
-      setEmail("");
-      setPhone("");
-      setCemetery("");
-      setShipTo("");
-      setDeadline("");
-      setNotes("");
-    } catch (err: any) {
-      setStatus("error");
-      setStatusMessage(err?.message || t.error);
-    } finally {
-      setSubmitting(false);
-    }
-  }
 
   return (
 <main className="bg-neutral-50 pb-16 pt-10">
@@ -862,9 +740,21 @@ function OrderFormContent() {
                     onClick={() => {
                       const shapeLabel = shapeLabelForLang(selectedShape, L);
                       const finishText = finishLabel(L, finish);
-                      const itemName = `${shapeLabel} ${selectedOption.size} - ${finishText}`;
-                      const itemId = `cameo-${shapeId}-${sizeCode}-${finish}`;
-                      addItem({ id: itemId, name: itemName, priceCents: basePrice * 100 }, qty);
+                      const mountingText = mounting !== "none" ? ` (${mounting === "tape" ? "Tape" : "Fastener"})` : "";
+                      const combineText = combinePhotos ? " + Combined Photos" : "";
+                      const proofText = proof !== "none" ? ` + ${proof === "email" ? "Email Proof" : "Printed Proof"}` : "";
+
+                      const itemName = `${shapeLabel} ${selectedOption.size} - ${finishText}${mountingText}${combineText}${proofText}`;
+
+                      // Store full configuration in the cart item for order submission
+                      const itemId = `cameo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+                      addItem({
+                        id: itemId,
+                        name: itemName,
+                        priceCents: totalRange.min * 100,
+                        // Store metadata in a custom field that we'll extend the CartItem type for
+                      }, qty);
                     }}
                     className="w-full rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black shadow-md hover:bg-amber-400 transition-colors"
                   >
@@ -891,113 +781,7 @@ function OrderFormContent() {
         </section>
 
         <section className="mt-10 rounded-2xl bg-white p-6 shadow-sm shadow-neutral-200 md:p-8">
-          <form onSubmit={handleSubmit} className="space-y-10">
-            <fieldset className="grid gap-6 md:grid-cols-2">
-              <legend className="mb-1 text-sm font-semibold uppercase tracking-[0.18em] text-neutral-500">
-                {t.customerLegend}
-              </legend>
-
-              <div className="space-y-1 md:col-span-2">
-                <label className="text-xs font-medium text-neutral-700">
-                  {t.iAmA}
-                </label>
-                <div className="mt-1 flex flex-wrap gap-3 text-sm">
-                  <button
-                    type="button"
-                    onClick={() => setDealerType("dealer")}
-                    className={`rounded-full border px-3 py-1 ${
-                      dealerType === "dealer"
-                        ? "border-amber-500 bg-amber-50 text-amber-700"
-                        : "border-neutral-300 text-neutral-700"
-                    }`}
-                  >
-                    {t.dealer}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setDealerType("individual")}
-                    className={`rounded-full border px-3 py-1 ${
-                      dealerType === "individual"
-                        ? "border-amber-500 bg-amber-50 text-amber-700"
-                        : "border-neutral-300 text-neutral-700"
-                    }`}
-                  >
-                    {t.individual}
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-neutral-700">
-                  {t.name}
-                </label>
-                <input
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-neutral-700">
-                  {t.email}
-                </label>
-                <input
-                  required
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-neutral-700">
-                  {t.phone}
-                </label>
-                <input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-neutral-700">
-                  {t.cemetery}
-                </label>
-                <input
-                  value={cemetery}
-                  onChange={(e) => setCemetery(e.target.value)}
-                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                />
-              </div>
-
-              <div className="space-y-1 md:col-span-2">
-                <label className="text-xs font-medium text-neutral-700">
-                  {t.shipTo}
-                </label>
-                <textarea
-                  value={shipTo}
-                  onChange={(e) => setShipTo(e.target.value)}
-                  rows={2}
-                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-neutral-700">
-                  {t.neededBy}
-                </label>
-                <input
-                  value={deadline}
-                  onChange={(e) => setDeadline(e.target.value)}
-                  placeholder={L === "en" ? "For example: three weeks from now" : ""}
-                  className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                />
-              </div>
-            </fieldset>
+          <div className="space-y-10">
 
             <fieldset className="space-y-6">
               <legend className="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-500">
@@ -1139,53 +923,7 @@ function OrderFormContent() {
                 </div>
               </div>
             </fieldset>
-
-            <fieldset className="space-y-2">
-              <legend className="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-500">
-                {t.additionalLegend}
-              </legend>
-              <p className="text-xs text-neutral-600">{t.additionalHelp}</p>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={4}
-                className="mt-2 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-              />
-            </fieldset>
-
-            <div className="rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 text-sm text-neutral-800">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
-                {t.estTitle}
-              </p>
-              <p className="mt-1 text-lg font-semibold text-amber-700">
-                {formatCurrency(totalRange.min)} – {formatCurrency(totalRange.max)}
-              </p>
-              <p className="mt-1 text-xs text-neutral-600">{t.estHelp}</p>
-            </div>
-
-            <div className="flex flex-col gap-3 border-t border-neutral-200 pt-4 md:flex-row md:items-center md:justify-between">
-              <button
-                type="submit"
-                disabled={submitting}
-                className="inline-flex items-center justify-center rounded-full bg-amber-500 px-8 py-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-black shadow-md hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {submitting ? t.submitSending : t.submit}
-              </button>
-              <p className="text-xs text-neutral-500">{t.submitHelp}</p>
-            </div>
-
-            {status && (
-              <div
-                className={`rounded-md border px-3 py-2 text-sm ${
-                  status === "success"
-                    ? "border-emerald-300 bg-emerald-50 text-emerald-800"
-                    : "border-red-300 bg-red-50 text-red-800"
-                }`}
-              >
-                {statusMessage}
-              </div>
-            )}
-          </form>
+          </div>
         </section>
       </div>
     </main>

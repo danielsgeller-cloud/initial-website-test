@@ -78,7 +78,7 @@ export default function HomePage() {
                 key: "about",
                 label: t("home_tile_about"),
                 href: "/about",
-                image: "/images/about-studio.jpg",
+                image: "/images/medallions-showcase.jpg",
                 alt: t("home_tile_about_alt"),
               },
               {
