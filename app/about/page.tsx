@@ -124,10 +124,10 @@ export default function AboutPage() {
           {/* Image Placeholder 2 */}
           <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
             <img
-              src="/images/granite-texture.jpg"
+              src="/images/why-cameos-closeup.jpg"
               alt={pick(lang, {
-                en: "Granite memorial material",
-                es: "Material de granito conmemorativo",
+                en: "Ceramic medallion detail and craftsmanship",
+                es: "Detalle de medallón de cerámica y artesanía",
               })}
               className="h-full w-full object-cover opacity-80"
             />
