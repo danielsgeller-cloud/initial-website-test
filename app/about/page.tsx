@@ -124,10 +124,10 @@ export default function AboutPage() {
           {/* Image Placeholder 2 */}
           <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
             <img
-              src="/images/why-cameos-closeup.jpg"
+              src="/images/cameo-on-headstone.jpg"
               alt={pick(lang, {
-                en: "Ceramic medallion detail and craftsmanship",
-                es: "Detalle de medallón de cerámica y artesanía",
+                en: "Ceramic medallion mounted on memorial",
+                es: "Medallón de cerámica montado en memorial",
               })}
               className="h-full w-full object-cover opacity-80"
             />
