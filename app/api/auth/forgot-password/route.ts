@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
 import { sha256, generateToken } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rateLimit";
+import { passwordResetEmailHTML } from "@/lib/email-templates";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
           `Click to reset your password:\n\n${resetUrl}\n\n` +
           `This link expires in 1 hour.\n\n` +
           `If you did not request this, ignore this email. Your password will not change.`,
+        html: passwordResetEmailHTML(resetUrl),
       });
     } catch (emailError) {
       console.error("Failed to send password reset email:", emailError);

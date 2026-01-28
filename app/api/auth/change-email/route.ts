@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { sendEmail } from "@/lib/email";
 import { sha256, generateToken } from "@/lib/auth";
+import { emailChangeVerificationHTML } from "@/lib/email-templates";
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -95,6 +96,7 @@ export async function POST(req: Request) {
         `Click to confirm your new email address:\n\n${confirmUrl}\n\n` +
         `This link expires in 1 hour.\n\n` +
         `If you did not request this change, ignore this email.`,
+      html: emailChangeVerificationHTML(confirmUrl),
     });
   } catch (emailError) {
     console.error("Failed to send email change verification:", emailError);

@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendEmail } from "@/lib/email";
 import { sha256 } from "@/lib/auth";
+import { verificationEmailHTML } from "@/lib/email-templates";
 
 export async function POST(req: Request) {
     if (req.headers.get("x-pic-envcheck") === "1") {
@@ -61,12 +62,18 @@ export async function POST(req: Request) {
         text:
           `Click to confirm your email:\n\n${verifyUrl}\n\n` +
           `This link expires in 1 hour.\n\nIf you did not request this, ignore this email.`,
+        html: verificationEmailHTML(verifyUrl),
       });
     } catch (emailError) {
       console.error("Failed to send verification email:", emailError);
-      // User is created but email failed - return error so they know
+      // Delete the user since they can't verify without the email
+      try {
+        await prisma.user.delete({ where: { email } });
+      } catch (deleteError) {
+        console.error("Failed to cleanup user after email failure:", deleteError);
+      }
       return NextResponse.json({
-        error: "Account created but failed to send verification email. Please contact support."
+        error: "Failed to send verification email. Please try again or contact support if the problem persists."
       }, { status: 500 });
     }
 

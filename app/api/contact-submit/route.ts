@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email";
+import { contactConfirmationHTML } from "@/lib/email-templates";
 
 type Body = { name: string; email: string; message: string };
 
@@ -64,18 +65,23 @@ Pictures in Ceramic Team
     `.trim();
 
     // Send confirmation to customer
+    let customerEmailFailed = false;
     try {
       await sendEmail({
         to: email,
         subject: customerSubject,
         text: customerText,
+        html: contactConfirmationHTML(name, message),
       });
     } catch (emailError) {
       console.error("Failed to send customer confirmation:", emailError);
-      // Don't fail the request if customer confirmation fails
+      customerEmailFailed = true;
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({
+      ok: true,
+      warning: customerEmailFailed ? "Your message was received but confirmation email may have failed. We will still respond to your inquiry." : undefined
+    });
   } catch (err: any) {
     console.error("Contact form error:", err);
     return NextResponse.json(

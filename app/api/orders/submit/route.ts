@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth-config";
 import { sendEmail } from "@/lib/email";
+import { orderConfirmationHTML } from "@/lib/email-templates";
 
 export async function POST(req: Request) {
   try {
@@ -108,15 +109,17 @@ We will contact you shortly to confirm your order and arrange for photo submissi
 Thank you for choosing Pictures in Ceramic!
     `.trim();
 
+    let customerEmailFailed = false;
     try {
       await sendEmail({
         to: customerEmail,
         subject: `Order Confirmation #${order.id} - Pictures in Ceramic`,
         text: emailBody,
+        html: orderConfirmationHTML(order.id, emailBody),
       });
     } catch (emailError) {
       console.error("Failed to send order confirmation email:", emailError);
-      // Don't fail the order submission if email fails
+      customerEmailFailed = true;
     }
 
     // Send notification to admin(s)
@@ -170,7 +173,8 @@ ${imageUrls && imageUrls.length > 0 ? `Images: ${imageUrls.length} file(s) uploa
     return NextResponse.json({
       success: true,
       orderId: order.id,
-      message: "Order submitted successfully!"
+      message: "Order submitted successfully!",
+      warning: customerEmailFailed ? `Order received! Your order number is #${order.id}. Confirmation email may have failed, but we have your order and will contact you soon.` : undefined
     });
   } catch (error: any) {
     console.error("Order submission error:", error);
