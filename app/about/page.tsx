@@ -124,10 +124,10 @@ export default function AboutPage() {
           {/* Image Placeholder 2 */}
           <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
             <img
-              src="/images/cameo-on-headstone.jpg"
+              src="/images/contact-headstone-flowers.jpg"
               alt={pick(lang, {
-                en: "Ceramic medallion mounted on memorial",
-                es: "Medallón de cerámica montado en memorial",
+                en: "Memorial with flowers",
+                es: "Memorial con flores",
               })}
               className="h-full w-full object-cover opacity-80"
             />
