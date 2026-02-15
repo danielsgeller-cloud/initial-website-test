@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function ConfirmEmailChangeClient() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<"working" | "success" | "error">("working");
   const [message, setMessage] = useState("");
@@ -15,7 +17,7 @@ export default function ConfirmEmailChangeClient() {
   useEffect(() => {
     if (!token || !userId) {
       setStatus("error");
-      setMessage("Invalid confirmation link");
+      setMessage(t("confirm_email_failed"));
       return;
     }
 
@@ -31,28 +33,28 @@ export default function ConfirmEmailChangeClient() {
 
         if (res.ok) {
           setStatus("success");
-          setMessage(data.message || "Email updated successfully");
+          setMessage(data.message || t("confirm_email_success"));
         } else {
           setStatus("error");
-          setMessage(data.error || "Failed to confirm email change");
+          setMessage(data.error || t("confirm_email_failed"));
         }
       } catch (err) {
         setStatus("error");
-        setMessage("Something went wrong");
+        setMessage(t("confirm_email_failed"));
       }
     };
 
     confirmEmailChange();
-  }, [token, userId]);
+  }, [token, userId, t]);
 
   return (
     <main className="mx-auto max-w-md px-6 py-16">
-      <h1 className="text-2xl font-semibold text-neutral-900">Email Confirmation</h1>
+      <h1 className="text-2xl font-semibold text-neutral-900">{t("confirm_email_title")}</h1>
 
       <div className="mt-6">
         {status === "working" && (
           <div className="rounded-md border border-neutral-300 bg-neutral-50 px-4 py-3 text-sm text-neutral-700">
-            Confirming your new email address...
+            {t("confirm_email_verifying")}
           </div>
         )}
 
@@ -72,11 +74,11 @@ export default function ConfirmEmailChangeClient() {
       <div className="mt-6 text-center text-sm">
         {status === "success" ? (
           <Link href="/account" className="text-amber-600 hover:text-amber-700">
-            Go to your account
+            {t("confirm_email_login")}
           </Link>
         ) : (
           <Link href="/account/edit" className="text-amber-600 hover:text-amber-700">
-            Back to edit profile
+            {t("account_back")}
           </Link>
         )}
       </div>

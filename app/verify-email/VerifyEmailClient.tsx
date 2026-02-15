@@ -3,8 +3,10 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function VerifyEmailClient() {
+  const { t } = useLanguage();
   const params = useSearchParams();
   const token = params.get("token") || "";
   const email = params.get("email") || "";
@@ -25,34 +27,34 @@ export default function VerifyEmailClient() {
         });
 
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || "Verification failed");
+        if (!res.ok) throw new Error(data?.error || t("verify_email_failed"));
 
         setState("ok");
-        setMsg("Email verified. You can sign in now.");
+        setMsg(t("verify_email_success"));
       } catch (e: any) {
         setState("fail");
-        setMsg(e?.message || "Verification failed");
+        setMsg(e?.message || t("verify_email_failed"));
       }
     })();
-  }, [token, email]);
+  }, [token, email, t]);
 
   return (
     <main className="mx-auto max-w-xl px-6 py-16">
-      <h1 className="text-2xl font-semibold">Verify email</h1>
+      <h1 className="text-2xl font-semibold">{t("verify_email_title")}</h1>
 
       {!token || !email ? (
         <p className="mt-4 text-neutral-700">
-          Missing token or email. Please use the link from your email.
+          {t("verify_email_missing")}
         </p>
       ) : (
         <p className="mt-4 text-neutral-700">
-          {state === "working" ? "Verifying..." : msg}
+          {state === "working" ? t("verify_email_verifying") : msg}
         </p>
       )}
 
       <div className="mt-6 text-sm">
         <Link className="hover:text-amber-600" href="/login">
-          Go to login
+          {t("verify_email_login")}
         </Link>
       </div>
     </main>

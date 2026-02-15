@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 function money(cents: number) {
   return (cents / 100).toLocaleString(undefined, { style: "currency", currency: "USD" });
@@ -12,6 +13,7 @@ function money(cents: number) {
 export default function CartPage() {
   const { items, itemCount, subtotalCents, setQty, removeItem, clear } = useCart();
   const router = useRouter();
+  const { t } = useLanguage();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -27,7 +29,7 @@ export default function CartPage() {
 
     // Validate required fields
     if (!name || !email) {
-      setError("Please provide your name and email address");
+      setError(t("cart_error_message"));
       return;
     }
 
@@ -38,7 +40,7 @@ export default function CartPage() {
       // Submit each cart item as a separate order
       const orderPromises = items.map(async (item) => {
         const orderBody = {
-          shape: item.name.split(" ")[0] || "Oval", // Extract shape from name
+          shape: item.name.split(" ")[0] || "Oval",
           size: item.name,
           finish: item.name.toLowerCase().includes("color") ? "color" : "bw",
           mounting: item.name.includes("Tape") ? "tape" : item.name.includes("Fastener") ? "fastener" : null,
@@ -78,7 +80,6 @@ export default function CartPage() {
       setSuccess(true);
       clear();
 
-      // Scroll to top to show success message
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: any) {
       setError(err?.message || "Failed to submit order. Please try again.");
@@ -90,15 +91,15 @@ export default function CartPage() {
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
       <div className="flex items-end justify-between gap-4">
-        <h1 className="text-3xl font-semibold">Cart</h1>
-        <div className="text-sm text-neutral-600">{itemCount} item{itemCount === 1 ? "" : "s"}</div>
+        <h1 className="text-3xl font-semibold">{t("cart_title")}</h1>
+        <div className="text-sm text-neutral-600">{itemCount} {itemCount === 1 ? t("cart_item") : t("cart_items")}</div>
       </div>
 
       {success && (
         <div className="mt-6 rounded-lg border border-emerald-300 bg-emerald-50 p-4">
-          <p className="font-semibold text-emerald-900">Order submitted successfully!</p>
+          <p className="font-semibold text-emerald-900">{t("cart_success_title")}</p>
           <p className="mt-1 text-sm text-emerald-800">
-            We've received your order request and will contact you via email with pricing confirmation and next steps.
+            {t("cart_success_message")}
           </p>
         </div>
       )}
@@ -112,10 +113,10 @@ export default function CartPage() {
 
       {items.length === 0 ? (
         <div className="mt-10 rounded-lg border border-neutral-200 bg-white p-8">
-          <div className="text-neutral-900">Your cart is empty.</div>
+          <div className="text-neutral-900">{t("cart_empty")}</div>
           <div className="mt-4">
             <Link href="/order-form" className="rounded-full bg-amber-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-black hover:bg-amber-400">
-              Place an Order
+              {t("cart_continue_shopping")}
             </Link>
           </div>
         </div>
@@ -149,7 +150,7 @@ export default function CartPage() {
                           onClick={() => removeItem(it.id)}
                           className="text-sm font-medium text-neutral-600 hover:text-red-600"
                         >
-                          Remove
+                          {t("cart_remove")}
                         </button>
                       </div>
 
@@ -193,7 +194,7 @@ export default function CartPage() {
                 onClick={clear}
                 className="rounded-full border border-neutral-200 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-neutral-800 hover:border-amber-500 hover:text-amber-600"
               >
-                Clear cart
+                {t("cart_clear")}
               </button>
             </div>
           </div>
@@ -201,12 +202,12 @@ export default function CartPage() {
           <div className="space-y-6">
             {/* Customer Information */}
             <div className="rounded-lg border border-neutral-200 bg-white p-6">
-              <div className="text-sm font-medium text-neutral-600 mb-4">Your Information</div>
+              <div className="text-sm font-medium text-neutral-600 mb-4">{t("cart_customer_info")}</div>
 
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 mb-1">
-                    Name *
+                    {t("cart_name")} *
                   </label>
                   <input
                     type="text"
@@ -214,13 +215,13 @@ export default function CartPage() {
                     onChange={(e) => setName(e.target.value)}
                     required
                     className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                    placeholder="Your full name"
+                    placeholder={t("cart_name_placeholder")}
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 mb-1">
-                    Email *
+                    {t("cart_email")} *
                   </label>
                   <input
                     type="email"
@@ -228,33 +229,33 @@ export default function CartPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                    placeholder="your@email.com"
+                    placeholder={t("cart_email_placeholder")}
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 mb-1">
-                    Phone (optional)
+                    {t("cart_phone")}
                   </label>
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                    placeholder="(555) 555-5555"
+                    placeholder={t("cart_phone_placeholder")}
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 mb-1">
-                    Additional Notes (optional)
+                    {t("cart_notes")}
                   </label>
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows={3}
                     className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                    placeholder="Cemetery location, shipping address, deadline, photo modification requests, etc."
+                    placeholder={t("cart_notes_placeholder")}
                   />
                 </div>
               </div>
@@ -262,7 +263,7 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <div className="rounded-lg border border-neutral-200 bg-white p-6">
-              <div className="text-sm font-medium text-neutral-600">Order summary</div>
+              <div className="text-sm font-medium text-neutral-600">{t("cart_subtotal")}</div>
               <div className="mt-3 flex items-center justify-between">
                 <div className="text-sm text-neutral-700">Estimated Range</div>
                 <div className="text-sm font-semibold text-neutral-900">
@@ -279,7 +280,7 @@ export default function CartPage() {
                   disabled={submitting || items.length === 0}
                   className="w-full text-center rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-md hover:from-amber-600 hover:to-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                  {submitting ? "Submitting..." : "Place Order Request"}
+                  {submitting ? t("cart_placing_order") : t("cart_place_order")}
                 </button>
 
               <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-4">

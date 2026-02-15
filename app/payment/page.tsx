@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 type Status = "idle" | "loading" | "error" | "ready";
 
@@ -10,13 +11,12 @@ function toCents(dollars: number) {
 }
 
 export default function PaymentPage() {
+  const { t } = useLanguage();
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string>("");
 
   const [orderRef, setOrderRef] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-
-  // You can keep this simple for now: customer enters an approved deposit amount from your email/quote.
   const [depositAmount, setDepositAmount] = useState<string>("100");
 
   const depositCents = useMemo(() => {
@@ -35,7 +35,7 @@ export default function PaymentPage() {
         body: JSON.stringify({
           reference: orderRef.trim(),
           email: email.trim(),
-          depositAmount: depositCents / 100, // Convert cents to dollars
+          depositAmount: depositCents / 100,
         }),
       });
 
@@ -60,76 +60,76 @@ export default function PaymentPage() {
             href="/login"
             className="text-sm text-neutral-600 hover:text-amber-600 transition-colors font-medium"
           >
-            Admin Login →
+            {t("payment_admin_login")}
           </Link>
         </div>
 
         <header className="text-center">
           <h1 className="font-serif text-3xl font-semibold text-neutral-900 md:text-4xl">
-            Payment
+            {t("payment_title")}
           </h1>
           <p className="mx-auto mt-3 max-w-2xl text-sm text-neutral-600 md:text-base">
-            We collect a deposit after we accept your artwork for production, then we charge the remaining balance when your cameo ships.
+            {t("payment_subtitle")}
           </p>
           <p className="mx-auto mt-2 max-w-2xl text-xs text-neutral-500">
-            If you have not received an approval email from us yet, do not pay here.
+            {t("payment_warning")}
           </p>
         </header>
 
         <section className="mt-10 rounded-2xl bg-white p-6 shadow-sm shadow-neutral-200 md:p-8">
           <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-500">
-            Pay your deposit
+            {t("payment_deposit_title")}
           </h2>
 
           <div className="mt-5 grid gap-5 md:grid-cols-2">
             <div className="space-y-1 md:col-span-2">
               <label className="text-xs font-medium text-neutral-700">
-                Order reference (from our email)
+                {t("payment_order_ref")}
               </label>
               <input
                 value={orderRef}
                 onChange={(e) => setOrderRef(e.target.value)}
-                placeholder="For example: PIC-2025-00123"
+                placeholder={t("payment_order_ref_placeholder")}
                 className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-medium text-neutral-700">Email</label>
+              <label className="text-xs font-medium text-neutral-700">{t("payment_email")}</label>
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t("payment_email_placeholder")}
                 className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
               />
             </div>
 
             <div className="space-y-1">
               <label className="text-xs font-medium text-neutral-700">
-                Deposit amount (USD)
+                {t("payment_amount")}
               </label>
               <input
                 value={depositAmount}
                 onChange={(e) => setDepositAmount(e.target.value)}
                 inputMode="decimal"
-                placeholder="100"
+                placeholder={t("payment_amount_placeholder")}
                 className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
               />
               <p className="mt-1 text-[11px] text-neutral-500">
-                Enter the deposit amount you were approved for. We will confirm the final total before shipping.
+                {t("payment_amount_note")}
               </p>
             </div>
           </div>
 
           <div className="mt-6 rounded-md border border-neutral-200 bg-neutral-50 px-4 py-3">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
-              What happens next
+              {t("payment_next_title")}
             </p>
             <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-neutral-700">
-              <li>You pay the deposit through Stripe Checkout.</li>
-              <li>We begin production and keep you updated if we need clarification.</li>
-              <li>When your cameo ships, we charge the remaining balance using the payment method saved with your deposit.</li>
+              <li>{t("payment_next_step1")}</li>
+              <li>{t("payment_next_step2")}</li>
+              <li>{t("payment_next_step3")}</li>
             </ol>
           </div>
 
@@ -145,19 +145,11 @@ export default function PaymentPage() {
               }
               className="inline-flex items-center justify-center rounded-full bg-amber-500 px-8 py-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-black shadow-md hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {status === "loading" ? "Redirecting to Stripe..." : "Pay deposit"}
+              {status === "loading" ? t("payment_redirecting") : t("payment_pay_button")}
             </button>
 
-            <p className="text-xs text-neutral-500">
-              Secure payments powered by Stripe.
-            </p>
+            {error && <div className="text-sm text-red-600">{error}</div>}
           </div>
-
-          {status === "error" && (
-            <div className="mt-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800">
-              {error}
-            </div>
-          )}
         </section>
       </div>
     </main>
