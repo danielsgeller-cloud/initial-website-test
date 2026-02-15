@@ -54,14 +54,14 @@ export default function AboutPage() {
           {/* Image Placeholder 1 */}
           <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
             <img
-              src="/images/medallions-showcase.jpg"
+              src="/images/p.jpg"
               alt={pick(lang, {
                 en: "Ceramic photo medallions showcase",
                 es: "Exhibición de medallones fotográficos de cerámica",
                 ru: "Витрина керамических фото-медальонов",
                 uk: "Вітрина керамічних фото-медальйонів",
               })}
-              className="h-full w-full object-cover opacity-80"
+              className="h-full w-full object-cover"
             />
           </div>
 
@@ -148,14 +148,14 @@ export default function AboutPage() {
           {/* Image Placeholder 2 */}
           <div className="relative h-72 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-full">
             <img
-              src="/images/contact-headstone-flowers.jpg"
+              src="/images/bg.jpg"
               alt={pick(lang, {
                 en: "Memorial with flowers",
                 es: "Memorial con flores",
                 ru: "Памятник с цветами",
                 uk: "Пам'ятник з квітами",
               })}
-              className="h-full w-full object-cover opacity-80"
+              className="h-full w-full object-cover"
             />
           </div>
         </div>
@@ -183,14 +183,14 @@ export default function AboutPage() {
           {/* Image Placeholder 3 */}
           <div className="mt-10 h-64 w-full max-w-3xl overflow-hidden rounded-xl bg-neutral-100 shadow-md md:h-80">
             <img
-              src="/images/field-soft-repeat.jpg"
+              src="/images/im2.jpg"
               alt={pick(lang, {
                 en: "Peaceful memorial landscape",
                 es: "Paisaje conmemorativo tranquilo",
                 ru: "Спокойный памятный пейзаж",
                 uk: "Спокійний пам'ятний пейзаж",
               })}
-              className="h-full w-full object-cover opacity-80"
+              className="h-full w-full object-cover"
             />
           </div>
         </div>

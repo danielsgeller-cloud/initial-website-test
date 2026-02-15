@@ -13,13 +13,13 @@ export default function HomePage() {
       <section className="relative h-[70vh] min-h-[480px] w-full overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="/images/field-hero.jpg"
+            src="/images/p.jpg"
             alt={t("home_hero_image_alt")}
             fill
             priority
             className="hero-bg-image"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/65" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
         </div>
 
         <div className="relative z-10 flex h-full items-center">
@@ -78,21 +78,21 @@ export default function HomePage() {
                 key: "about",
                 label: t("home_tile_about"),
                 href: "/about",
-                image: "/images/medallions-showcase.jpg",
+                image: "/images/mm15.jpg",
                 alt: t("home_tile_about_alt"),
               },
               {
                 key: "why",
                 label: t("home_tile_why"),
                 href: "/payment",
-                image: "/images/why-cameos-closeup.jpg",
+                image: "/images/21.jpg",
                 alt: t("home_tile_why_alt"),
               },
               {
                 key: "contact",
                 label: t("home_tile_contact"),
                 href: "/contact",
-                image: "/images/contact-headstone-flowers.jpg",
+                image: "/images/granite.jpg",
                 alt: t("home_tile_contact_alt"),
               },
             ].map((item) => (
@@ -107,7 +107,7 @@ export default function HomePage() {
                   fill
                   className="object-contain transition duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 bg-black/25" />
                 <div className="absolute inset-0 flex items-end justify-center pb-6">
                   <span className="rounded-full border border-white/80 bg-black/35 px-6 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white">
                     {item.label}
@@ -128,7 +128,7 @@ export default function HomePage() {
             fill
             className="cta-bg-image"
           />
-          <div className="absolute inset-0 bg-black/65" />
+          <div className="absolute inset-0 bg-black/25" />
         </div>
 
         <div className="relative mx-auto flex max-w-5xl flex-col items-center px-4 py-16 text-center text-white md:px-6 md:py-20">
