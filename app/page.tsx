@@ -17,7 +17,8 @@ export default function HomePage() {
             alt={t("home_hero_image_alt")}
             fill
             priority
-            className="hero-bg-image"
+            className="hero-bg-image object-cover"
+            style={{ objectPosition: 'center 40%' }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
         </div>
@@ -123,7 +124,7 @@ export default function HomePage() {
       <section className="relative w-full overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="/images/field-sunset-wide.jpg"
+            src="/images/rss.jpg"
             alt={t("home_cta_bg_alt")}
             fill
             className="cta-bg-image"

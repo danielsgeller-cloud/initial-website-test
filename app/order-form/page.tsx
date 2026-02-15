@@ -117,6 +117,12 @@ const COPY: Partial<Record<
     proofLineNone: string;
     customerNotes: string;
     none: string;
+
+    quantity: string;
+    addToCart: string;
+    viewCart: string;
+    loading: string;
+    combineCheckboxLabel: string;
   }
 >> = {
   en: {
@@ -223,6 +229,124 @@ const COPY: Partial<Record<
     proofLineNone: "Proof requested: No proof requested.",
     customerNotes: "Additional notes from customer:",
     none: "(none)",
+
+    quantity: "Quantity",
+    addToCart: "Add to cart",
+    viewCart: "View Cart",
+    loading: "Loading...",
+    combineCheckboxLabel: "Combine two or more originals on the same cameo",
+  },
+
+  es: {
+    heroTitle: "Ordenar un camafeo fotográfico de esmalte",
+    heroBody:
+      "Use este formulario para configurar su pedido de camafeo. Después de enviarlo, revisaremos sus selecciones, confirmaremos el precio y nos pondremos en contacto con los próximos pasos.",
+    bullets: [
+      "Medallones de esmalte sobre base metálica con acabado duradero para exteriores.",
+      "Lápidas, mausoleos, memoriales en el hogar y proyectos personalizados.",
+      "Trabajo comercial para distribuidores de monumentos y pedidos directos de familias.",
+    ],
+    note:
+      "El precio final depende de la calidad de la imagen, color o blanco y negro, complejidad del retoque y detalles de instalación. El rango a continuación es una estimación.",
+
+    summaryTitle: "Configuración seleccionada",
+    summaryShape: "Forma:",
+    summarySize: "Tamaño / código:",
+    summaryFinish: "Acabado:",
+    summaryBase: "Precio base:",
+    summaryCombineHint:
+      "Combinar originales separados en un camafeo puede agregar hasta 50% del precio listado.",
+    summaryShippingHint:
+      "El envío y otros detalles se confirmarán después de la revisión.",
+    summaryMountingPrefix: "Montaje:",
+
+    customerLegend: "Información del cliente",
+    iAmA: "Soy un",
+    dealer: "Distribuidor de monumentos / comercio",
+    individual: "Individual / familia",
+    name: "Nombre*",
+    email: "Correo Electrónico*",
+    phone: "Teléfono",
+    cemetery: "Cementerio / ubicación (opcional)",
+    shipTo: "Dirección de envío (opcional)",
+    neededBy: "Fecha requerida (opcional)",
+
+    detailsLegend: "Detalles del camafeo",
+    shapeGroup: "Grupo de formas",
+    sizeCatalog: "Tamaño / número de catálogo",
+    finish: "Acabado",
+    finishColor: "Color",
+    finishBW: "Blanco y negro",
+
+    mounting: "Montaje",
+    mountingHelp:
+      "Si no está seguro, seleccione \"No especificado\". Confirmaremos qué es apropiado para su monumento.",
+    mountingNone: "No especificado",
+    mountingTape: "Cinta de montaje",
+    mountingFastener: "Sujetador / herraje",
+
+    combinePhotos: "Combinar fotos",
+    combineHelp:
+      "Si desea combinar varios originales en un camafeo, confirmaremos la viabilidad y el precio después de la revisión.",
+    proof: "Prueba",
+    proofNone: "No se necesita prueba",
+    proofEmail: "Prueba por correo electrónico",
+    proofPrinted: "Prueba impresa",
+
+    additionalLegend: "Información adicional",
+    additionalHelp:
+      "Use esta área para notas sobre las fotos (por ejemplo: eliminar fondo, ajustar color, combinar personas u otras solicitudes artísticas).",
+
+    estTitle: "Rango total estimado",
+    estHelp:
+      "Esta es una estimación amplia. El precio final se confirma después de revisar sus fotos y cualquier retoque complejo.",
+
+    submitSending: "Enviando solicitud de pedido...",
+    submit: "Enviar solicitud de pedido",
+    submitHelp:
+      "Después de recibir su formulario, le enviaremos un correo electrónico con los próximos pasos, incluido cómo cargar o enviar fotografías por correo.",
+
+    success:
+      "Gracias. Su solicitud de pedido ha sido enviada. Recibirá una confirmación por correo electrónico.",
+    error: "Hubo un problema al enviar su solicitud de pedido.",
+
+    bwLabel: "B/N",
+    colorLabel: "Color",
+
+    notSpecified: "No especificado",
+    mountingRequested: "Montaje solicitado:",
+    mountingNotSpecified: "Montaje: no especificado",
+
+    messageHeader: "Nueva solicitud de pedido de camafeo del sitio web:",
+    customerName: "Nombre del cliente:",
+    customerEmail: "Correo electrónico:",
+    customerPhone: "Teléfono:",
+    customerTypeDealer: "Tipo de cliente: Distribuidor de monumentos / comercio",
+    customerTypeIndividual: "Tipo de cliente: Individual / familia",
+    customerCemetery: "Cementerio / ubicación:",
+    customerShipTo: "Dirección de envío:",
+    customerDeadline: "Requerido para:",
+    requestedConfig: "Configuración solicitada:",
+    configShape: "Grupo de formas:",
+    configSize: "Tamaño / código:",
+    configFinish: "Acabado:",
+    baseFromList: "Precio base de la lista:",
+    estimatedTotal: "Rango total estimado:",
+    wholesaleMountingNote: "Nota de montaje:",
+    combineYes:
+      "Combinar varios originales en el mismo medallón: SÍ (precio confirmado después de la revisión).",
+    combineNo: "Combinar varios originales: No.",
+    proofLineEmail: "Prueba solicitada: Prueba por correo electrónico.",
+    proofLinePrinted: "Prueba solicitada: Prueba impresa.",
+    proofLineNone: "Prueba solicitada: No se solicitó prueba.",
+    customerNotes: "Notas adicionales del cliente:",
+    none: "(ninguno)",
+
+    quantity: "Cantidad",
+    addToCart: "Agregar al carrito",
+    viewCart: "Ver carrito",
+    loading: "Cargando...",
+    combineCheckboxLabel: "Combinar dos o más originales en el mismo camafeo",
   },
 
   ru: {
@@ -329,6 +453,12 @@ const COPY: Partial<Record<
     proofLineNone: "Проба: не требуется.",
     customerNotes: "Примечания клиента:",
     none: "(нет)",
+
+    quantity: "Количество",
+    addToCart: "Добавить в корзину",
+    viewCart: "Просмотр корзины",
+    loading: "Загрузка...",
+    combineCheckboxLabel: "Объединить два или больше исходных фото в одном медальоне",
   },
 
   uk: {
@@ -435,6 +565,12 @@ const COPY: Partial<Record<
     proofLineNone: "Проба: не потрібна.",
     customerNotes: "Примітки клієнта:",
     none: "(немає)",
+
+    quantity: "Кількість",
+    addToCart: "Додати до кошика",
+    viewCart: "Переглянути кошик",
+    loading: "Завантаження...",
+    combineCheckboxLabel: "Об'єднати два або більше вихідних фото в одному медальйоні",
   },
 };
 
@@ -550,38 +686,43 @@ function formatCurrency(value: number): string {
 }
 
 function shapeLabelForLang(shape: ShapeGroup, lang: Lang): string {
-  const map: Record<string, { ru: string; uk: string }> = {
-    oval: { ru: "Овал", uk: "Овал" },
-    rectangle: { ru: "Прямоугольник", uk: "Прямокутник" },
-    heart: { ru: "Сердце", uk: "Серце" },
-    round: { ru: "Круг", uk: "Коло" },
-    "additional-oval": { ru: "Дополнительные овальные размеры", uk: "Додаткові овальні розміри" },
+  const map: Record<string, { es: string; ru: string; uk: string }> = {
+    oval: { es: "Oval", ru: "Овал", uk: "Овал" },
+    rectangle: { es: "Rectángulo", ru: "Прямоугольник", uk: "Прямокутник" },
+    heart: { es: "Corazón", ru: "Сердце", uk: "Серце" },
+    round: { es: "Redondo", ru: "Круг", uk: "Коло" },
+    "additional-oval": { es: "Tamaños ovalados adicionales", ru: "Дополнительные овальные размеры", uk: "Додаткові овальні розміри" },
   };
   if (lang === "en") return shape.label;
   const t = map[shape.id];
   if (!t) return shape.label;
-  return lang === "ru" ? t.ru : t.uk;
+  return lang === "es" ? t.es : lang === "ru" ? t.ru : t.uk;
 }
 
 function shapeDescriptionForLang(shape: ShapeGroup, lang: Lang): string {
-  const map: Record<string, { ru: string; uk: string }> = {
+  const map: Record<string, { es: string; ru: string; uk: string }> = {
     oval: {
+      es: "Medallones ovalados clásicos para la mayoría de las lápidas y mausoleos.",
       ru: "Классические овальные медальоны для большинства памятников и мавзолеев.",
-      uk: "Класичні овальні медальйони для більшості пам’ятників і мавзолеїв.",
+      uk: "Класичні овальні медальйони для більшості пам'ятників і мавзолеїв.",
     },
     rectangle: {
+      es: "Medallones rectangulares para fotos más grandes o inscripciones.",
       ru: "Прямоугольные медальоны для больших фото или надписей.",
       uk: "Прямокутні медальйони для більших фото або написів.",
     },
     heart: {
+      es: "Medallón en forma de corazón para memoriales especialmente personales.",
       ru: "Медальон в форме сердца для особенно личной памяти.",
-      uk: "Медальйон у формі серця для особливо особистої пам’яті.",
+      uk: "Медальйон у формі серця для особливо особистої пам'яті.",
     },
     round: {
+      es: "Medallones redondos adecuados para ciertos monumentos y placas.",
       ru: "Круглые медальоны для некоторых типов памятников и табличек.",
-      uk: "Круглі медальйони для певних типів пам’ятників і табличок.",
+      uk: "Круглі медальйони для певних типів пам'ятників і табличок.",
     },
     "additional-oval": {
+      es: "Tamaños ovalados adicionales de la lista.",
       ru: "Дополнительные овальные размеры из списка.",
       uk: "Додаткові овальні розміри зі списку.",
     },
@@ -589,7 +730,7 @@ function shapeDescriptionForLang(shape: ShapeGroup, lang: Lang): string {
   if (lang === "en") return shape.description;
   const t = map[shape.id];
   if (!t) return shape.description;
-  return lang === "ru" ? t.ru : t.uk;
+  return lang === "es" ? t.es : lang === "ru" ? t.ru : t.uk;
 }
 
 function finishLabel(lang: Lang, finish: Finish): string {
@@ -720,7 +861,7 @@ function OrderFormContent() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-[0.16em] text-neutral-500 mb-2">
-                      Quantity
+                      {t.quantity}
                     </label>
                     <input
                       name="quantity"
@@ -758,14 +899,14 @@ function OrderFormContent() {
                     }}
                     className="w-full rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black shadow-md hover:bg-amber-400 transition-colors"
                   >
-                    Add to cart
+                    {t.addToCart}
                   </button>
 
                   <Link
                     href="/cart"
                     className="block text-center rounded-lg border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-700 hover:border-amber-500 hover:text-amber-600 transition-colors"
                   >
-                    View Cart {itemCount > 0 && `(${itemCount})`}
+                    {t.viewCart} {itemCount > 0 && `(${itemCount})`}
                   </Link>
                 </div>
               </div>
@@ -900,11 +1041,7 @@ function OrderFormContent() {
                       checked={combinePhotos}
                       onChange={(e) => setCombinePhotos(e.target.checked)}
                     />
-                    {L === "en"
-                      ? "Combine two or more originals on the same cameo"
-                      : L === "ru"
-                        ? "Объединить два или больше исходных фото в одном медальоне"
-                        : "Об’єднати два або більше вихідних фото в одному медальйоні"}
+                    {t.combineCheckboxLabel}
                   </label>
                   <p className="text-[11px] text-neutral-500">{t.combineHelp}</p>
                 </div>
@@ -931,8 +1068,11 @@ function OrderFormContent() {
 }
 
 export default function OrderFormPage() {
+  const { lang } = useLanguage();
+  const t = COPY[(lang as Lang) || "en"] ?? COPY.en;
+
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">{t.loading}</div>}>
       <OrderFormContent />
     </Suspense>
   );
