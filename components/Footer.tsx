@@ -71,11 +71,7 @@ export default function Footer() {
             <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
               Studio hours
             </h3>
-            <ul className="mt-3 space-y-1.5">
-              <li>Monday to Friday: 9:00 am to 5:00 pm EST</li>
-              <li>Saturday: By appointment</li>
-              <li>Sunday: By appointment</li>
-            </ul>
+            <p className="mt-3">Monday through Friday 9am to 5pm</p>
           </div>
         </div>
 

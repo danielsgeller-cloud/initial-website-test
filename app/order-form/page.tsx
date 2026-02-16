@@ -4,7 +4,6 @@ import { useCart } from "@/components/cart/CartProvider";
 import Link from "next/link";
 import { useMemo, useState, Suspense } from "react";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
-import MedallionPreview from "@/components/MedallionPreview";
 
 type Lang = "en" | "es" | "ru" | "uk";
 type Finish = "bw" | "color";
@@ -123,6 +122,17 @@ const COPY: Partial<Record<
     viewCart: string;
     loading: string;
     combineCheckboxLabel: string;
+
+    processTitle: string;
+    processSteps: [string, string, string, string, string];
+
+    trustTitle: string;
+    trustYearsLabel: string;
+    trustYearsValue: string;
+    trustDurabilityLabel: string;
+    trustDurabilityValue: string;
+    trustBusinessLabel: string;
+    trustBusinessValue: string;
   }
 >> = {
   en: {
@@ -235,6 +245,23 @@ const COPY: Partial<Record<
     viewCart: "View Cart",
     loading: "Loading...",
     combineCheckboxLabel: "Combine two or more originals on the same cameo",
+
+    processTitle: "What happens next",
+    processSteps: [
+      "We review your order and confirm pricing",
+      "You receive a confirmation email with next steps",
+      "Upload or mail your photographs to us",
+      "We create your custom medallion with care",
+      "Final approval and delivery to you",
+    ],
+
+    trustTitle: "Why choose us",
+    trustYearsLabel: "Experience",
+    trustYearsValue: "Over 40 years creating memorial cameos",
+    trustDurabilityLabel: "Quality",
+    trustDurabilityValue: "Weather-resistant outdoor enamel finish",
+    trustBusinessLabel: "Service",
+    trustBusinessValue: "Family-owned business, personalized care",
   },
 
   es: {
@@ -347,6 +374,23 @@ const COPY: Partial<Record<
     viewCart: "Ver carrito",
     loading: "Cargando...",
     combineCheckboxLabel: "Combinar dos o más originales en el mismo camafeo",
+
+    processTitle: "Qué sucede después",
+    processSteps: [
+      "Revisamos su pedido y confirmamos el precio",
+      "Recibe un correo de confirmación con los próximos pasos",
+      "Sube o envíe sus fotografías por correo",
+      "Creamos su medallón personalizado con cuidado",
+      "Aprobación final y entrega",
+    ],
+
+    trustTitle: "Por qué elegirnos",
+    trustYearsLabel: "Experiencia",
+    trustYearsValue: "Más de 40 años creando camafeos conmemorativos",
+    trustDurabilityLabel: "Calidad",
+    trustDurabilityValue: "Acabado de esmalte resistente a la intemperie",
+    trustBusinessLabel: "Servicio",
+    trustBusinessValue: "Negocio familiar, atención personalizada",
   },
 
   ru: {
@@ -459,6 +503,23 @@ const COPY: Partial<Record<
     viewCart: "Просмотр корзины",
     loading: "Загрузка...",
     combineCheckboxLabel: "Объединить два или больше исходных фото в одном медальоне",
+
+    processTitle: "Что дальше",
+    processSteps: [
+      "Мы проверим заказ и подтвердим стоимость",
+      "Вы получите email с подтверждением и следующими шагами",
+      "Загрузите или отправьте фотографии почтой",
+      "Мы создадим ваш медальон с заботой",
+      "Финальное согласование и доставка",
+    ],
+
+    trustTitle: "Почему мы",
+    trustYearsLabel: "Опыт",
+    trustYearsValue: "Более 40 лет создаём мемориальные медальоны",
+    trustDurabilityLabel: "Качество",
+    trustDurabilityValue: "Эмаль устойчивая к погодным условиям",
+    trustBusinessLabel: "Сервис",
+    trustBusinessValue: "Семейный бизнес, персональный подход",
   },
 
   uk: {
@@ -571,6 +632,23 @@ const COPY: Partial<Record<
     viewCart: "Переглянути кошик",
     loading: "Завантаження...",
     combineCheckboxLabel: "Об'єднати два або більше вихідних фото в одному медальйоні",
+
+    processTitle: "Що далі",
+    processSteps: [
+      "Ми перевіримо замовлення та підтвердимо вартість",
+      "Ви отримаєте email з підтвердженням і наступними кроками",
+      "Завантажте або надішліть фотографії поштою",
+      "Ми створимо ваш медальйон з турботою",
+      "Фінальне узгодження та доставка",
+    ],
+
+    trustTitle: "Чому ми",
+    trustYearsLabel: "Досвід",
+    trustYearsValue: "Понад 40 років створюємо меморіальні медальйони",
+    trustDurabilityLabel: "Якість",
+    trustDurabilityValue: "Емаль стійка до погодних умов",
+    trustBusinessLabel: "Сервіс",
+    trustBusinessValue: "Сімейний бізнес, персональний підхід",
   },
 };
 
@@ -912,12 +990,43 @@ function OrderFormContent() {
               </div>
             </aside>
 
-            {/* Medallion Preview */}
-            <MedallionPreview
-              shapeId={shapeId}
-              size={selectedOption.size}
-              finish={finish}
-            />
+            {/* Process Timeline */}
+            <div className="rounded-2xl bg-white p-5 shadow-sm shadow-neutral-200">
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500 mb-4">
+                {t.processTitle}
+              </h3>
+              <ol className="space-y-3">
+                {t.processSteps.map((step, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-sm">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-semibold text-amber-700">
+                      {idx + 1}
+                    </span>
+                    <span className="pt-0.5 text-neutral-700">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="rounded-2xl bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm shadow-neutral-200">
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500 mb-4">
+                {t.trustTitle}
+              </h3>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs font-semibold text-amber-700">{t.trustYearsLabel}</p>
+                  <p className="text-sm text-neutral-700 mt-0.5">{t.trustYearsValue}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-amber-700">{t.trustDurabilityLabel}</p>
+                  <p className="text-sm text-neutral-700 mt-0.5">{t.trustDurabilityValue}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-amber-700">{t.trustBusinessLabel}</p>
+                  <p className="text-sm text-neutral-700 mt-0.5">{t.trustBusinessValue}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
