@@ -17,13 +17,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Missing name/email/message" }, { status: 400 });
     }
 
-        // Admin notification email
-    const adminEmail = process.env.ADMIN_EMAIL || "danielsgeller@gmail.com";
-    const adminEmailCc = process.env.ADMIN_EMAIL_CC;
-
-    const adminRecipients = adminEmailCc
-      ? [adminEmail, adminEmailCc]
-      : adminEmail;
+    // Admin notification — always send to all 3 recipients
+    const adminRecipients = [
+      "picturesinceramic@gmail.com",
+      "danielsgeller@gmail.com",
+      "picturesofceramic@comcast.net",
+    ];
 
 
     const adminSubject = `Website contact: ${name}`;

@@ -33,10 +33,10 @@ export default function Footer() {
               <p>
                 Email:{" "}
                 <a
-                  href="mailto:info@picturesinceramic.com"
+                  href="mailto:picturesinceramic@gmail.com"
                   className="text-amber-700 hover:text-amber-500"
                 >
-                  info@picturesinceramic.com
+                  picturesinceramic@gmail.com
                 </a>
               </p>
             </div>

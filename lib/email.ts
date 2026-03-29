@@ -30,19 +30,7 @@ export async function sendEmail(opts: SendEmailOptions) {
     },
   });
 
-  // Always include copies to picturesinceramic@gmail.com and info@picturesinceramic.com
-  const originalRecipients = Array.isArray(opts.to) ? opts.to : [opts.to];
-  const allRecipients = [...originalRecipients];
-
-  // Add picturesinceramic@gmail.com if not already in the list
-  if (!allRecipients.includes(gmailUser)) {
-    allRecipients.push(gmailUser);
-  }
-
-  // Add info@picturesinceramic.com if not already in the list
-  if (adminEmail && !allRecipients.includes(adminEmail)) {
-    allRecipients.push(adminEmail);
-  }
+  const allRecipients = Array.isArray(opts.to) ? opts.to : [opts.to];
 
   // Send email
   await transporter.sendMail({

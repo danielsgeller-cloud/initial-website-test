@@ -23,7 +23,7 @@ const DICT: Record<string, Partial<Record<Lang, string>>> = {
     uk: "Сервіс доступний англійською та іспанською мовами",
   },
   phone_display: { en: "(732) 297-6008", es: "(732) 297-6008", ru: "(732) 297-6008", uk: "(732) 297-6008" },
-  email_display: { en: "info@picturesinceramic.com", es: "info@picturesinceramic.com", ru: "info@picturesinceramic.com", uk: "info@picturesinceramic.com" },
+  email_display: { en: "picturesinceramic@gmail.com", es: "picturesinceramic@gmail.com", ru: "picturesinceramic@gmail.com", uk: "picturesinceramic@gmail.com" },
   brand_tagline: { en: "Enamel memorial medallions", es: "Medallones conmemorativos de esmalte", ru: "Эмалевые мемориальные медальоны", uk: "Емалеві меморіальні медальйони" },
   nav_order: { en: "Order Form", es: "Formulario de Pedido", ru: "Форма заказа", uk: "Форма замовлення" },
   // Header / top bar

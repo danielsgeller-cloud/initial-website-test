@@ -37,7 +37,7 @@ export default function Nav() {
             </a>
             <span className="hidden text-neutral-500 md:inline">|</span>
             <a
-              href="mailto:info@picturesinceramic.com"
+              href="mailto:picturesinceramic@gmail.com"
               className="hidden hover:text-amber-300 md:inline"
             >
               {t("email_display")}
