@@ -122,14 +122,11 @@ Thank you for choosing Pictures in Ceramic!
       customerEmailFailed = true;
     }
 
-    // Send notification to admin(s)
-    const adminEmail = process.env.ADMIN_EMAIL || "info@picturesinceramic.com";
-    const adminEmailCC = process.env.ADMIN_EMAIL_CC; // Optional third email
-
-    // Build recipient list - always include main admin, add CC if provided
-    const adminRecipients = adminEmailCC
-      ? [adminEmail, adminEmailCC]
-      : adminEmail;
+    // Send notification to admin — always goes to picturesinceramic@gmail.com
+    const adminRecipients = [
+      "picturesinceramic@gmail.com",
+      ...(process.env.ADMIN_EMAIL_CC ? [process.env.ADMIN_EMAIL_CC] : []),
+    ];
 
     const adminEmailBody = `
 New Order Received!
@@ -165,6 +162,7 @@ ${imageUrls && imageUrls.length > 0 ? `Images: ${imageUrls.length} file(s) uploa
         to: adminRecipients,
         subject: `New Order #${order.id}`,
         text: adminEmailBody,
+        replyTo: customerEmail,
       });
     } catch (emailError) {
       console.error("Failed to send admin notification email:", emailError);
