@@ -286,14 +286,7 @@ export default function CartPage() {
               <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-4">
                 <p className="text-sm font-semibold text-blue-900">Payment Process</p>
                 <p className="mt-2 text-xs text-blue-800 leading-relaxed">
-                  After you submit your order request, we will review your selections and contact you with final pricing and next steps. We will send you a secure payment link via email when your order is ready to proceed.
-                </p>
-              </div>
-
-              <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4">
-                <p className="text-xs font-semibold text-amber-900">Deposit Required</p>
-                <p className="mt-1 text-xs text-amber-800">
-                  A deposit (counted towards the final cost) is required before work begins on your order. The payment link we send will include deposit information.
+                  After you submit your order request, we will review your selections and contact you with final pricing and next steps. We will also ask you to provide your photograph. We will send you a secure payment link via email when your order is ready to proceed.
                 </p>
               </div>
 
